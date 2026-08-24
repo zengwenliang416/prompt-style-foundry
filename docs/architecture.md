@@ -38,7 +38,14 @@ The current product requirement is browsing and copying prompt templates. A back
 - deterministic generated artifacts;
 - deployment to any static host.
 
-Image generation can later be introduced as a separate adapter behind a clearly defined service boundary. It should not be coupled to the prompt catalog.
+## Optional generation adapter
+
+Image generation exists as an optional BYOK adapter behind a clear boundary; it is not coupled to the prompt catalog.
+
+- The browser holds the endpoint URL and API key only in localStorage.
+- When the user explicitly uploads one reference image and clicks generate, the browser calls `{baseUrl}/v1/images/edits` directly with the compiled prompt. Nothing passes through project infrastructure because none exists.
+- The catalog, prompts, previews, and validation pipeline never depend on this feature. Without configuration the site remains a pure template browser.
+- CORS is delegated to the target service. If it blocks cross-origin requests, generation fails with an explanatory message instead of introducing a proxy.
 
 ## Boundaries
 

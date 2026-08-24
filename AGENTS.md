@@ -119,8 +119,8 @@ Category adapters must never hallucinate facts. In particular:
 - Lazy-load preview images.
 - Keep catalog metadata separate from full prompt TXT files so the initial payload remains reasonable.
 - Do not load all prompt bodies at startup.
-- Store favorites only in localStorage.
-- Never send uploaded files or user data anywhere; the current app is a template browser, not an image-generation backend.
+- Store favorites and generation credentials only in localStorage.
+- The project has no backend and no telemetry. Uploaded images and prompts may only travel directly to the user-configured BYOK endpoint when the user explicitly triggers generation. Never add a server-side proxy, account system, or implicit upload path.
 
 ## 8. Data and naming
 
