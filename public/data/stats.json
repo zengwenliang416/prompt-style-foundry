@@ -1,0 +1,31 @@
+{
+  "total": 576,
+  "cases": 529,
+  "frameworks": 47,
+  "categories": {
+    "Architecture & Spaces": 14,
+    "Brand & Logos": 33,
+    "Characters & People": 33,
+    "Charts & Infographics": 55,
+    "Documents & Publishing": 13,
+    "History & Classical Themes": 18,
+    "Illustration & Art": 60,
+    "Other Use Cases": 31,
+    "Photography & Realism": 80,
+    "Posters & Typography": 96,
+    "Products & E-commerce": 44,
+    "Scenes & Storytelling": 22,
+    "UI & Interfaces": 77
+  },
+  "modes": {
+    "document": 11,
+    "infographic": 35,
+    "interface": 68,
+    "multi-panel": 124,
+    "portrait": 24,
+    "poster": 74,
+    "product": 32,
+    "scene": 35,
+    "single-scene": 173
+  }
+}

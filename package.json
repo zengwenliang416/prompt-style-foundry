@@ -1,0 +1,20 @@
+{
+  "name": "onepic-template-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone single-image visual prompt template library with 576 normalized templates.",
+  "type": "module",
+  "scripts": {
+    "dev": "python3 scripts/serve.py",
+    "serve": "python3 scripts/serve.py",
+    "import:source": "python3 scripts/import_source.py",
+    "build": "python3 scripts/build_library.py",
+    "validate": "python3 scripts/validate_library.py",
+    "test": "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "check": "npm run build && npm run validate && npm run test"
+  },
+  "engines": {
+    "node": ">=20",
+    "python": ">=3.11"
+  }
+}

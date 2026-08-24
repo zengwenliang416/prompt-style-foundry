@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="一图万式：独立的单图视觉提示词模板库。上传一张图片，即可套用 576 套视觉系统。"
+    />
+    <meta name="theme-color" content="#f3eee4" />
+    <title>一图万式 · OnePic Template Studio</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script type="module" src="assets/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#template-library">跳到模板库</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="返回首页">
+        <span class="brand-mark" aria-hidden="true">一</span>
+        <span>
+          <strong>一图万式</strong>
+          <small>OnePic Template Studio</small>
+        </span>
+      </a>
+      <nav class="header-nav" aria-label="主导航">
+        <a href="#how-it-works">使用方式</a>
+        <a href="#template-library">模板库</a>
+        <a href="#provenance">来源说明</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">SINGLE IMAGE · STANDALONE LIBRARY</p>
+          <h1 id="hero-title">只上传一张图，<br />切换整套视觉语言。</h1>
+          <p class="hero-description">
+            这是一个全新、独立的提示词项目。原项目只作为只读素材源；每条视觉蓝图都已被编译成统一的
+            <strong>[System / Prompt]</strong> 单图模板，不需要再填写标题、品牌、地点或比例。
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#template-library">浏览全部模板</a>
+            <a class="button button-secondary" href="#how-it-works">查看使用方式</a>
+          </div>
+        </div>
+
+        <div class="hero-panel" aria-label="模板统计">
+          <div class="paper-card paper-card-large">
+            <p>模板协议</p>
+            <strong>ONE IMAGE</strong>
+            <span>图片决定内容 · 蓝图决定风格</span>
+          </div>
+          <div class="metric-grid">
+            <article class="metric-card">
+              <span id="metric-total">—</span>
+              <small>全部模板</small>
+            </article>
+            <article class="metric-card">
+              <span id="metric-cases">—</span>
+              <small>案例蓝图</small>
+            </article>
+            <article class="metric-card">
+              <span id="metric-frameworks">—</span>
+              <small>框架模板</small>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="workflow" id="how-it-works" aria-labelledby="workflow-title">
+        <div class="section-heading">
+          <p class="eyebrow">HOW IT WORKS</p>
+          <h2 id="workflow-title">三步直接使用</h2>
+          <p>模板已解决输入缺失、比例冲突、示例内容污染和多图依赖问题。</p>
+        </div>
+        <div class="workflow-grid">
+          <article>
+            <span>01</span>
+            <h3>选择视觉模板</h3>
+            <p>按类别、模式或关键词找到目标视觉系统。</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>复制完整提示词</h3>
+            <p>复制的是可直接使用的 System / Prompt，不是原始案例文案。</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>上传一张图片</h3>
+            <p>在 Nano Banana Pro 中上传图片并粘贴提示词，无需填写其他变量。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="library" id="template-library" aria-labelledby="library-title">
+        <div class="section-heading library-heading">
+          <div>
+            <p class="eyebrow">TEMPLATE LIBRARY</p>
+            <h2 id="library-title">视觉模板库</h2>
+          </div>
+          <p id="result-summary" aria-live="polite">正在载入模板…</p>
+        </div>
+
+        <div class="toolbar" role="search">
+          <label class="search-field">
+            <span class="sr-only">搜索模板</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" />
+            </svg>
+            <input id="search-input" type="search" placeholder="搜索标题、风格、场景或编号…" autocomplete="off" />
+          </label>
+
+          <label>
+            <span class="sr-only">类别</span>
+            <select id="category-filter">
+              <option value="">全部类别</option>
+            </select>
+          </label>
+
+          <label>
+            <span class="sr-only">输出模式</span>
+            <select id="mode-filter">
+              <option value="">全部模式</option>
+            </select>
+          </label>
+
+          <label class="kind-filter-wrap">
+            <span class="sr-only">模板来源类型</span>
+            <select id="kind-filter">
+              <option value="">全部来源</option>
+              <option value="framework">框架模板</option>
+              <option value="case">案例蓝图</option>
+            </select>
+          </label>
+
+          <button id="favorites-filter" class="icon-button" type="button" aria-pressed="false" title="仅显示收藏">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M12 20.5s-8-4.35-8-10.25A4.75 4.75 0 0 1 12 6.8a4.75 4.75 0 0 1 8 3.45c0 5.9-8 10.25-8 10.25Z" />
+            </svg>
+            <span>收藏</span>
+          </button>
+
+          <button id="clear-filters" class="text-button" type="button">清除筛选</button>
+        </div>
+
+        <div id="active-filters" class="active-filters" aria-live="polite"></div>
+        <div id="template-grid" class="template-grid" aria-busy="true"></div>
+
+        <div class="load-more-wrap">
+          <button id="load-more" class="button button-secondary" type="button" hidden>加载更多</button>
+        </div>
+
+        <div id="empty-state" class="empty-state" hidden>
+          <strong>没有找到匹配模板</strong>
+          <p>尝试减少筛选条件或换一个关键词。</p>
+          <button class="button button-secondary" type="button" data-action="clear">清除全部筛选</button>
+        </div>
+      </section>
+
+      <section class="provenance" id="provenance" aria-labelledby="provenance-title">
+        <div class="section-heading">
+          <p class="eyebrow">SOURCE & OWNERSHIP</p>
+          <h2 id="provenance-title">新项目，不改原项目</h2>
+        </div>
+        <div class="provenance-grid">
+          <article>
+            <h3>只读抽离</h3>
+            <p>导入脚本直接读取原 ZIP，提取规范化的案例提示词与框架提示词，不写回、不覆盖原仓库。</p>
+          </article>
+          <article>
+            <h3>独立编译</h3>
+            <p>新项目拥有自己的协议、数据模型、搜索界面、构建脚本、验证规则和品牌命名。</p>
+          </article>
+          <article>
+            <h3>来源可追溯</h3>
+            <p>每条模板保留来源作者、案例链接、原项目链接和 MIT 许可信息，方便审计与维护。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p><strong>一图万式</strong> · 独立单图提示词模板项目</p>
+      <p>提示词与预览素材的上游来源信息见项目 NOTICE 与模板详情。</p>
+    </footer>
+
+    <dialog id="template-dialog" class="template-dialog">
+      <div class="dialog-shell">
+        <button class="dialog-close" type="button" aria-label="关闭详情" data-action="close-dialog">×</button>
+        <div id="dialog-preview" class="dialog-preview"></div>
+        <div class="dialog-content">
+          <p id="dialog-eyebrow" class="eyebrow"></p>
+          <h2 id="dialog-title"></h2>
+          <div id="dialog-tags" class="tag-row"></div>
+          <dl class="detail-meta">
+            <div><dt>模板编号</dt><dd id="dialog-id"></dd></div>
+            <div><dt>输出模式</dt><dd id="dialog-mode"></dd></div>
+            <div><dt>默认文字</dt><dd id="dialog-language"></dd></div>
+            <div><dt>来源</dt><dd id="dialog-source"></dd></div>
+          </dl>
+          <div class="prompt-toolbar">
+            <div>
+              <strong>可直接使用的完整提示词</strong>
+              <small>上传一张图片后直接粘贴</small>
+            </div>
+            <div class="prompt-actions">
+              <button id="dialog-favorite" class="button button-secondary button-small" type="button">收藏</button>
+              <button id="download-prompt" class="button button-secondary button-small" type="button">下载 TXT</button>
+              <button id="copy-prompt" class="button button-primary button-small" type="button">复制提示词</button>
+            </div>
+          </div>
+          <pre id="dialog-prompt" tabindex="0">正在载入提示词…</pre>
+          <p class="source-note">
+            原始视觉蓝图已嵌入提示词的 <code>TEMPLATE-SPECIFIC VISUAL BLUEPRINT</code> 区段；上层单图协议拥有更高优先级。
+          </p>
+        </div>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <noscript>
+      <div class="noscript">此模板浏览器需要启用 JavaScript。</div>
+    </noscript>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+.DS_Store
+._*
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+coverage/
+*.log
+.tmp/

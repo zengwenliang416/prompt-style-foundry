@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "importedAt": "2026-08-24T10:46:34.574461+00:00",
+  "sourceProject": "awesome-gpt-image-2",
+  "sourceRepository": "https://github.com/freestylefly/awesome-gpt-image-2",
+  "sourceArchive": "awesome-gpt-image-2-main.zip",
+  "sourceArchiveSha256": "ca672924e47630ac8d30c1155544fa60b052b4af74b2074fef158490a92b4d8d",
+  "canonicalSources": [
+    "data/cases.json",
+    "docs/templates.md"
+  ],
+  "casePromptCount": 529,
+  "frameworkPromptCount": 47,
+  "totalPromptCount": 576,
+  "previewCount": 529,
+  "previewFailures": [],
+  "sourceReadOnly": true
+}
