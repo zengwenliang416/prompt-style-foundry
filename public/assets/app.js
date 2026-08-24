@@ -1,5 +1,6 @@
 const PAGE_SIZE = 48;
 const FAVORITES_KEY = "onepic-template-favorites-v1";
+const GEN_CONFIG_KEY = "onepic-gen-config-v1";
 
 const state = {
   catalog: null,
@@ -42,6 +43,24 @@ const elements = {
   copyPrompt: document.querySelector("#copy-prompt"),
   downloadPrompt: document.querySelector("#download-prompt"),
   toast: document.querySelector("#toast"),
+  genSettingsButton: document.querySelector("#gen-settings-button"),
+  genConfigDot: document.querySelector("#gen-config-dot"),
+  genSettingsDialog: document.querySelector("#gen-settings-dialog"),
+  genSettingsForm: document.querySelector("#gen-settings-form"),
+  genBaseUrl: document.querySelector("#gen-base-url"),
+  genApiKey: document.querySelector("#gen-api-key"),
+  genModel: document.querySelector("#gen-model"),
+  genSize: document.querySelector("#gen-size"),
+  genQuality: document.querySelector("#gen-quality"),
+  genClearConfig: document.querySelector("#gen-clear-config"),
+  genSettingsInline: document.querySelector("#gen-settings-inline"),
+  genFile: document.querySelector("#gen-file"),
+  genFileLabel: document.querySelector("#gen-file-label"),
+  genRun: document.querySelector("#gen-run"),
+  genStatus: document.querySelector("#gen-status"),
+  genResult: document.querySelector("#gen-result"),
+  genResultImage: document.querySelector("#gen-result-image"),
+  genResultDownload: document.querySelector("#gen-result-download"),
 };
 
 const modeLabels = {
@@ -317,6 +336,7 @@ async function openDialog(template) {
   elements.dialogSource.innerHTML = sourceMarkup(template);
   elements.dialogPrompt.textContent = "正在载入提示词…";
   updateDialogFavorite();
+  resetGenPanel();
 
   if (!elements.dialog.open) elements.dialog.showModal();
 
@@ -325,6 +345,7 @@ async function openDialog(template) {
     if (state.currentTemplate?.id !== template.id) return;
     state.currentPrompt = prompt;
     elements.dialogPrompt.textContent = prompt;
+    refreshGenRunState();
   } catch (error) {
     console.error(error);
     elements.dialogPrompt.textContent = "提示词载入失败。请确认项目正通过本地 HTTP 服务运行。";
@@ -349,6 +370,166 @@ function downloadCurrentPrompt() {
   anchor.remove();
   URL.revokeObjectURL(url);
   showToast("提示词 TXT 已生成");
+}
+
+function loadGenConfig() {
+  try {
+    const raw = localStorage.getItem(GEN_CONFIG_KEY);
+    if (!raw) return null;
+    const config = JSON.parse(raw);
+    return config?.baseUrl && config?.apiKey ? config : null;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeBaseUrl(url) {
+  const trimmed = String(url || "").trim().replace(/\/+$/, "");
+  return /\/v1$/i.test(trimmed) ? trimmed : `${trimmed}/v1`;
+}
+
+function updateGenConfigIndicator() {
+  elements.genConfigDot.hidden = !loadGenConfig();
+}
+
+function openGenSettings() {
+  const config = loadGenConfig();
+  if (config) {
+    elements.genBaseUrl.value = config.baseUrl;
+    elements.genApiKey.value = config.apiKey;
+    elements.genModel.value = config.model || "gpt-image-2";
+    elements.genSize.value = config.size || "auto";
+    elements.genQuality.value = config.quality || "auto";
+  }
+  if (!elements.genSettingsDialog.open) elements.genSettingsDialog.showModal();
+}
+
+function saveGenSettings(event) {
+  event.preventDefault();
+  const config = {
+    baseUrl: elements.genBaseUrl.value.trim(),
+    apiKey: elements.genApiKey.value.trim(),
+    model: elements.genModel.value.trim() || "gpt-image-2",
+    size: elements.genSize.value,
+    quality: elements.genQuality.value,
+  };
+  if (!config.baseUrl || !config.apiKey) {
+    showToast("请填写接口地址和 API Key");
+    return;
+  }
+  localStorage.setItem(GEN_CONFIG_KEY, JSON.stringify(config));
+  updateGenConfigIndicator();
+  elements.genSettingsDialog.close();
+  showToast("生图配置已保存到本浏览器");
+}
+
+function clearGenSettings() {
+  localStorage.removeItem(GEN_CONFIG_KEY);
+  elements.genSettingsForm.reset();
+  updateGenConfigIndicator();
+  showToast("已清除本机生图配置");
+}
+
+function describeGenHttpError(status, payload) {
+  const detail = payload?.error?.message ? `：${payload.error.message}` : "";
+  if (status === 401 || status === 403) return `API Key 无效或权限不足（HTTP ${status}）${detail}`;
+  if (status === 404) return `找不到图像接口，请检查 Base URL 是否需要携带 /v1（HTTP 404）${detail}`;
+  if (status === 429) return `上游限流或配额不足（HTTP 429）${detail}`;
+  if (status >= 500) return `生图上游暂不可用（HTTP ${status}）${detail}`;
+  return `生成失败（HTTP ${status}）${detail}`;
+}
+
+function setGenBusy(busy) {
+  elements.genRun.disabled = busy;
+  elements.genRun.textContent = busy ? "生成中…" : "生成图片";
+}
+
+function resetGenResult() {
+  elements.genResult.hidden = true;
+  elements.genResultImage.removeAttribute("src");
+  elements.genResultDownload.removeAttribute("href");
+  elements.genResultDownload.removeAttribute("download");
+}
+
+function resetGenPanel() {
+  elements.genFile.value = "";
+  elements.genFileLabel.textContent = "选择参考图…";
+  elements.genStatus.textContent = "";
+  resetGenResult();
+  refreshGenRunState();
+}
+
+function refreshGenRunState() {
+  elements.genRun.disabled = !(state.currentPrompt && elements.genFile.files?.length);
+}
+
+function showGenResult(src, templateId) {
+  resetGenResult();
+  elements.genResultImage.src = src;
+  elements.genResultDownload.href = src;
+  if (src.startsWith("data:")) {
+    elements.genResultDownload.setAttribute("download", `${templateId}-generated.png`);
+  }
+  elements.genResult.hidden = false;
+}
+
+async function generateFromTemplate() {
+  const config = loadGenConfig();
+  if (!config) {
+    openGenSettings();
+    showToast("请先配置生图服务");
+    return;
+  }
+  if (!state.currentTemplate || !state.currentPrompt) {
+    showToast("提示词尚未载入完成");
+    return;
+  }
+  const file = elements.genFile.files?.[0];
+  if (!file) {
+    showToast("请先选择一张参考图");
+    return;
+  }
+
+  const endpoint = `${normalizeBaseUrl(config.baseUrl)}/images/edits`;
+  const form = new FormData();
+  form.append("image", file);
+  form.append("prompt", state.currentPrompt);
+  form.append("model", config.model || "gpt-image-2");
+  form.append("n", "1");
+  if (config.size && config.size !== "auto") form.append("size", config.size);
+  if (config.quality && config.quality !== "auto") form.append("quality", config.quality);
+
+  setGenBusy(true);
+  elements.genStatus.textContent = "正在生成，通常需要几十秒…";
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${config.apiKey}` },
+      body: form,
+    });
+    let payload = null;
+    try {
+      payload = await response.json();
+    } catch {
+      payload = null;
+    }
+    if (!response.ok) throw new Error(describeGenHttpError(response.status, payload));
+    const item = payload?.data?.[0];
+    const source = item?.b64_json ? `data:image/png;base64,${item.b64_json}` : item?.url;
+    if (!source) throw new Error("服务返回中没有图片数据。");
+    showGenResult(source, state.currentTemplate.id);
+    elements.genStatus.textContent = "生成完成";
+    showToast("图片已生成");
+  } catch (error) {
+    console.error(error);
+    elements.genStatus.textContent =
+      error instanceof TypeError
+        ? "请求未能送达：目标服务可能未开启 CORS 或地址不可达。请改用允许跨域的接口地址。"
+        : `生成失败：${error.message}`;
+  } finally {
+    setGenBusy(false);
+    refreshGenRunState();
+  }
 }
 
 function bindEvents() {
@@ -422,6 +603,7 @@ function bindEvents() {
   elements.dialog.addEventListener("close", () => {
     state.currentTemplate = null;
     state.currentPrompt = "";
+    resetGenPanel();
   });
 
   elements.dialogFavorite.addEventListener("click", () => {
@@ -440,10 +622,31 @@ function bindEvents() {
   });
 
   elements.downloadPrompt.addEventListener("click", downloadCurrentPrompt);
+
+  elements.genSettingsButton.addEventListener("click", openGenSettings);
+  elements.genSettingsInline.addEventListener("click", openGenSettings);
+
+  elements.genSettingsDialog.addEventListener("click", (event) => {
+    if (event.target === elements.genSettingsDialog) elements.genSettingsDialog.close();
+    if (event.target.closest('[data-action="close-settings"]')) elements.genSettingsDialog.close();
+  });
+
+  elements.genSettingsForm.addEventListener("submit", saveGenSettings);
+  elements.genClearConfig.addEventListener("click", clearGenSettings);
+
+  elements.genFile.addEventListener("change", () => {
+    const file = elements.genFile.files?.[0];
+    elements.genFileLabel.textContent = file ? file.name : "选择参考图…";
+    resetGenResult();
+    refreshGenRunState();
+  });
+
+  elements.genRun.addEventListener("click", generateFromTemplate);
 }
 
 async function init() {
   bindEvents();
+  updateGenConfigIndicator();
   try {
     const response = await fetch("data/catalog.json");
     if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);

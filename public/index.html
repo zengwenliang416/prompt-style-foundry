@@ -27,6 +27,9 @@
         <a href="#how-it-works">使用方式</a>
         <a href="#template-library">模板库</a>
         <a href="#provenance">来源说明</a>
+        <button id="gen-settings-button" class="header-nav-button" type="button">
+          生图设置<span id="gen-config-dot" class="gen-config-dot" hidden></span>
+        </button>
       </nav>
     </header>
 
@@ -211,11 +214,82 @@
             </div>
           </div>
           <pre id="dialog-prompt" tabindex="0">正在载入提示词…</pre>
+          <div class="gen-panel">
+            <div class="prompt-toolbar">
+              <div>
+                <strong>用此模板直接生图</strong>
+                <small>上传一张图片，请求只发往你配置的生图服务</small>
+              </div>
+              <div class="prompt-actions">
+                <button id="gen-settings-inline" class="button button-secondary button-small" type="button">生图设置</button>
+              </div>
+            </div>
+            <div class="gen-controls">
+              <label class="gen-file-field button button-secondary button-small">
+                <input id="gen-file" type="file" accept="image/*" />
+                <span id="gen-file-label">选择参考图…</span>
+              </label>
+              <button id="gen-run" class="button button-primary button-small" type="button" disabled>生成图片</button>
+            </div>
+            <p id="gen-status" role="status" aria-live="polite"></p>
+            <div id="gen-result" class="gen-result" hidden>
+              <img id="gen-result-image" alt="生成结果预览" />
+              <a id="gen-result-download" class="button button-secondary button-small" download>下载结果</a>
+            </div>
+          </div>
           <p class="source-note">
             原始视觉蓝图已嵌入提示词的 <code>TEMPLATE-SPECIFIC VISUAL BLUEPRINT</code> 区段；上层单图协议拥有更高优先级。
           </p>
         </div>
       </div>
+    </dialog>
+
+    <dialog id="gen-settings-dialog" class="settings-dialog">
+      <form id="gen-settings-form" method="dialog">
+        <button class="dialog-close" type="button" aria-label="关闭生图设置" data-action="close-settings">×</button>
+        <p class="eyebrow">BYOK · BRING YOUR OWN KEY</p>
+        <h2>生图服务设置</h2>
+        <p class="settings-note">
+          配置任意 NewAPI / OpenAI 兼容的图像接口。密钥只保存在本浏览器
+          localStorage，请求由浏览器直接发往你填写的地址，本项目没有服务器、不做中转。
+        </p>
+        <label>
+          <span>接口地址（Base URL）</span>
+          <input id="gen-base-url" name="base-url" type="url" required placeholder="http://127.0.0.1:3000" />
+        </label>
+        <label>
+          <span>API Key</span>
+          <input id="gen-api-key" name="api-key" type="password" required autocomplete="off" placeholder="sk-…" />
+        </label>
+        <div class="settings-row">
+          <label>
+            <span>模型</span>
+            <input id="gen-model" name="model" type="text" value="gpt-image-2" />
+          </label>
+          <label>
+            <span>尺寸</span>
+            <select id="gen-size" name="size">
+              <option value="auto">自动继承参考图比例</option>
+              <option value="1024x1024">1024 × 1024</option>
+              <option value="1536x1024">1536 × 1024（横）</option>
+              <option value="1024x1536">1024 × 1536（竖）</option>
+            </select>
+          </label>
+          <label>
+            <span>质量</span>
+            <select id="gen-quality" name="quality">
+              <option value="auto">auto</option>
+              <option value="low">low</option>
+              <option value="medium">medium</option>
+              <option value="high">high</option>
+            </select>
+          </label>
+        </div>
+        <div class="settings-actions">
+          <button id="gen-clear-config" class="button button-secondary button-small" type="button">清除配置</button>
+          <button class="button button-primary button-small" type="submit">保存配置</button>
+        </div>
+      </form>
     </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
