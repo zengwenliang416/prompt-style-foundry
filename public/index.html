@@ -7,8 +7,24 @@
       name="description"
       content="一图万式：独立的单图视觉提示词模板库。上传一张图片，即可套用 576 套视觉系统。"
     />
-    <meta name="theme-color" content="#f3eee4" />
+    <meta name="theme-color" content="#0e1013" />
     <title>一图万式 · OnePic Template Studio</title>
+    <script>
+      (function () {
+        var stored = null;
+        try {
+          stored = localStorage.getItem("onepic-theme-v1");
+        } catch (error) {}
+        var theme =
+          stored === "light" || stored === "dark"
+            ? stored
+            : window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="assets/styles.css" />
     <script type="module" src="assets/app.js"></script>
   </head>
@@ -30,11 +46,33 @@
         <button id="gen-settings-button" class="header-nav-button" type="button">
           生图设置<span id="gen-config-dot" class="gen-config-dot" hidden></span>
         </button>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换深浅主题" aria-pressed="false">
+          <svg class="icon-sun" aria-hidden="true" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19" />
+          </svg>
+          <svg class="icon-moon" aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M20.4 14.2A8.4 8.4 0 0 1 9.8 3.6a8.4 8.4 0 1 0 10.6 10.6Z" />
+          </svg>
+        </button>
       </nav>
+      <span id="scroll-progress" class="scroll-progress" aria-hidden="true"></span>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
+        <svg class="hero-blueprint" aria-hidden="true" viewBox="0 0 1200 560" fill="none" preserveAspectRatio="xMidYMid slice">
+          <path class="bp-line" d="M0 90 H1200" stroke="currentColor" stroke-width="1" />
+          <path class="bp-line" d="M0 470 H1200" stroke="currentColor" stroke-width="1" />
+          <path class="bp-line" d="M140 0 V560" stroke="currentColor" stroke-width="1" />
+          <path class="bp-line" d="M1060 0 V560" stroke="currentColor" stroke-width="1" />
+          <path class="bp-line" d="M140 90 L1060 470" stroke="currentColor" stroke-width="1" stroke-dasharray="6 8" />
+          <circle class="bp-circle" cx="1060" cy="90" r="46" stroke="currentColor" stroke-width="1" />
+          <circle class="bp-circle" cx="1060" cy="90" r="80" stroke="currentColor" stroke-width="1" stroke-dasharray="4 10" />
+          <circle class="bp-circle" cx="140" cy="470" r="34" stroke="currentColor" stroke-width="1" />
+          <path class="bp-line" d="M1030 90 h60 M1060 60 v60" stroke="currentColor" stroke-width="1" />
+          <path class="bp-line" d="M110 470 h60 M140 440 v60" stroke="currentColor" stroke-width="1" />
+        </svg>
         <div class="hero-copy">
           <p class="eyebrow">SINGLE IMAGE · STANDALONE LIBRARY</p>
           <h1 id="hero-title">只上传一张图，<br />切换整套视觉语言。</h1>
@@ -72,12 +110,12 @@
       </section>
 
       <section class="workflow" id="how-it-works" aria-labelledby="workflow-title">
-        <div class="section-heading">
+        <div class="section-heading" data-reveal>
           <p class="eyebrow">HOW IT WORKS</p>
           <h2 id="workflow-title">三步直接使用</h2>
           <p>模板已解决输入缺失、比例冲突、示例内容污染和多图依赖问题。</p>
         </div>
-        <div class="workflow-grid">
+        <div class="workflow-grid" data-reveal>
           <article>
             <span>01</span>
             <h3>选择视觉模板</h3>
@@ -97,7 +135,7 @@
       </section>
 
       <section class="library" id="template-library" aria-labelledby="library-title">
-        <div class="section-heading library-heading">
+        <div class="section-heading library-heading" data-reveal>
           <div>
             <p class="eyebrow">TEMPLATE LIBRARY</p>
             <h2 id="library-title">视觉模板库</h2>
@@ -105,13 +143,14 @@
           <p id="result-summary" aria-live="polite">正在载入模板…</p>
         </div>
 
-        <div class="toolbar" role="search">
+        <div class="toolbar" role="search" data-reveal>
           <label class="search-field">
             <span class="sr-only">搜索模板</span>
             <svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" />
             </svg>
             <input id="search-input" type="search" placeholder="搜索标题、风格、场景或编号…" autocomplete="off" />
+            <kbd aria-hidden="true">/</kbd>
           </label>
 
           <label>
@@ -162,11 +201,11 @@
       </section>
 
       <section class="provenance" id="provenance" aria-labelledby="provenance-title">
-        <div class="section-heading">
+        <div class="section-heading" data-reveal>
           <p class="eyebrow">SOURCE & OWNERSHIP</p>
           <h2 id="provenance-title">新项目，不改原项目</h2>
         </div>
-        <div class="provenance-grid">
+        <div class="provenance-grid" data-reveal>
           <article>
             <h3>只读抽离</h3>
             <p>导入脚本直接读取原 ZIP，提取规范化的案例提示词与框架提示词，不写回、不覆盖原仓库。</p>
@@ -293,6 +332,7 @@
     </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="theme-scan" class="theme-scan" aria-hidden="true"></div>
 
     <noscript>
       <div class="noscript">此模板浏览器需要启用 JavaScript。</div>

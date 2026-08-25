@@ -1,0 +1,47 @@
+clone:
+  git:
+    image: woodpeckerci/plugin-git:2.10.0
+    settings:
+      partial: false
+      depth: 0
+
+labels:
+  location: production-80
+
+when:
+  - event: manual
+  - event: push
+    branch: main
+
+concurrency:
+  limit: 1
+  group: onepic-template-studio-production-80
+
+steps:
+  - name: verify-and-package
+    image: python:3.12-alpine
+    commands:
+      - apk add --no-cache bash curl git nodejs npm
+      - bash scripts/ci-verify.sh
+      - bash scripts/package-site.sh .tmp/onepic-template-studio.tar.gz
+
+  - name: deploy-production
+    image: alpine:3.22
+    environment:
+      DEPLOY_HOST:
+        from_secret: deploy_host
+      DEPLOY_PORT:
+        from_secret: deploy_port
+      DEPLOY_USER:
+        from_secret: deploy_user
+      DEPLOY_ROOT:
+        from_secret: deploy_root
+      DEPLOY_DOMAIN:
+        from_secret: deploy_domain
+      DEPLOY_SSH_PRIVATE_KEY:
+        from_secret: deploy_ssh_private_key
+      DEPLOY_SSH_KNOWN_HOSTS:
+        from_secret: deploy_ssh_known_hosts
+    commands:
+      - apk add --no-cache bash curl openssh-client
+      - bash ops/woodpecker/deploy.sh .tmp/onepic-template-studio.tar.gz

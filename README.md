@@ -195,6 +195,29 @@ public
 
 不需要服务器、数据库或运行时密钥。
 
+当前生产链路分为两层：
+
+- GitHub Actions（`.github/workflows/ci.yml`）在 pull request 和 `main` 推送时运行完整校验，并上传排除 macOS 元数据的静态产物。
+- Woodpecker（`.woodpecker/deploy.yml`）在 `main` 推送或手动触发时重新校验同一提交，再将站点原子发布到 `/var/www/onepic-template-studio/current`。
+
+Woodpecker 生产发布需要配置以下仓库 Secrets：
+
+```text
+deploy_host
+deploy_port
+deploy_user
+deploy_root
+deploy_domain
+deploy_ssh_private_key
+deploy_ssh_known_hosts
+```
+
+服务器 Nginx 模板位于：
+
+```text
+ops/nginx/onepic.motion-cover.com.conf
+```
+
 ## 许可与来源
 
-本项目代码采用 MIT License。上游提示词蓝图和预览素材的许可及来源说明见 [NOTICE.md](NOTICE.md) 与 `third_party/awesome-gpt-image-2-LICENSE`。
+本项目代码采用 MIT License。上游提示词蓝图、预览素材与 vendored Anime.js 的许可及来源说明见 [NOTICE.md](NOTICE.md) 和 `third_party/`。

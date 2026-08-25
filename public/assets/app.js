@@ -1,3 +1,5 @@
+import { cardsIn, countUp, dialogIn, heroIntro, observeReveals, setupScrollProgress, setupThemeToggle } from "./fx.js";
+
 const PAGE_SIZE = 48;
 const FAVORITES_KEY = "onepic-template-favorites-v1";
 const GEN_CONFIG_KEY = "onepic-gen-config-v1";
@@ -12,6 +14,7 @@ const state = {
   mode: "",
   kind: "",
   favoritesOnly: false,
+  renderedIds: new Set(),
   favorites: new Set(JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]")),
   currentTemplate: null,
   currentPrompt: "",
@@ -43,6 +46,8 @@ const elements = {
   copyPrompt: document.querySelector("#copy-prompt"),
   downloadPrompt: document.querySelector("#download-prompt"),
   toast: document.querySelector("#toast"),
+  themeToggle: document.querySelector("#theme-toggle"),
+  themeScan: document.querySelector("#theme-scan"),
   genSettingsButton: document.querySelector("#gen-settings-button"),
   genConfigDot: document.querySelector("#gen-config-dot"),
   genSettingsDialog: document.querySelector("#gen-settings-dialog"),
@@ -87,6 +92,31 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+/* 提示词结构高亮：协议头 / 蓝图分隔线 / 章节标题 / 元数据键 */
+function highlightPrompt(text) {
+  return text
+    .split("\n")
+    .map((line, index) => {
+      const safe = escapeHtml(line);
+      const trimmed = line.trim();
+      if (index === 0 && trimmed.startsWith("[System / Prompt]")) {
+        return `<span class="hl-system">${safe}</span>`;
+      }
+      if (/\b(BEGIN|END)\b.*\bVISUAL BLUEPRINT\b/.test(trimmed)) {
+        return `<span class="hl-delimiter">${safe}</span>`;
+      }
+      if (/^\p{Extended_Pictographic}/u.test(trimmed)) {
+        return `<span class="hl-heading">${safe}</span>`;
+      }
+      const meta = line.match(/^(Template ID|Template family|Template mode|Source blueprint type):\s*/);
+      if (meta) {
+        return `<span class="hl-meta-key">${escapeHtml(meta[0])}</span>${escapeHtml(line.slice(meta[0].length))}`;
+      }
+      return safe;
+    })
+    .join("\n");
 }
 
 function persistFavorites() {
@@ -157,7 +187,7 @@ function makePreview(template, large = false) {
       large ? "" : '<span class="preview-overlay"></span>'
     }`;
   }
-  return `<div class="abstract-preview"><span>${escapeHtml(template.title.replace(" · ", "\n"))}</span></div>`;
+  return `<div class="abstract-preview"><span>${escapeHtml(template.title.replace(" · ", "\n"))}</span><span class="abstract-id">${escapeHtml(template.id)}</span></div>`;
 }
 
 function renderCard(template) {
@@ -213,6 +243,10 @@ function render() {
 
   elements.grid.innerHTML = visible.map(renderCard).join("");
   elements.grid.setAttribute("aria-busy", "false");
+  /* 只对本次新出现的卡片播入场动画，避免搜索时整页反复闪动 */
+  const newIds = new Set(visible.map((t) => t.id).filter((id) => !state.renderedIds.has(id)));
+  state.renderedIds = new Set(visible.map((t) => t.id));
+  cardsIn(elements.grid, newIds);
   elements.summary.textContent = `找到 ${state.filtered.length} 个模板 · 已显示 ${visible.length} 个`;
   elements.loadMore.hidden = visible.length >= state.filtered.length;
   elements.empty.hidden = state.filtered.length !== 0;
@@ -338,13 +372,16 @@ async function openDialog(template) {
   updateDialogFavorite();
   resetGenPanel();
 
-  if (!elements.dialog.open) elements.dialog.showModal();
+  if (!elements.dialog.open) {
+    elements.dialog.showModal();
+    dialogIn(elements.dialog);
+  }
 
   try {
     const prompt = await fetchPrompt(template);
     if (state.currentTemplate?.id !== template.id) return;
     state.currentPrompt = prompt;
-    elements.dialogPrompt.textContent = prompt;
+    elements.dialogPrompt.innerHTML = highlightPrompt(prompt);
     refreshGenRunState();
   } catch (error) {
     console.error(error);
@@ -642,20 +679,65 @@ function bindEvents() {
   });
 
   elements.genRun.addEventListener("click", generateFromTemplate);
+
+  /* 预览图加载完成后淡入（load/error 不冒泡，用捕获监听） */
+  const markImageLoaded = (event) => {
+    if (event.target instanceof HTMLImageElement) event.target.classList.add("is-loaded");
+  };
+  elements.grid.addEventListener("load", markImageLoaded, true);
+  elements.grid.addEventListener("error", markImageLoaded, true);
+  elements.dialogPreview.addEventListener("load", markImageLoaded, true);
+  elements.dialogPreview.addEventListener("error", markImageLoaded, true);
+
+  /* 方向键在卡片网格内移动焦点 */
+  elements.grid.addEventListener("keydown", (event) => {
+    const keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"];
+    if (!keys.includes(event.key)) return;
+    const buttons = [...elements.grid.querySelectorAll(".card-open")];
+    const current = buttons.indexOf(document.activeElement);
+    if (current === -1) return;
+    const columns = getComputedStyle(elements.grid).gridTemplateColumns.split(" ").length;
+    let next = current;
+    if (event.key === "ArrowLeft") next = current - 1;
+    if (event.key === "ArrowRight") next = current + 1;
+    if (event.key === "ArrowUp") next = current - columns;
+    if (event.key === "ArrowDown") next = current + columns;
+    if (event.key === "Home") next = 0;
+    if (event.key === "End") next = buttons.length - 1;
+    if (next < 0 || next >= buttons.length || next === current) return;
+    event.preventDefault();
+    buttons[next].focus();
+  });
+
+  /* 按 / 快速聚焦搜索框（输入中或弹窗打开时不触发） */
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "/" || event.metaKey || event.ctrlKey || event.altKey) return;
+    const target = event.target;
+    const typing =
+      target instanceof HTMLElement &&
+      (target.matches("input, select, textarea") || target.isContentEditable);
+    if (typing || elements.dialog.open || elements.genSettingsDialog.open) return;
+    event.preventDefault();
+    elements.search.focus();
+  });
 }
 
 async function init() {
   bindEvents();
   updateGenConfigIndicator();
+  setupThemeToggle(elements.themeToggle, elements.themeScan);
+  setupScrollProgress(document.querySelector("#scroll-progress"));
+  heroIntro();
+  observeReveals();
   try {
     const response = await fetch("data/catalog.json");
     if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
     state.catalog = await response.json();
     state.templates = state.catalog.templates;
 
-    document.querySelector("#metric-total").textContent = state.catalog.stats.total;
-    document.querySelector("#metric-cases").textContent = state.catalog.stats.cases;
-    document.querySelector("#metric-frameworks").textContent = state.catalog.stats.frameworks;
+    countUp(document.querySelector("#metric-total"), state.catalog.stats.total);
+    countUp(document.querySelector("#metric-cases"), state.catalog.stats.cases);
+    countUp(document.querySelector("#metric-frameworks"), state.catalog.stats.frameworks);
 
     fillSelect(elements.category, state.catalog.filters.categories);
     fillSelect(elements.mode, state.catalog.filters.modes, (value) => modeLabels[value] || value);

@@ -77,7 +77,7 @@ Generated assets consumed by the static web interface. Do not edit generated fil
 
 `public/index.html` and `public/assets/`
 
-Independent static interface. No framework dependency is required. Keep it accessible, responsive, and deployable as static files.
+Independent static interface. No framework dependency is required. Keep it accessible, responsive, and deployable as static files. Third-party runtime libraries (anime.js) are vendored under `public/assets/vendor/`; never load them from a CDN.
 
 ## 5. Generated files
 
@@ -161,7 +161,7 @@ A change is complete only when:
 - All generated prompt files match the full library.
 - All case previews exist and are non-empty.
 - All required prompt sections are present.
-- `node --check public/assets/app.js` passes.
+- `node --check public/assets/app.js` and `node --check public/assets/fx.js` pass.
 - Python files compile.
 - Unit tests pass.
 - The static site loads through `scripts/serve.py`.

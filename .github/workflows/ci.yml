@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+
+      - name: Verify repository
+        run: bash scripts/ci-verify.sh
+
+      - name: Package static site
+        run: bash scripts/package-site.sh "$RUNNER_TEMP/onepic-template-studio.tar.gz"
+
+      - name: Upload static site artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: onepic-template-studio-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/onepic-template-studio.tar.gz
+            ${{ runner.temp }}/onepic-template-studio.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 14
