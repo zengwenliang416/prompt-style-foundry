@@ -78,7 +78,7 @@
           <h1 id="hero-title">只上传一张图，<br />切换整套视觉语言。</h1>
           <p class="hero-description">
             这是一个全新、独立的提示词项目。原项目只作为只读素材源；每条视觉蓝图都已被编译成统一的
-            <strong>[System / Prompt]</strong> 单图模板，不需要再填写标题、品牌、地点或比例。
+            <strong>[System / Prompt]</strong> 单图模板，并标记原始蓝图属于文生图还是图生图，不需要再填写标题、品牌、地点或比例。
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="#template-library">浏览全部模板</a>
@@ -167,6 +167,13 @@
             </select>
           </label>
 
+          <label>
+            <span class="sr-only">原始蓝图类型</span>
+            <select id="blueprint-input-mode-filter">
+              <option value="">全部蓝图类型</option>
+            </select>
+          </label>
+
           <label class="kind-filter-wrap">
             <span class="sr-only">模板来源类型</span>
             <select id="kind-filter">
@@ -238,6 +245,7 @@
           <dl class="detail-meta">
             <div><dt>模板编号</dt><dd id="dialog-id"></dd></div>
             <div><dt>输出模式</dt><dd id="dialog-mode"></dd></div>
+            <div><dt>原始蓝图</dt><dd id="dialog-blueprint-input-mode"></dd></div>
             <div><dt>默认文字</dt><dd id="dialog-language"></dd></div>
             <div><dt>来源</dt><dd id="dialog-source"></dd></div>
           </dl>
@@ -277,7 +285,8 @@
             </div>
           </div>
           <p class="source-note">
-            原始视觉蓝图已嵌入提示词的 <code>TEMPLATE-SPECIFIC VISUAL BLUEPRINT</code> 区段；上层单图协议拥有更高优先级。
+            “文生图蓝图 / 图生图蓝图”描述上游蓝图的原始输入方式。公开模板均已编译为单图图生图协议；原始视觉蓝图位于
+            <code>TEMPLATE-SPECIFIC VISUAL BLUEPRINT</code> 区段，上层单图规则拥有更高优先级。
           </p>
         </div>
       </div>

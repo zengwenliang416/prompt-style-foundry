@@ -12,6 +12,7 @@ const state = {
   search: "",
   category: "",
   mode: "",
+  blueprintInputMode: "",
   kind: "",
   favoritesOnly: false,
   renderedIds: new Set(),
@@ -26,6 +27,7 @@ const elements = {
   search: document.querySelector("#search-input"),
   category: document.querySelector("#category-filter"),
   mode: document.querySelector("#mode-filter"),
+  blueprintInputMode: document.querySelector("#blueprint-input-mode-filter"),
   kind: document.querySelector("#kind-filter"),
   favoritesFilter: document.querySelector("#favorites-filter"),
   clearFilters: document.querySelector("#clear-filters"),
@@ -39,6 +41,7 @@ const elements = {
   dialogTags: document.querySelector("#dialog-tags"),
   dialogId: document.querySelector("#dialog-id"),
   dialogMode: document.querySelector("#dialog-mode"),
+  dialogBlueprintInputMode: document.querySelector("#dialog-blueprint-input-mode"),
   dialogLanguage: document.querySelector("#dialog-language"),
   dialogSource: document.querySelector("#dialog-source"),
   dialogPrompt: document.querySelector("#dialog-prompt"),
@@ -85,6 +88,11 @@ const kindLabels = {
   case: "案例蓝图",
 };
 
+const blueprintInputModeLabels = {
+  "text-to-image": "文生图蓝图",
+  "image-to-image": "图生图蓝图",
+};
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -110,7 +118,9 @@ function highlightPrompt(text) {
       if (/^\p{Extended_Pictographic}/u.test(trimmed)) {
         return `<span class="hl-heading">${safe}</span>`;
       }
-      const meta = line.match(/^(Template ID|Template family|Template mode|Source blueprint type):\s*/);
+      const meta = line.match(
+        /^(Template ID|Template family|Template mode|Source blueprint input mode|Source blueprint type):\s*/,
+      );
       if (meta) {
         return `<span class="hl-meta-key">${escapeHtml(meta[0])}</span>${escapeHtml(line.slice(meta[0].length))}`;
       }
@@ -151,6 +161,8 @@ function templateSearchText(template) {
     template.title,
     template.category,
     template.mode,
+    template.blueprintInputMode,
+    blueprintInputModeLabels[template.blueprintInputMode] || "",
     ...(template.styles || []),
     ...(template.scenes || []),
     ...(template.tags || []),
@@ -164,6 +176,7 @@ function matchesFilters(template) {
   if (state.search && !templateSearchText(template).includes(state.search)) return false;
   if (state.category && template.category !== state.category) return false;
   if (state.mode && template.mode !== state.mode) return false;
+  if (state.blueprintInputMode && template.blueprintInputMode !== state.blueprintInputMode) return false;
   if (state.kind && template.kind !== state.kind) return false;
   if (state.favoritesOnly && !state.favorites.has(template.id)) return false;
   return true;
@@ -193,12 +206,17 @@ function makePreview(template, large = false) {
 function renderCard(template) {
   const favorite = state.favorites.has(template.id);
   const mode = modeLabels[template.mode] || template.mode;
+  const blueprintInputMode =
+    blueprintInputModeLabels[template.blueprintInputMode] || template.blueprintInputMode;
   const sourceAuthor = template.source?.author ? ` · ${escapeHtml(template.source.author)}` : "";
   return `
     <article class="template-card" data-template-id="${escapeHtml(template.id)}">
       <button class="card-open" type="button" data-action="open" aria-label="打开 ${escapeHtml(template.title)}">
         <div class="card-preview">
           <span class="kind-badge">${kindLabels[template.kind] || template.kind}</span>
+          <span class="input-mode-badge input-mode-${escapeHtml(template.blueprintInputMode)}">${escapeHtml(
+            blueprintInputMode,
+          )}</span>
           ${makePreview(template)}
         </div>
         <div class="card-body">
@@ -226,6 +244,12 @@ function renderActiveFilters() {
   if (state.search) chips.push({ key: "search", label: `关键词：${elements.search.value.trim()}` });
   if (state.category) chips.push({ key: "category", label: state.category });
   if (state.mode) chips.push({ key: "mode", label: modeLabels[state.mode] || state.mode });
+  if (state.blueprintInputMode) {
+    chips.push({
+      key: "blueprintInputMode",
+      label: blueprintInputModeLabels[state.blueprintInputMode] || state.blueprintInputMode,
+    });
+  }
   if (state.kind) chips.push({ key: "kind", label: kindLabels[state.kind] || state.kind });
   if (state.favoritesOnly) chips.push({ key: "favorites", label: "仅收藏" });
 
@@ -262,11 +286,13 @@ function clearFilters() {
   state.search = "";
   state.category = "";
   state.mode = "";
+  state.blueprintInputMode = "";
   state.kind = "";
   state.favoritesOnly = false;
   elements.search.value = "";
   elements.category.value = "";
   elements.mode.value = "";
+  elements.blueprintInputMode.value = "";
   elements.kind.value = "";
   elements.favoritesFilter.setAttribute("aria-pressed", "false");
   resetVisibleCount();
@@ -283,6 +309,9 @@ function removeFilter(key) {
   } else if (key === "mode") {
     state.mode = "";
     elements.mode.value = "";
+  } else if (key === "blueprintInputMode") {
+    state.blueprintInputMode = "";
+    elements.blueprintInputMode.value = "";
   } else if (key === "kind") {
     state.kind = "";
     elements.kind.value = "";
@@ -359,13 +388,20 @@ async function openDialog(template) {
   elements.dialogPreview.innerHTML = makePreview(template, true);
   elements.dialogEyebrow.textContent = `${kindLabels[template.kind] || template.kind} · ${template.category}`;
   elements.dialogTitle.textContent = template.title;
-  elements.dialogTags.innerHTML = [...(template.styles || []), ...(template.scenes || []), modeLabels[template.mode] || template.mode]
+  elements.dialogTags.innerHTML = [
+    ...(template.styles || []),
+    ...(template.scenes || []),
+    modeLabels[template.mode] || template.mode,
+    blueprintInputModeLabels[template.blueprintInputMode] || template.blueprintInputMode,
+  ]
     .filter(Boolean)
     .slice(0, 8)
     .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
     .join("");
   elements.dialogId.textContent = template.id;
   elements.dialogMode.textContent = modeLabels[template.mode] || template.mode;
+  elements.dialogBlueprintInputMode.textContent =
+    blueprintInputModeLabels[template.blueprintInputMode] || template.blueprintInputMode;
   elements.dialogLanguage.textContent = template.language === "zh" ? "中文优先" : "英文优先";
   elements.dialogSource.innerHTML = sourceMarkup(template);
   elements.dialogPrompt.textContent = "正在载入提示词…";
@@ -592,6 +628,12 @@ function bindEvents() {
     render();
   });
 
+  elements.blueprintInputMode.addEventListener("change", () => {
+    state.blueprintInputMode = elements.blueprintInputMode.value;
+    resetVisibleCount();
+    render();
+  });
+
   elements.kind.addEventListener("change", () => {
     state.kind = elements.kind.value;
     resetVisibleCount();
@@ -741,6 +783,11 @@ async function init() {
 
     fillSelect(elements.category, state.catalog.filters.categories);
     fillSelect(elements.mode, state.catalog.filters.modes, (value) => modeLabels[value] || value);
+    fillSelect(
+      elements.blueprintInputMode,
+      state.catalog.filters.blueprintInputModes,
+      (value) => blueprintInputModeLabels[value] || value,
+    );
     render();
   } catch (error) {
     console.error(error);

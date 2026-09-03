@@ -41,6 +41,8 @@
     --accent-strong: #9fd0d6;
     --accent-ink: #0b0d0f;
     --accent-dim: rgba(127, 180, 186, 0.14);
+    --text-to-image: #e1b86a;
+    --image-to-image: #7fb4ba;
     --grid-line: rgba(255, 255, 255, 0.035);
     --grid-line-strong: rgba(255, 255, 255, 0.06);
     --preview-fallback: #171b20;
@@ -60,6 +62,8 @@
     --accent-strong: #1f4449;
     --accent-ink: #f3f3f0;
     --accent-dim: rgba(46, 93, 99, 0.1);
+    --text-to-image: #8a5c15;
+    --image-to-image: #2e5d63;
     --grid-line: rgba(20, 22, 24, 0.045);
     --grid-line-strong: rgba(20, 22, 24, 0.075);
     --preview-fallback: #e4e4e0;
@@ -996,6 +1000,28 @@
     font-size: 0.64rem;
     letter-spacing: 0.14em;
     color: var(--ink-soft);
+  }
+
+  .input-mode-badge {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    z-index: 1;
+    padding: 0.2rem 0.55rem;
+    border: var(--hairline) solid currentColor;
+    background: color-mix(in srgb, var(--bg) 84%, transparent);
+    backdrop-filter: blur(6px);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+  }
+
+  .input-mode-text-to-image {
+    color: var(--text-to-image);
+  }
+
+  .input-mode-image-to-image {
+    color: var(--image-to-image);
   }
 
   .abstract-preview {
