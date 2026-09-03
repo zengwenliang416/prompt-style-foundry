@@ -6,6 +6,17 @@ Legacy image prompts often contain hard-coded subjects, brands, places, text, as
 
 The OnePic protocol turns each legacy prompt into a single-reference-image transformation template.
 
+## Blueprint input mode
+
+The compiler records the upstream blueprint's original input expectation separately from the public OnePic runtime:
+
+- `text-to-image` means the blueprint describes the subject through text or placeholders and has no explicit external visual-input dependency.
+- `image-to-image` means the blueprint explicitly depends on an uploaded, attached, input, original, or reference image, a visual document, or an already supplied subject such as “this character”.
+
+The classification uses deterministic strong-signal matching in `scripts/prompt_protocol.py`. It does not inspect previews and does not modify upstream source data. The compiled prompt includes this value as `Source blueprint input mode`.
+
+This distinction is informational. The public product contract remains unchanged: every compiled prompt accepts exactly one uploaded reference image and no required written input.
+
 ## Priority model
 
 Every compiled prompt declares:

@@ -6,11 +6,15 @@
 
 ```json
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "stats": {
     "total": 576,
     "cases": 529,
-    "frameworks": 47
+    "frameworks": 47,
+    "blueprintInputModes": {
+      "text-to-image": 501,
+      "image-to-image": 75
+    }
   },
   "templates": []
 }
@@ -29,6 +33,7 @@
   "tags": [],
   "language": "en",
   "mode": "multi-panel",
+  "blueprintInputMode": "text-to-image",
   "requiresText": true,
   "preview": "previews/case-532.webp",
   "source": {},
@@ -39,9 +44,17 @@
 }
 ```
 
+`blueprintInputMode` describes the upstream blueprint before OnePic compilation:
+
+- `text-to-image`: the blueprint defines its subject through text or placeholders and does not explicitly depend on external visual input.
+- `image-to-image`: the blueprint explicitly depends on an uploaded, attached, input, original, or reference image, a visual document, or an already supplied subject such as “this character”.
+
+This field is provenance metadata. Every public OnePic prompt is still compiled into the required single-reference-image transformation protocol.
+
 ## Public catalog
 
 `public/data/catalog.json` excludes full prompt bodies and points to individual TXT files. This is the browser's initial data source.
+Its `stats.blueprintInputModes` and `filters.blueprintInputModes` fields power the blueprint-type count and browser filter.
 
 ## Stability rules
 

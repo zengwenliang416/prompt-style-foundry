@@ -148,6 +148,7 @@ make check
 - `category`：类别
 - `styles` / `scenes` / `tags`：检索标签
 - `mode`：单幅、多面板、信息图、界面、海报等
+- `blueprintInputMode`：原始蓝图属于 `text-to-image`（文生图）或 `image-to-image`（图生图）
 - `language`：无文本线索时的默认文字语言
 - `requiresText`：模板是否通常需要文字
 - `blueprint`：上游视觉蓝图
@@ -167,6 +168,8 @@ make check
 
 因此，上游案例中的 `LIMORA`、`[COUNTRY]`、固定人物、固定产品、固定标题、9:16 等内容都只作为低优先级示例，不需要用户填写，也不能替换上传图片。
 
+`blueprintInputMode` 只描述上游蓝图原本是否依赖外部视觉输入，例如上传图片、原图、参考图、扫描文档或已提供的角色。当前 576 条蓝图中，501 条归为文生图蓝图，75 条归为图生图蓝图；无论原始类型如何，公开提示词都已经统一编译成“一张上传图片决定内容”的图生图模板。
+
 ## 验证
 
 ```bash
@@ -184,6 +187,7 @@ npm run check
 - 蓝图和最终提示词 SHA-256
 - 上游缺失 Markdown fence 的确定性恢复
 - 上游 ZIP 的只读来源声明
+- 文生图 / 图生图蓝图分类、统计与筛选数据一致性
 
 ## 部署
 

@@ -55,11 +55,11 @@ Understands the upstream ZIP layout and repairs one known malformed Markdown fen
 
 ### Protocol compiler
 
-Owns the one-image rules and category-specific adaptation. This is the domain core.
+Owns the one-image rules, category-specific adaptation, output mode detection, and original blueprint input-mode classification. This is the domain core.
 
 ### Generated library
 
-Acts as the stable integration contract for other applications. Consumers can read the full JSON, JSON catalog, or individual TXT files.
+Acts as the stable integration contract for other applications. Consumers can read the full JSON, JSON catalog, or individual TXT files. `blueprintInputMode` preserves whether the upstream blueprint was originally text-to-image or image-to-image while every compiled OnePic prompt remains single-reference-image.
 
 ### Browser
 
