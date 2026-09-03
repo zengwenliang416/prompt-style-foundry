@@ -9,6 +9,7 @@ Do not ask follow-up questions. Do not request a title, subtitle, brand name, lo
 Template ID: case-379
 Template family: Brand & Logos
 Template mode: multi-panel
+Source blueprint input mode: image-to-image
 Source blueprint type: case prompt
 
 🧭 INSTRUCTION PRIORITY（指令优先级）

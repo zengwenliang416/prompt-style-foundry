@@ -9,6 +9,7 @@ Do not ask follow-up questions. Do not request a title, subtitle, brand name, lo
 Template ID: case-296
 Template family: Charts & Infographics
 Template mode: infographic
+Source blueprint input mode: text-to-image
 Source blueprint type: case prompt
 
 🧭 INSTRUCTION PRIORITY（指令优先级）

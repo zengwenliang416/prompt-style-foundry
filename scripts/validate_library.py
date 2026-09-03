@@ -22,6 +22,7 @@ REQUIRED_SECTIONS = [
     "🚫 RESTRICTIONS",
     "🖼️ TASK",
 ]
+BLUEPRINT_INPUT_MODES = {"text-to-image", "image-to-image"}
 
 
 def sha256_text(text: str) -> str:
@@ -38,6 +39,7 @@ def main() -> int:
     source_manifest = json.loads((ROOT / "data/source/source-manifest.json").read_text(encoding="utf-8"))
     library = json.loads((ROOT / "data/library/templates.json").read_text(encoding="utf-8"))
     catalog = json.loads((ROOT / "public/data/catalog.json").read_text(encoding="utf-8"))
+    public_stats = json.loads((ROOT / "public/data/stats.json").read_text(encoding="utf-8"))
 
     templates = library["templates"]
     errors: list[str] = []
@@ -66,6 +68,7 @@ def main() -> int:
         template_id = item["id"]
         prompt = item.get("prompt", "")
         blueprint = item.get("blueprint", "")
+        blueprint_input_mode = item.get("blueprintInputMode")
 
         if not blueprint.strip():
             errors.append(f"{template_id}: empty blueprint")
@@ -82,6 +85,10 @@ def main() -> int:
             errors.append(f"{template_id}: missing aspect-ratio rule")
         if "Use Nano Banana Pro mode when available." not in prompt:
             errors.append(f"{template_id}: missing Nano Banana Pro rule")
+        if blueprint_input_mode not in BLUEPRINT_INPUT_MODES:
+            errors.append(f"{template_id}: invalid blueprint input mode {blueprint_input_mode!r}")
+        if f"Source blueprint input mode: {blueprint_input_mode}" not in prompt:
+            errors.append(f"{template_id}: prompt blueprint input mode metadata mismatch")
 
         prompt_file = prompt_dir / f"{template_id}.txt"
         if not prompt_file.is_file():
@@ -110,6 +117,20 @@ def main() -> int:
         errors.append("source manifest does not assert read-only extraction")
     if source_manifest.get("totalPromptCount") != args.expect_total:
         errors.append("source manifest total does not match expected total")
+
+    blueprint_input_mode_counts = Counter(item.get("blueprintInputMode") for item in templates)
+    if sum(blueprint_input_mode_counts.values()) != len(templates):
+        errors.append("blueprint input mode counts do not cover every template")
+    if library["stats"].get("blueprintInputModes") != dict(sorted(blueprint_input_mode_counts.items())):
+        errors.append("library blueprint input mode stats do not match templates")
+    if catalog["stats"].get("blueprintInputModes") != dict(sorted(blueprint_input_mode_counts.items())):
+        errors.append("catalog blueprint input mode stats do not match full library")
+    if public_stats != catalog["stats"]:
+        errors.append("public stats do not match catalog stats")
+    if catalog["filters"].get("blueprintInputModes") != [
+        key for key, _ in sorted(blueprint_input_mode_counts.items(), key=lambda item: (-item[1], item[0]))
+    ]:
+        errors.append("catalog blueprint input mode filters do not match full library")
 
     if errors:
         print(f"Validation failed with {len(errors)} error(s):")

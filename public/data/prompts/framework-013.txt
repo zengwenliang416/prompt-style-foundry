@@ -9,6 +9,7 @@ Do not ask follow-up questions. Do not request a title, subtitle, brand name, lo
 Template ID: framework-013
 Template family: Posters & Typography
 Template mode: poster
+Source blueprint input mode: image-to-image
 Source blueprint type: framework prompt
 
 🧭 INSTRUCTION PRIORITY（指令优先级）

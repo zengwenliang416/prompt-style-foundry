@@ -27,5 +27,9 @@
     "product": 32,
     "scene": 35,
     "single-scene": 173
+  },
+  "blueprintInputModes": {
+    "image-to-image": 75,
+    "text-to-image": 501
   }
 }

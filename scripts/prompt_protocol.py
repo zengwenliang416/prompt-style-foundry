@@ -6,7 +6,7 @@ import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 PROJECT_NAME = "OnePic Template Studio"
 PROJECT_NAME_ZH = "一图万式"
 SOURCE_PROJECT = "awesome-gpt-image-2"
@@ -78,6 +78,106 @@ TEXT_PATTERNS = re.compile(
     re.IGNORECASE,
 )
 
+IMAGE_TO_IMAGE_BLUEPRINT_PATTERNS = (
+    re.compile(r"(?:@image\d*|\bimage1\b|\bREFERENCE[_ -]?\d+\b)", re.IGNORECASE),
+    re.compile(
+        r"\b(?:uploaded|provided)\s+"
+        r"(?:(?:primary|single|only|original|reference|exact|female|male|human|main)\s+){0,3}"
+        r"(?:image|photo|photograph|portrait|selfie|picture|logo|face|subject|model|person|woman|man|"
+        r"girl|boy|character|product|object|artwork|design|document|recipe|reference)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:input|reference|source)\s+"
+        r"(?:image|photo|photograph|portrait|selfie|picture|logo|artwork|design|document)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\boriginal\s+(?:image|photo|photograph|portrait|selfie|picture|artwork)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:using|use|from|based on|inspired exactly by|show me|transform|edit|recreate|redraw)\s+"
+        r"(?:(?:the|an?|your|my)\s+)?(?:attached|original)\s+"
+        r"(?:image|photo|photograph|portrait|selfie|picture)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:same|exact)\s+(?:woman|man|person|girl|boy|subject|character|face|identity|appearance)\s+"
+        r"(?:as|from)\s+(?:the\s+)?reference\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:edit|transform|recreate|redraw|restyle|convert|turn)\s+(?:only\s+)?"
+        r"(?:(?:this|the|your|my|uploaded|attached|provided|input|reference|source|original)\s+)?"
+        r"(?:image|photo|picture|portrait|selfie|subject)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:use|using|based on|inspired exactly by)\s+(?:(?:the|an?|your|my)\s+)?"
+        r"(?:uploaded|attached|provided|input|reference|source|original)\s+"
+        r"(?:image|photo|photograph|portrait|selfie|picture)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\buse\s+(?:the\s+)?image\s+(?:for|as)\s+(?:a\s+|the\s+)?"
+        r"(?:face|identity|pose|style|character)?\s*reference\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:image|photo|photograph|portrait|selfie|picture|logo|face|subject|model|person|woman|man|"
+        r"girl|boy|character|product|object|artwork|design)\s+as\s+"
+        r"(?:(?:the|an?|your|my|only|primary|exact|strict|identity|appearance)\s+){0,3}reference\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:use|using|based on|from)\s+(?:this|the)\s+"
+        r"(?:character|subject|person|model|face|logo|product|object|design|artwork|pattern)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\bupload\s+(?:(?:an?|the|your|one)\s+)"
+        r"(?:(?:messy|handwritten|existing|original|reference|product|brand)\s+){0,3}"
+        r"(?:image|photo|photograph|portrait|selfie|picture|logo|artwork|design|document|recipe|file)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\[(?:image|foto|photo|picture|portrait|selfie|product image|product photo|logo|brand visual|"
+        r"signature image|用户自拍|产品图|商品图|签名图|Logo/品牌视觉)\]",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"(?:上传|提供)(?:的)?"
+        r"(?:主要|唯一|原始|参考|精确|严格|真人|女性|男性|人物|角色|产品){0,3}"
+        r"(?:图片|图像|照片|自拍|模特照片|模特|产品图|商品图|Logo|品牌视觉|签名图|人物图|角色图|"
+        r"人物|角色|女性|男性|面部|人脸|主体|产品|商品|图案|文档|食谱)"
+    ),
+    re.compile(r"(?:输入|参考|来源|原始)(?:的)?(?:图片|图像|照片|自拍|产品图|商品图|Logo|品牌视觉|签名图|人物图|角色图)"),
+    re.compile(
+        r"上传(?:一张|一幅|一份|一个|该|此|这张|你的|用户的)"
+        r".{0,16}?(?:图片|图像|照片|自拍|产品图|商品图|Logo|品牌视觉|签名图|人物图|角色图|文档|食谱)"
+    ),
+    re.compile(r"(?:原图|原始(?:图片|图像|照片)|用户自拍|用户图像|附图)"),
+    re.compile(
+        r"(?:图片|图像|照片|自拍|模特|人物|角色|女性面部|男性面部|人脸|产品图|商品图|Logo|品牌视觉|"
+        r"签名图|图案)(?:作为|用作)?(?:唯一|主要|精确|严格|身份|外观)?(?:参考|输入)"
+    ),
+    re.compile(
+        r"(?:将|把)(?:我|用户)?(?:上传|提供|输入)?(?:的)?"
+        r"(?:图片|图像|照片|自拍|模特|人物|角色|产品图|商品图|Logo|品牌视觉|签名图).*?"
+        r"(?:转换|转为|转成|改成|制作|重绘|生成)"
+    ),
+    re.compile(
+        r"基于(?:上传|输入|参考|提供|原始)?(?:的)?"
+        r"(?:图片|图像|照片|自拍|模特|人物|角色|产品图|商品图|Logo|品牌视觉|签名图)"
+    ),
+    re.compile(r"(?:基于(?:此|这个)|(?:使用|用)(?:此|这个|该))(?:角色|人物|主体|产品|图案|背景)"),
+    re.compile(
+        r"(?:从输入图中|图中的\[位置|参考图是|上传图片中的|输入的\[(?:签名图|图片|图像|照片)|"
+        r"(?:绘制|重绘|转换|修改|编辑)(?:该|此|这张)(?:图|图片|图像|照片))"
+    ),
+)
+
 
 def slugify(value: str) -> str:
     value = unicodedata.normalize("NFKD", value)
@@ -117,6 +217,14 @@ def infer_mode(category: str, title: str, blueprint: str) -> str:
     return "single-scene"
 
 
+def infer_blueprint_input_mode(title: str, blueprint: str) -> str:
+    """Classify the upstream blueprint, not the compiled OnePic runtime prompt."""
+    haystack = f"{title}\n{blueprint}"
+    if any(pattern.search(haystack) for pattern in IMAGE_TO_IMAGE_BLUEPRINT_PATTERNS):
+        return "image-to-image"
+    return "text-to-image"
+
+
 def requires_text(category: str, title: str, blueprint: str) -> bool:
     if category in TEXT_HEAVY_CATEGORIES:
         return True
@@ -147,9 +255,11 @@ def compile_prompt(
     source_kind: str,
     language: str | None = None,
     mode: str | None = None,
+    blueprint_input_mode: str | None = None,
 ) -> str:
     language = language or detect_language(blueprint)
     mode = mode or infer_mode(category, title, blueprint)
+    blueprint_input_mode = blueprint_input_mode or infer_blueprint_input_mode(title, blueprint)
     text_required = requires_text(category, title, blueprint)
     category_adapter = CATEGORY_ADAPTERS.get(category, CATEGORY_ADAPTERS["Other Use Cases"])
     mode_rule = MODE_RULES[mode]
@@ -167,6 +277,7 @@ Do not ask follow-up questions. Do not request a title, subtitle, brand name, lo
 Template ID: {template_id}
 Template family: {category}
 Template mode: {mode}
+Source blueprint input mode: {blueprint_input_mode}
 Source blueprint type: {source_label}
 
 🧭 INSTRUCTION PRIORITY（指令优先级）
@@ -274,6 +385,7 @@ class NormalizedTemplate:
     tags: list[str]
     language: str
     mode: str
+    blueprint_input_mode: str
     requires_text: bool
     preview: str | None
     source: dict[str, Any]
@@ -291,6 +403,7 @@ class NormalizedTemplate:
             "tags": self.tags,
             "language": self.language,
             "mode": self.mode,
+            "blueprintInputMode": self.blueprint_input_mode,
             "requiresText": self.requires_text,
             "preview": self.preview,
             "source": self.source,

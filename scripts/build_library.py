@@ -25,6 +25,7 @@ from prompt_protocol import (  # noqa: E402
     NormalizedTemplate,
     compile_prompt,
     detect_language,
+    infer_blueprint_input_mode,
     infer_mode,
     requires_text,
 )
@@ -58,6 +59,7 @@ def normalize_case(case: dict[str, Any]) -> NormalizedTemplate:
     tags = clean_list(styles + scenes + [category])
     language = detect_language(blueprint)
     mode = infer_mode(category, title, blueprint)
+    blueprint_input_mode = infer_blueprint_input_mode(title, blueprint)
     prompt = compile_prompt(
         template_id=template_id,
         title=title,
@@ -66,6 +68,7 @@ def normalize_case(case: dict[str, Any]) -> NormalizedTemplate:
         source_kind="case",
         language=language,
         mode=mode,
+        blueprint_input_mode=blueprint_input_mode,
     )
     return NormalizedTemplate(
         id=template_id,
@@ -77,6 +80,7 @@ def normalize_case(case: dict[str, Any]) -> NormalizedTemplate:
         tags=tags,
         language=language,
         mode=mode,
+        blueprint_input_mode=blueprint_input_mode,
         requires_text=requires_text(category, title, blueprint),
         preview=f"previews/{template_id}.webp",
         source={
@@ -103,6 +107,7 @@ def normalize_framework(record: dict[str, Any]) -> NormalizedTemplate:
     tags = clean_list(record.get("tags"))
     language = detect_language(blueprint)
     mode = infer_mode(category, title, blueprint)
+    blueprint_input_mode = infer_blueprint_input_mode(title, blueprint)
     prompt = compile_prompt(
         template_id=template_id,
         title=title,
@@ -111,6 +116,7 @@ def normalize_framework(record: dict[str, Any]) -> NormalizedTemplate:
         source_kind="framework",
         language=language,
         mode=mode,
+        blueprint_input_mode=blueprint_input_mode,
     )
     return NormalizedTemplate(
         id=template_id,
@@ -122,6 +128,7 @@ def normalize_framework(record: dict[str, Any]) -> NormalizedTemplate:
         tags=tags,
         language=language,
         mode=mode,
+        blueprint_input_mode=blueprint_input_mode,
         requires_text=requires_text(category, title, blueprint),
         preview=None,
         source={
@@ -150,6 +157,7 @@ def build_catalog_item(template: NormalizedTemplate) -> dict[str, Any]:
         "tags": template.tags,
         "language": template.language,
         "mode": template.mode,
+        "blueprintInputMode": template.blueprint_input_mode,
         "requiresText": template.requires_text,
         "preview": template.preview,
         "promptPath": f"data/prompts/{template.id}.txt",
@@ -181,6 +189,8 @@ def main() -> int:
         duplicates = [item for item, count in Counter(ids).items() if count > 1]
         raise RuntimeError(f"Duplicate template IDs: {duplicates}")
 
+    blueprint_input_mode_counts = Counter(template.blueprint_input_mode for template in templates)
+
     DATA_LIBRARY.mkdir(parents=True, exist_ok=True)
     PUBLIC_DATA.mkdir(parents=True, exist_ok=True)
     if PROMPT_DIR.exists():
@@ -200,6 +210,7 @@ def main() -> int:
             "total": len(templates),
             "cases": len(cases),
             "frameworks": len(frameworks),
+            "blueprintInputModes": dict(sorted(blueprint_input_mode_counts.items())),
         },
         "templates": [template.as_dict() for template in templates],
     }
@@ -231,10 +242,14 @@ def main() -> int:
             "frameworks": len(frameworks),
             "categories": dict(sorted(category_counts.items())),
             "modes": dict(sorted(mode_counts.items())),
+            "blueprintInputModes": dict(sorted(blueprint_input_mode_counts.items())),
         },
         "filters": {
             "categories": [key for key, _ in sorted(category_counts.items(), key=lambda item: (-item[1], item[0]))],
             "modes": [key for key, _ in sorted(mode_counts.items(), key=lambda item: (-item[1], item[0]))],
+            "blueprintInputModes": [
+                key for key, _ in sorted(blueprint_input_mode_counts.items(), key=lambda item: (-item[1], item[0]))
+            ],
             "styles": [key for key, _ in sorted(style_counts.items(), key=lambda item: (-item[1], item[0]))],
             "scenes": [key for key, _ in sorted(scene_counts.items(), key=lambda item: (-item[1], item[0]))],
         },
