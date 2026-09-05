@@ -22,6 +22,7 @@ steps:
     image: python:3.12-alpine
     commands:
       - apk add --no-cache bash curl git nodejs npm
+      - python3 -m pip install --no-cache-dir -r requirements-dev.txt
       - bash scripts/ci-verify.sh
       - bash scripts/package-site.sh .tmp/onepic-template-studio.tar.gz
 
