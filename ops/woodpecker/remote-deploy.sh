@@ -99,12 +99,20 @@ done
 
 prompt_count="$(find "$temporary_release/data/prompts" -maxdepth 1 -type f -name '*.txt' | wc -l)"
 preview_count="$(find "$temporary_release/previews" -maxdepth 1 -type f -name '*.webp' | wc -l)"
+expected_preview_count="$(
+  grep -oE '"(preview|generatedPreview)":"previews/[^"]+"' \
+    "$temporary_release/data/catalog.json" \
+    | sed -E 's/^"[^"]+":"([^"]+)"$/\1/' \
+    | sort -u \
+    | wc -l
+)"
 if [[ "$prompt_count" -ne 576 ]]; then
   printf 'Expected 576 prompt files, found %s.\n' "$prompt_count" >&2
   exit 1
 fi
-if [[ "$preview_count" -ne 529 ]]; then
-  printf 'Expected 529 preview files, found %s.\n' "$preview_count" >&2
+if [[ "$preview_count" -ne "$expected_preview_count" ]]; then
+  printf 'Expected %s preview files from catalog, found %s.\n' \
+    "$expected_preview_count" "$preview_count" >&2
   exit 1
 fi
 if find "$temporary_release" -type f \( -name '._*' -o -name '.DS_Store' \) -print -quit | grep -q .; then
