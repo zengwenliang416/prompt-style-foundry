@@ -1,0 +1,27 @@
+{
+  "templateId": "case-451",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-451.prompt.txt",
+  "originalPromptSha256": "3fb0860d8a4394a2421a66ec57f46fe1fc3f087060003d8eeb14f0b117008770",
+  "usedPrompt": "case-451.safe.prompt.txt",
+  "usedPromptSha256": "5ec51fdad167ffee52ba44e7c3fda155abfa4030ce758ec8687fc70cd098fd7d",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "一位成年韩国女孩",
+      "to": "一位明确为 28 岁的韩国成年女性"
+    },
+    {
+      "from": "身体微微前倾",
+      "to": "自然端正站立"
+    },
+    {
+      "from": "可以看到胸部轮廓，轮廓自然优美，腰部线条柔和，整体凸显丰腴健康的女性美",
+      "to": "重点表现自然神态、随风发丝与服装面料，不强调身体曲线"
+    },
+    {
+      "from": "白色一字肩连衣裙",
+      "to": "白色高领长袖亚麻长裙，肩颈和胸部完整覆盖"
+    }
+  ]
+}

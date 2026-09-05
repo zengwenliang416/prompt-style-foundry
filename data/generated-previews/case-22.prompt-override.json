@@ -1,0 +1,19 @@
+{
+  "templateId": "case-22",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-22.prompt.txt",
+  "originalPromptSha256": "beaf94ef291fb049acffa8e9388cee5a29b0bb2295785fc198ed80ba196912b6",
+  "usedPrompt": "case-22.safe.prompt.txt",
+  "usedPromptSha256": "8a1abac9a0bbdb7bfeafa09fedf062a312dd0971da14d11192756c44e0ca79d2",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "two young female fighters",
+      "to": "two adult women martial artists"
+    },
+    {
+      "from": "a girl",
+      "to": "an adult woman"
+    }
+  ]
+}

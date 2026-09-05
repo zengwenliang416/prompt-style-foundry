@@ -1,0 +1,19 @@
+{
+  "templateId": "case-152",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-152.prompt.txt",
+  "originalPromptSha256": "555b918ca5e3beecbaf3c4f3fe63a27918171a8308475fa5d15b5508e46b1dd9",
+  "usedPrompt": "case-152.safe.prompt.txt",
+  "usedPromptSha256": "472f0a23473566c9c8baa637525dfe8881237018f90d63a0a68535f4deacddaf",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Caucasian male resembling Sam Altman",
+      "to": "fictional adult AI product host"
+    },
+    {
+      "from": "OpenAI logo",
+      "to": "fictional geometric AI logo"
+    }
+  ]
+}

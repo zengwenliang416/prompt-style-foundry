@@ -1,0 +1,44 @@
+{
+  "id": "framework-029",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "9fc7b03d329bb10f20ed178a76d0383730f39e5eecdee3009ace892e5bb225f6",
+  "sourceBlueprintSha256": "a8daf764ddb3be4fe8f856b23fa1baac927ef6b33bd61cd1d4ef99bbb819d743",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原摄影模板填入雨巷自行车，无人物参考需求。",
+  "replacements": [
+    {
+      "from": "[人物/物品/街景]",
+      "to": "一台无品牌复古自行车"
+    },
+    {
+      "from": "[地点]",
+      "to": "雨后石板巷口"
+    },
+    {
+      "from": "[35mm/85mm]",
+      "to": "35mm"
+    },
+    {
+      "from": "[浅景深/深景深]",
+      "to": "浅景深"
+    },
+    {
+      "from": "[纪实/电影感]",
+      "to": "纪实"
+    },
+    {
+      "from": "[自然光/夜景霓虹/逆光]",
+      "to": "自然光"
+    },
+    {
+      "from": "[情绪词]",
+      "to": "宁静"
+    },
+    {
+      "from": "[肤质/材质/颗粒感]",
+      "to": "金属水珠、石板纹理与细微颗粒"
+    }
+  ]
+}

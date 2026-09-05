@@ -1,0 +1,11 @@
+{
+  "templateId": "case-305",
+  "purpose": "Preview generation safety adjustment",
+  "sourcePrompt": "data/source/cases.json#case-305",
+  "changes": [
+    "Removed sexualized body, clothing, pose, gaze, and expression descriptions",
+    "Replaced revealing clothing with a buttoned shirt, knee-length skirt, and sneakers",
+    "Changed the pose and expression to neutral street-editorial direction",
+    "Clarified that the subject is an adult"
+  ]
+}

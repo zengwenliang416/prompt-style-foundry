@@ -1,0 +1,44 @@
+{
+  "id": "framework-018",
+  "batch": "batch-031",
+  "size": "1536x1024",
+  "promptSha256": "dabec861ecafe8677ef5803c7ecbf1e199fa9a6c7bdaa956ea042a2aa7a8e9f6",
+  "sourceBlueprintSha256": "feee6c08c1c0d8561431bc3ed72713934d252c640cefb9e62dbd3c62e491b070",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "商品模板填入虚构陶杯，仅展示可见形状和材质。",
+  "replacements": [
+    {
+      "from": "[商品名]",
+      "to": "虚构无品牌陶瓷杯"
+    },
+    {
+      "from": "[卖点1]",
+      "to": "哑光釉面"
+    },
+    {
+      "from": "[卖点2]",
+      "to": "圆润杯柄"
+    },
+    {
+      "from": "[纯色棚拍/生活方式场景]",
+      "to": "纯色棚拍"
+    },
+    {
+      "from": "[特写/半身/全景]",
+      "to": "特写"
+    },
+    {
+      "from": "[材质关键词]",
+      "to": "细腻陶瓷与浅色釉面"
+    },
+    {
+      "from": "[柔光/侧光/轮廓光]",
+      "to": "柔光"
+    },
+    {
+      "from": "[价格角标/卖点icon/促销文案]",
+      "to": "简短材质标签，不写价格或性能承诺"
+    }
+  ]
+}

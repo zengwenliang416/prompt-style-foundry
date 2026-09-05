@@ -1,0 +1,12 @@
+{
+  "type": "Historical/Oriental Scene",
+  "setting": "Tang Dynasty Capital City at Night",
+  "subject": {
+    "identity": "Noblewoman",
+    "clothing": "Traditional Ruqun (襦裙) with elaborate floral embroidery",
+    "action": "Holding a glowing silk lantern, looking at fireworks"
+  },
+  "style": "Cinematic realism combined with subtle traditional ink wash (水墨) textures",
+  "details": "Accurate Tang architecture, bustling crowd in background",
+  "constraints": "No modern elements, historically accurate clothing structure"
+}

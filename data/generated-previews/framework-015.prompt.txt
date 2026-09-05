@@ -1,0 +1,27 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-015
+Template family: Posters & Typography
+Template mode: poster
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成一张虚构的成年旅行者的水墨双重曝光人物海报。
+画幅：9:16 竖版，高级电影海报构图。
+主体结构：
+- 上半区：放大的人物头部、面部轮廓或半身剪影，形成最强识别锚点。
+- 中下区：同一人物的全身或半身主体，姿态为站姿。
+- 剪影内部：融合云雾山谷、松树、山间行路、层叠山石，形成双重曝光叙事。
+视觉连接：用云雾、水墨扩散、飞白边缘、负空间和柔和明暗过渡，把上方剪影、内部拼贴和下方主体连成一条从上到下的视觉动线。
+风格：东方水墨美学 + 写实电影感，克制、高级、留白充足，层次丰富但不杂乱。
+文字：可加入远山，必须少量、可读、像海报题签而不是信息图说明。
+约束：不要硬拼贴，不要把背景塞满，不要廉价武侠特效，不要复制真实海报版式，不要让剪影和主体互相抢焦点。
+输出：海报级完成图，主体清晰，水墨边缘自然，叙事元素与人物身份强相关。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

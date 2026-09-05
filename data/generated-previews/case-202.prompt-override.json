@@ -1,0 +1,13 @@
+{
+  "templateId": "case-202",
+  "purpose": "Preview generation safety adjustment after output moderation block",
+  "sourcePrompt": "case-202.prompt.txt",
+  "generationPrompt": "case-202.safe.prompt.txt",
+  "changes": [
+    "Removed the original sexualized audience-targeting phrase from the generation request",
+    "Replaced it with a neutral adult character illustration brief for general audiences",
+    "Required complete opaque clothing and non-suggestive pose",
+    "Excluded nudity, lingerie, transparent clothing, erotic themes, fetish styling, suggestive poses, and intimate body-part close-ups"
+  ],
+  "blockReason": "Both the original prompt and an appended-only safety prompt were blocked at input/output moderation because of the source phrase."
+}

@@ -1,0 +1,17 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: case-335
+Template family: UI & Interfaces
+Template mode: interface
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成一张原创虚构社交应用「林间」的竖版动态页面设计示例，展示中文排版能力。奶白背景与深绿导航，卡片布局、清晰字级、自然留白。虚构账号「林禾的周末」，叶片插画头像，正文「今天在山间散步，把安静带回生活。」配一张山林小径照片。下方两条简短虚构评论：「光线真好」「下次一起走走」。页脚显示「虚构界面 · 设计示例」。不使用真实平台标志、认证标识、真实账号或真实互动数据。输出一个完成的原创手机界面。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

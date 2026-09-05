@@ -1,0 +1,19 @@
+{
+  "templateId": "case-114",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-114.prompt.txt",
+  "originalPromptSha256": "0b4fb457987c72dec5dcf1dcef5f0ebbc7831a5e053430d07fd18220d0dcdf63",
+  "usedPrompt": "case-114.safe.prompt.txt",
+  "usedPromptSha256": "cd2284b4f9b6d040bcd17a6cab72277eb6f243ec2fd7f6506a05defe180e7162",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Sam Altman",
+      "to": "fictional technology founder"
+    },
+    {
+      "from": "Ronan Farrow",
+      "to": "fictional investigative journalist"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "templateId": "case-343",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-343.prompt.txt",
+  "originalPromptSha256": "fe4cafe15f9429b67de2ae9279c4b0da8a63ec4d95ef4e07212408ff9e1771d0",
+  "usedPrompt": "case-343.safe.prompt.txt",
+  "usedPromptSha256": "851e36bb77ed09e1cccb687e1278456ae1cc47fe683ff807fda932f124274184",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Louis Vuitton-style editorial",
+      "to": "generic luxury editorial"
+    },
+    {
+      "from": "confident woman",
+      "to": "confident adult woman"
+    }
+  ]
+}

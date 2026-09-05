@@ -1,0 +1,23 @@
+{
+  "templateId": "case-21",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-21.prompt.txt",
+  "originalPromptSha256": "363d73743173c96c7b90233f66c33db70d50036eb76c282df4440f6caf1a9bc6",
+  "usedPrompt": "case-21.safe.prompt.txt",
+  "usedPromptSha256": "e2266e4498ef06f7d144e8c1162a90adbd11a9f16be795a2e61f2eff3a15e26a",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Elon Musk",
+      "to": "a fictional technology host"
+    },
+    {
+      "from": "SPACEX",
+      "to": "ORBITAL LABS"
+    },
+    {
+      "from": "Tesla T logo",
+      "to": "fictional electric-car emblem"
+    }
+  ]
+}

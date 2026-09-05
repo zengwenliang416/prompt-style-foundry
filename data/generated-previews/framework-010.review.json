@@ -1,0 +1,16 @@
+{
+  "id": "framework-010",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "5da30f7a0638e7bc2a78994206f160c5404824636515c0d7e3b520b03c722bc6",
+  "sourceBlueprintSha256": "eb92a1825bebefa596c5989ec8b7ec03e679c340b3ac651764869dfd5972ffd9",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "只填入GRAVITY，保留原概念字体海报规则。",
+  "replacements": [
+    {
+      "from": "[标题/词语/短句]",
+      "to": "GRAVITY"
+    }
+  ]
+}

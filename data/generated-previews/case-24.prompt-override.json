@@ -1,0 +1,23 @@
+{
+  "templateId": "case-24",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-24.prompt.txt",
+  "originalPromptSha256": "929b61de465f6b783a96dfbcbe70be05e84db3cc6eee8f020267044d80aca66b",
+  "usedPrompt": "case-24.safe.prompt.txt",
+  "usedPromptSha256": "b744a5a99bc196af180caa10d5ad7ba736fc1b281d414f4450199f146d4a8131",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Genshin Impact",
+      "to": "an original fantasy game"
+    },
+    {
+      "from": "Raiden Shogun",
+      "to": "an adult fantasy warrior"
+    },
+    {
+      "from": "cosplay selfies",
+      "to": "fully clothed, non-suggestive cosplay portraits"
+    }
+  ]
+}

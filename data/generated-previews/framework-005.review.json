@@ -1,0 +1,40 @@
+{
+  "id": "framework-005",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "f29d3e18208de121f53435f0bc1e6ccfd6f88509acf13e0e45218e6417414b0b",
+  "sourceBlueprintSha256": "dadbb3af8ffe55966dd6a9ed9c41754ee0a416fc89e31448b938465da71402ae",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "填入纸艺流程，避免原占位示例中的医疗建议。",
+  "replacements": [
+    {
+      "from": "[主题：明确、具体，避免宽泛。例如：“老年人日常健康管理指南”而非“健康”]",
+      "to": "从纸张到手工笔记本的装订流程"
+    },
+    {
+      "from": "[人群:细化人群特征，如年龄段、职业、兴趣等]",
+      "to": "喜欢纸艺的成年初学者"
+    },
+    {
+      "from": "[3-5]",
+      "to": "4"
+    },
+    {
+      "from": "[流程图/对比图/关系图/时间线]",
+      "to": "流程图"
+    },
+    {
+      "from": "[专业报告/科普插画/儿童教育等]",
+      "to": "科普插画"
+    },
+    {
+      "from": "[颜色]",
+      "to": "靛蓝与米白"
+    },
+    {
+      "from": "[浅色/深色]",
+      "to": "浅色"
+    }
+  ]
+}

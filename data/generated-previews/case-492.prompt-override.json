@@ -1,0 +1,28 @@
+{
+  "templateId": "case-492",
+  "promptVariant": "safety-adjusted-preview",
+  "originalPrompt": "case-492.prompt.txt",
+  "originalPromptSha256": "57ffa1cc5db7c781749d2b2e8498354d51dfd20b93e2a9c9767b5c81e0baf421",
+  "safePrompt": "case-492.safe.prompt.txt",
+  "safePromptSha256": "c9937598e9953cbab11f51d55f00f8860d751852ee0d65934ddd0562fef4ee06",
+  "reason": "原始提示在输出阶段触发 sexual 安全拦截；改为明确成年、全覆盖、非性感的高定晚礼服肖像，保留酒店套房、黑色高定、柔和窗光和电影感景深。",
+  "changes": [
+    {
+      "from": "A beautiful adult Asian fashion model",
+      "to": "an explicitly adult Asian fashion model"
+    },
+    {
+      "from": "Elegant black couture mini dress.",
+      "to": "Elegant black couture evening gown with opaque full coverage, long sleeves, and refined embroidered details."
+    },
+    {
+      "from": "Generate ONLY ONE SINGLE VERTICAL IMAGE.",
+      "to": "Generate ONLY ONE SINGLE VERTICAL IMAGE. Use a fully covered, non-sensual editorial pose with no erotic framing."
+    },
+    {
+      "from": "Professional magazine quality.",
+      "to": "Professional magazine quality. Non-explicit adult fashion portrait; no nudity, no lingerie, no cleavage, no erotic pose."
+    }
+  ],
+  "reviewStatus": "pre-review-approved-for-retry"
+}

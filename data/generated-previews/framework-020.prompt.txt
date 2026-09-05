@@ -1,0 +1,34 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-020
+Template family: Products & E-commerce
+Template mode: product
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "type": "E-commerce Hero Image",
+  "product": {
+    "name": "Fictional Over-ear Headphones",
+    "material": "Matte black finish with metallic accents",
+    "angle": "3/4 profile, floating slightly"
+  },
+  "setting": {
+    "background": "Minimalist studio setup, soft gray gradient",
+    "lighting": "Softbox overhead, sharp rim light on edges"
+  },
+  "copywriting": {
+    "badges": ["NEW", "DESIGN STUDY"],
+    "slogan": "Everyday Rhythm"
+  },
+  "constraints": "Commercial photography quality, hyper-realistic textures"
+}
+--- END VISUAL BLUEPRINT ---
+
+
+All brands, UI statistics, case studies and dimensions are fictional design examples, not verified commercial claims. Render a small DESIGN STUDY label where applicable.
+
+Return only the finished image.

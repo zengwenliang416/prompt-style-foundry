@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-032
+Template family: Illustration & Art
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+创作林间邮局插画，主角为背着邮包的拟人狐狸。
+画风：水彩，线条：细腻。
+配色：苔绿、暖赭与奶白，背景：复杂场景：树林中小木屋。
+构图：中景，重点表现信件、树叶和毛发笔触。
+输出：可用于封面或社媒发布的高质量插画。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

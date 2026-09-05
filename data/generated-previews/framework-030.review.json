@@ -1,0 +1,11 @@
+{
+  "id": "framework-030",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "dbd94347c1f8590a1047453b15768fa13111e2417f2248b6e058fb0f775e35cc",
+  "sourceBlueprintSha256": "e5644828173111ffb63e568974798a48d68665a129d035fdc6cad283720dfff9",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留30岁咖啡师JSON，无真实人物身份要求。",
+  "replacements": []
+}

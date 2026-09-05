@@ -1,0 +1,10 @@
+{
+  "templateId": "case-321",
+  "purpose": "Preview generation safety adjustment",
+  "sourcePrompt": "data/source/cases.json#case-321",
+  "changes": [
+    "Removed cleavage and exposed-midriff emphasis in Chinese and English",
+    "Replaced body-shape emphasis with neutral posture language",
+    "Clarified that the subject is an adult"
+  ]
+}

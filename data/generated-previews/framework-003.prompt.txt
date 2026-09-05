@@ -1,0 +1,31 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-003
+Template family: UI & Interfaces
+Template mode: interface
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成一张虚构社交应用「林间」内容截图，浅色模式。
+整体比例：9:16，手机截图风格。
+
+核心内容：
+- 账号信息：手绘叶片头像 / 林间日记 / 无认证标识
+- 正文内容：今天把时间留给森林。记录一片叶子，也记录片刻安静。
+- 互动数据：虚构示例：点赞128 / 评论12 / 收藏36
+
+界面元素：
+- 顶部：原创状态栏与林间导航栏
+- 底部：原创操作栏和输入框
+- 附加：小型森林照片卡片
+
+约束：文字必须准确显示指定的中文，禁止乱码和占位文本，比例固定。
+输出：原创虚构社交平台截图，文字清晰可读。
+--- END VISUAL BLUEPRINT ---
+
+界面展示小字「设计示例」，没有真实平台标志、认证或交易入口。
+
+Return only the finished image.

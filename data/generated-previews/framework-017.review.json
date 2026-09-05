@@ -1,0 +1,11 @@
+{
+  "id": "framework-017",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "d4ca8000df65f8c6da730002090f49bc4b10e3f50657ac5c5a2fa79465f9a9f7",
+  "sourceBlueprintSha256": "8b0bc3bfde7eb0cdf42a6f5e2d62a6ac98ff7e6a335028a25fbbb408faa6a76e",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留系统星际海报JSON、标题和主视觉。",
+  "replacements": []
+}

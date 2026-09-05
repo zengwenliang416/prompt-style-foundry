@@ -1,0 +1,19 @@
+{
+  "templateId": "case-129",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-129.prompt.txt",
+  "originalPromptSha256": "6aac6f256a1ccafd1566d6919c9cca26c21586aab060551878e28996e47de82e",
+  "usedPrompt": "case-129.safe.prompt.txt",
+  "usedPromptSha256": "7a2e15f7c07ae2aac126b41f4dc9220d11e12e5ee9ad1f4454c9c7e40f4f1053",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "smiling happily while holding up her middle finger",
+      "to": "smiling happily while waving with an open hand"
+    },
+    {
+      "from": "children's picture book cover",
+      "to": "whimsical all-ages picture book cover"
+    }
+  ]
+}

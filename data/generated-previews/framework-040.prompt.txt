@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-040
+Template family: History & Classical Themes
+Template mode: scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成唐代风格题材画面，主题为庭院听雨。
+人物：成年文士、圆领袍、陶杯，场景：山水庭院。
+美术风格：工笔，色调：墨绿与浅赭。
+文化细节：木构回廊与瓦当，不混入现代器物。
+输出：历史氛围准确的古风题材图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

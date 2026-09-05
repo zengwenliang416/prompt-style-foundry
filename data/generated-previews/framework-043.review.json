@@ -1,0 +1,20 @@
+{
+  "id": "framework-043",
+  "batch": "batch-033",
+  "size": "1536x1024",
+  "promptSha256": "c996ac36fa3b965395bb505fde178fe10234b551aa69748f36dd413c9bf39063",
+  "sourceBlueprintSha256": "e4c4c015328944a0510952e1b5248fdc0c0b3b60e36fc77129aba76e39f47ac1",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留红裙杂志JSON，模特明确成年，短文替代模拟乱码。",
+  "replacements": [
+    {
+      "from": "a model in a red dress",
+      "to": "an adult 30-year-old model in an opaque red evening dress"
+    },
+    {
+      "from": "(Simulated text blocks)",
+      "to": "A study in red. Form, fabric, and movement."
+    }
+  ]
+}

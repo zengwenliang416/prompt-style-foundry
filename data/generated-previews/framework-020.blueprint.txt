@@ -1,0 +1,17 @@
+{
+  "type": "E-commerce Hero Image",
+  "product": {
+    "name": "Noise Cancelling Headphones",
+    "material": "Matte black finish with metallic accents",
+    "angle": "3/4 profile, floating slightly"
+  },
+  "setting": {
+    "background": "Minimalist studio setup, soft gray gradient",
+    "lighting": "Softbox overhead, sharp rim light on edges"
+  },
+  "copywriting": {
+    "badges": ["NEW", "$299"],
+    "slogan": "Silence the World"
+  },
+  "constraints": "Commercial photography quality, hyper-realistic textures"
+}

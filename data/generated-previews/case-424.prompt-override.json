@@ -1,0 +1,19 @@
+{
+  "templateId": "case-424",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-424.prompt.txt",
+  "originalPromptSha256": "b56926d44a951cee03dcca5022e2d91be02018031c7f3ebb6410ad2176db9483",
+  "usedPrompt": "case-424.safe.prompt.txt",
+  "usedPromptSha256": "932e79af278460d2d992bd18e3dd1d51cb0686a1ec0c1ac7a2236d717c37060f",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Chupa Chups India",
+      "to": "fictional candy brand POPLOOP"
+    },
+    {
+      "from": "Chupa Chups lollipop",
+      "to": "POPLOOP lollipop"
+    }
+  ]
+}

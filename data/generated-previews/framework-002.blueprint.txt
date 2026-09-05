@@ -1,0 +1,19 @@
+{
+  "type": "UI Screenshot",
+  "platform": "iOS",
+  "product": "Fitness App",
+  "layout": "Card-based feed with bottom tab bar",
+  "style": {
+    "theme": "Dark Mode",
+    "primary_color": "Neon Green",
+    "typography": "Clean sans-serif"
+  },
+  "content": {
+    "header": "Today's Activity",
+    "cards": [
+      {"title": "Running", "data": "5.2 km", "button": "Start"},
+      {"title": "Calories", "data": "340 kcal"}
+    ]
+  },
+  "constraints": "High fidelity, readable text, 9:16 aspect ratio"
+}

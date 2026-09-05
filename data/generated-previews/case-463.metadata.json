@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "skill": "image-api-workbench",
+  "skill_version": "2.1.0",
+  "mode": "generation",
+  "endpoint": "https://new-api.motion-cover.com/v1/images/generations",
+  "model": "gpt-image-2",
+  "model_profile": {
+    "family": "gpt-image-2",
+    "status": "current",
+    "supports_transparency": true,
+    "supports_streaming": true,
+    "supports_flexible_size": true,
+    "input_fidelity": "always-high"
+  },
+  "configuration": {
+    "config_file": "/Users/wenliang_zeng/.config/image-api-workbench/config.json",
+    "config_file_exists": true,
+    "config_file_source": "built-in-default",
+    "profile": "pftrader",
+    "profile_source": "cli:--profile",
+    "profile_exists": false,
+    "sources": {
+      "base_url": "env:IMAGE_API_BASE_URL@process-environment",
+      "model": "cli:--model",
+      "timeout_seconds": "built-in-default",
+      "token_file": "built-in-default"
+    }
+  },
+  "requested_size": "1024x1536",
+  "quality": "low",
+  "n": 1,
+  "background": "opaque",
+  "output_format": "png",
+  "output_compression": null,
+  "moderation": "auto",
+  "input_fidelity": null,
+  "stream": true,
+  "partial_images_requested": 1,
+  "response_kind": "sse-b64_json",
+  "outputs": [
+    {
+      "path": "/Volumes/zwl/open_sources/onepic-template-studio/.tmp/onepic-text2img-2026-09-05/batch-031/case-463.png",
+      "bytes": 3304864,
+      "sha256": "8e88a3614f43e9ec076fe994c87bfe96663b3a83f3bbf358f438c3e251465cbc",
+      "image": {
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "alpha": false
+      }
+    }
+  ],
+  "partial_outputs": [],
+  "actual_size_matches_request": [
+    true
+  ],
+  "elapsed_ms": 39078,
+  "created": null,
+  "usage": {
+    "input_tokens": 347,
+    "input_tokens_details": {
+      "image_tokens": 0,
+      "text_tokens": 347
+    },
+    "output_tokens": 601,
+    "output_tokens_details": {
+      "image_tokens": 601,
+      "text_tokens": 0
+    },
+    "total_tokens": 948
+  },
+  "input_images": [],
+  "mask": null,
+  "warnings": [],
+  "prompt_sha256": "c4bbb4cb466f498e7429b02d5644445ec909d2369fd5c6a8ccd2637714bc3efc"
+}

@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-045
+Template family: Other Use Cases
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+任务目标：两款桌面香薰灯概念对比板。
+输入约束：主体虚构无品牌陶瓷香薰灯，场景简洁桌面，风格工业设计可视化，色彩砂白和苔绿。
+质量约束：清晰度高清，比例3:2，构图左右对照且留白。
+输出约束：用于设计概念展示，需突出灯罩曲线与柔和透光。
+请输出一版主方案 + 一版备选方案。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

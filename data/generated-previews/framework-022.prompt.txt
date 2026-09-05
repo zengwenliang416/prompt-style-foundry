@@ -1,0 +1,42 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-022
+Template family: Brand & Logos
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+你是顶级品牌代理创意总监，目标是为虚构纸品品牌交付一套覆盖 Logo、配色、字体、语调和应用触点的完整品牌身份系统。
+
+输入信息：
+业务名称：苔原纸品
+业务描述：以自然色彩设计日常笔记本
+行业：文具纸品
+目标受众：喜爱自然与书写的成年用户
+竞争对手：不引用真实竞争对手，用纸感、留白、图案三种方向比较
+品牌个性：自然、安静、朴素、清晰、耐看
+希望触发的感受：亲近
+喜欢的视觉身份：几何叶片、素纸字标、细线山形
+讨厌的视觉身份：拥挤排版、霓虹色、复杂阴影
+设计预算：免费字体方案
+
+请输出：
+1. 品牌战略基础：品牌原型、核心承诺、定位、差异化和唯一关键词。
+2. Logo 概念：生成 3-5 个完全不同的 Logo 方向，每个方向说明核心视觉理念、形状语言、象征意义、字体方向、第一眼情绪和适用触点。
+3. 配色系统：主色、辅助色、强调色、中性色、HEX 代码、心理学解释、使用规则和禁用搭配。
+4. 字体系统：标题字体、正文字体、强调字体、字号层级、字距、行高和免费替代方案。
+5. 应用触点：名片、App 图标、网站首页、社媒模板、广告牌或包装上的应用效果。
+6. 品牌规则：3 条永远不要打破的核心品牌规则。
+
+输出形式：
+结构化品牌手册，任何设计师、开发者或 AI 工具都能在 10 分钟内理解并复用。
+--- END VISUAL BLUEPRINT ---
+
+
+All brands, UI statistics, case studies and dimensions are fictional design examples, not verified commercial claims. Render a small DESIGN STUDY label where applicable.
+将六部分品牌手册可视化为一张全景总览板，用短标签，不返回文字报告。
+
+Return only the finished image.

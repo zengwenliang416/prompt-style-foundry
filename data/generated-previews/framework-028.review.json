@@ -1,0 +1,11 @@
+{
+  "id": "framework-028",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "f6b96b728bfa2f90b967e86def1cb15a1e7f80eb9265c7bf82e5cb5340a75363",
+  "sourceBlueprintSha256": "071c1d3b374a12a1ab907c766b9878915b5986b45f43c392846206d28da896e9",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留林间小屋JSON，作为建筑概念渲染。",
+  "replacements": []
+}

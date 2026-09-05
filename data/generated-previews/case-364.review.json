@@ -1,0 +1,44 @@
+{
+  "id": "case-364",
+  "batch": "batch-031",
+  "size": "1536x1024",
+  "promptSha256": "2e9cc526cb0f58d880eff9773e110c44a1921d0e8da53fdc3192af53ebffadd2",
+  "sourceBlueprintSha256": "52c80362adc2b5f8c7361dbb9bdb542048259a55cf92917b22c2cb4337888cd8",
+  "promptVariant": "safe-rewrite",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留原十分区、暖纸色、肖像、配色与衣橱结构；虚构成年人物，去除诊断/功效与品牌指向。",
+  "replacements": [
+    {
+      "from": "Studio portrait of subject as anchor",
+      "to": "Studio portrait of a fictional, fully clothed 30-year-old woman as anchor"
+    },
+    {
+      "from": "skin retouched to luminous glass-like perfection",
+      "to": "natural, softly lit skin"
+    },
+    {
+      "from": "Vogue Italia beauty supplement",
+      "to": "original fashion color supplement"
+    },
+    {
+      "from": "UNDERTONE DIAGNOSIS",
+      "to": "COLOR INSPIRATION"
+    },
+    {
+      "from": "precision needle marker on subject's reading",
+      "to": "decorative palette marker, not a measured skin reading"
+    },
+    {
+      "from": "subject's optimal season",
+      "to": "a coordinated warm autumn-inspired palette"
+    },
+    {
+      "from": "COLORS TO AVOID",
+      "to": "ALTERNATIVE COLORS"
+    },
+    {
+      "from": "Net-a-Porter editorial aesthetic",
+      "to": "original refined editorial aesthetic"
+    }
+  ]
+}

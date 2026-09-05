@@ -1,0 +1,24 @@
+{
+  "templateId": "case-508",
+  "promptVariant": "safety-adjusted-preview",
+  "originalPrompt": "case-508.prompt.txt",
+  "originalPromptSha256": "932fd544a4b1c8779d1d9e6b5dbad8102f7b78aeb97f72cb0437ca70d4b5379d",
+  "safePrompt": "case-508.safe.prompt.txt",
+  "safePromptSha256": "732a5153e794ed255b5b604ace327b53834857a507cab7aaf1c6b1ee58226258",
+  "reason": "原始提示在输出阶段触发 sexual 安全拦截；增加成年和端庄、非性感生活方式边界，保留俯拍、木漏日、花园与橘猫视觉结构。",
+  "changes": [
+    {
+      "from": "一位年轻的东亚裔女性",
+      "to": "一位明确为成年人的东亚裔女性"
+    },
+    {
+      "from": "她蹲在花园小径上，轻轻逗弄一只毛茸茸的橘猫",
+      "to": "她穿着不透视的高领长袖上衣和宽松长裙，端坐在花园小径旁，轻轻逗弄一只毛茸茸的橘猫"
+    },
+    {
+      "from": "当她仰头朝向镜头时",
+      "to": "当她以自然的生活方式姿态仰头朝向镜头时"
+    }
+  ],
+  "reviewStatus": "pre-review-approved-for-retry"
+}

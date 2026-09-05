@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "skill": "image-api-workbench",
+  "skill_version": "2.1.0",
+  "mode": "generation",
+  "endpoint": "https://new-api.motion-cover.com/v1/images/generations",
+  "model": "gpt-image-2",
+  "model_profile": {
+    "family": "gpt-image-2",
+    "status": "current",
+    "supports_transparency": true,
+    "supports_streaming": true,
+    "supports_flexible_size": true,
+    "input_fidelity": "always-high"
+  },
+  "configuration": {
+    "config_file": "/Users/wenliang_zeng/.config/image-api-workbench/config.json",
+    "config_file_exists": true,
+    "config_file_source": "built-in-default",
+    "profile": "pftrader",
+    "profile_source": "cli:--profile",
+    "profile_exists": false,
+    "sources": {
+      "base_url": "env:IMAGE_API_BASE_URL@process-environment",
+      "model": "cli:--model",
+      "timeout_seconds": "built-in-default",
+      "token_file": "built-in-default"
+    }
+  },
+  "requested_size": "1536x1024",
+  "quality": "low",
+  "n": 1,
+  "background": "opaque",
+  "output_format": "png",
+  "output_compression": null,
+  "moderation": "auto",
+  "input_fidelity": null,
+  "stream": true,
+  "partial_images_requested": 1,
+  "response_kind": "sse-b64_json",
+  "outputs": [
+    {
+      "path": "/Volumes/zwl/open_sources/onepic-template-studio/.tmp/onepic-text2img-2026-09-05/batch-031/framework-006.png",
+      "bytes": 3260877,
+      "sha256": "04f84a0a571952e6e96af30b9b4a04612af0ca408c43cd5c2bff269f2d3e6d3f",
+      "image": {
+        "format": "png",
+        "width": 1024,
+        "height": 1536,
+        "alpha": false
+      }
+    }
+  ],
+  "partial_outputs": [],
+  "actual_size_matches_request": [
+    false
+  ],
+  "elapsed_ms": 64456,
+  "created": null,
+  "usage": {
+    "input_tokens": 328,
+    "input_tokens_details": {
+      "image_tokens": 0,
+      "text_tokens": 328
+    },
+    "output_tokens": 1372,
+    "output_tokens_details": {
+      "image_tokens": 1372,
+      "text_tokens": 0
+    },
+    "total_tokens": 1700
+  },
+  "input_images": [],
+  "mask": null,
+  "warnings": [],
+  "prompt_sha256": "b502a6028d7d7afd43fa1ee4b57b662e9e3c80b8170262d62e83ebf42ec94563"
+}

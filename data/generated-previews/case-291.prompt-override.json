@@ -1,0 +1,11 @@
+{
+  "templateId": "case-291",
+  "purpose": "Preview generation safety adjustment",
+  "sourcePrompt": "data/source/cases.json#case-291",
+  "changes": [
+    "Clarified that the featured model is an adult",
+    "Specified modest fully covered clothing",
+    "Required a natural non-sexual commercial pose",
+    "Excluded nudity, suggestive posing, and emphasis on body parts"
+  ]
+}

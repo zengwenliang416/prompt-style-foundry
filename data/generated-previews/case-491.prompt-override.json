@@ -1,0 +1,28 @@
+{
+  "templateId": "case-491",
+  "promptVariant": "safety-adjusted-preview",
+  "originalPrompt": "case-491.prompt.txt",
+  "originalPromptSha256": "5489daa6b3dafa3b5efd76a27d3e51a64ed6f2f54ca12962a0ebd0293daa52d6",
+  "safePrompt": "case-491.safe.prompt.txt",
+  "safePromptSha256": "9a354b34d1cae12093fae99f828c9523493fe5efd45930759858f325746c34f1",
+  "reason": "原始提示在输出阶段触发 sexual 安全拦截；改为明确成年、全覆盖、直立且非性感的镜面生活方式肖像，保留 Y2K 闪光、浴室、城市夜景和原始质感。",
+  "changes": [
+    {
+      "from": "A moody late-night mirror selfie ... A young woman ... leans forward over a marble sink",
+      "to": "A realistic late-night mirror portrait of an explicitly adult woman standing upright in a neutral, non-sensual lifestyle pose"
+    },
+    {
+      "from": "dark clothing and black hair",
+      "to": "an opaque dark long-sleeve top with full coverage and slightly tousled black hair"
+    },
+    {
+      "from": "luxury cosmetics, skincare products, jewelry, a smartphone, and everyday personal items",
+      "to": "ordinary, generic toiletries, a smartphone, and small personal items, with no readable brand marks or logos"
+    },
+    {
+      "from": "viral Pinterest mood, high-fashion casual energy",
+      "to": "raw unfiltered photography, with no sexualized emphasis"
+    }
+  ],
+  "reviewStatus": "pre-review-approved-for-retry"
+}

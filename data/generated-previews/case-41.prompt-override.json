@@ -1,0 +1,23 @@
+{
+  "templateId": "case-41",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-41.prompt.txt",
+  "originalPromptSha256": "e1b1f9737615e9ac3ef3d259b75e606e77751ec2b6ca51cd4080fb16f57f360d",
+  "usedPrompt": "case-41.safe.prompt.txt",
+  "usedPromptSha256": "2dce441d3c49e892e59c4c42a78cdc6001ba231d787ceb11ec53ce657d35370d",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "anime girl",
+      "to": "adult anime character"
+    },
+    {
+      "from": "thigh-highs",
+      "to": "opaque knee-high socks"
+    },
+    {
+      "from": "\"年齢\"",
+      "to": "\"experience\""
+    }
+  ]
+}

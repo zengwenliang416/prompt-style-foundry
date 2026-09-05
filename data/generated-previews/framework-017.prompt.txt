@@ -1,0 +1,31 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-017
+Template family: Posters & Typography
+Template mode: poster
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "type": "Movie Poster",
+  "theme": "Interstellar Journey",
+  "typography": {
+    "headline": "BEYOND STARS",
+    "subheading": "A New Era Begins",
+    "layout": "Centered, bold cinematic font, bottom heavy"
+  },
+  "visuals": {
+    "subject": "Silhouette of an astronaut looking at a glowing nebula",
+    "style": "Cinematic lighting, high contrast, dramatic shadows",
+    "color_palette": "Deep space blue, glowing orange accents"
+  },
+  "vibe": "Epic, mysterious, vast"
+}
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

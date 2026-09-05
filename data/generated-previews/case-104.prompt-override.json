@@ -1,0 +1,23 @@
+{
+  "templateId": "case-104",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-104.prompt.txt",
+  "originalPromptSha256": "78d22b5d9e0b0a520197df1dc6eaa8eea5fb0adfe5b2aaf3d63b6766c6070bbe",
+  "usedPrompt": "case-104.safe.prompt.txt",
+  "usedPromptSha256": "6da051e748fbf523c63b390fd4aee65d6c25e69001d8545d087a328a06ee37c3",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "YouTube livestream UI",
+      "to": "fictional livestream UI"
+    },
+    {
+      "from": "YouTube Premium",
+      "to": "STREAM STUDIO"
+    },
+    {
+      "from": "Sydney Sweeney",
+      "to": "fictional adult female guest"
+    }
+  ]
+}

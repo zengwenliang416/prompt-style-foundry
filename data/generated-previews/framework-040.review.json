@@ -1,0 +1,40 @@
+{
+  "id": "framework-040",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "5020a113d4d7ee7181fce1ec7bbd06a007853ae929a337d1616c75c45ed35461",
+  "sourceBlueprintSha256": "6d735258848fa27564d601e484a99880fe30bd7db50c70b859282c6363fa1c55",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原古风模板填入唐代庭院听雨，统一时代器物。",
+  "replacements": [
+    {
+      "from": "[朝代/古风设定]",
+      "to": "唐代风格"
+    },
+    {
+      "from": "[主题]",
+      "to": "庭院听雨"
+    },
+    {
+      "from": "[身份/服饰/器物]",
+      "to": "成年文士、圆领袍、陶杯"
+    },
+    {
+      "from": "[宫廷/市井/山水]",
+      "to": "山水庭院"
+    },
+    {
+      "from": "[工笔/写意/影视写实]",
+      "to": "工笔"
+    },
+    {
+      "from": "[色调]",
+      "to": "墨绿与浅赭"
+    },
+    {
+      "from": "[纹样/礼制/建筑要素]",
+      "to": "木构回廊与瓦当，不混入现代器物"
+    }
+  ]
+}

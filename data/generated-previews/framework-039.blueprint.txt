@@ -1,0 +1,11 @@
+{
+  "type": "Narrative Scene",
+  "story_context": "The exact moment an ancient seal breaks",
+  "environment": "Crumbling stone temple overgrown with glowing blue vines",
+  "action": "A young explorer dropping their torch as a massive beam of light shoots into the sky",
+  "atmosphere": {
+    "mood": "Awe-inspiring, terrifying",
+    "lighting": "Blinding central light casting long dramatic shadows"
+  },
+  "camera": "Low angle shot, emphasizing the scale of the light beam"
+}

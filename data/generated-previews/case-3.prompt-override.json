@@ -1,0 +1,23 @@
+{
+  "templateId": "case-3",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-3.prompt.txt",
+  "originalPromptSha256": "862e42d531d7d6aa409d7dfe3bfc65e741cbe166bc6de8d839a06034875a4ba1",
+  "usedPrompt": "case-3.safe.prompt.txt",
+  "usedPromptSha256": "5a79b542be33078afbd794ad51b76bb848a481aef7cbb56f4bb5cef7de317cba",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "国际米兰后卫巴斯托尼",
+      "to": "一位虚构的国际级足球后卫"
+    },
+    {
+      "from": "圣西罗球场",
+      "to": "一座灯火璀璨的欧洲足球场"
+    },
+    {
+      "from": "波黑国旗",
+      "to": "一面虚构国家的蓝黄色旗帜"
+    }
+  ]
+}

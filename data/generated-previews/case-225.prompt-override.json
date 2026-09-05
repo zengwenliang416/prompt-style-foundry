@@ -1,0 +1,15 @@
+{
+  "templateId": "case-225",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-225.prompt.txt",
+  "originalPromptSha256": "d60529bbd5781ec03cc466a91e196c6e1730edece1bda73bdaa71adae11739a1",
+  "usedPrompt": "case-225.safe.prompt.txt",
+  "usedPromptSha256": "d19324f763d05c7a61ffc62ec097cfc9138065268de2ba5f24cac4a6bcc12d32",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "[中文]\n帮我生成xxxx真迹图片\n\n[English]\nHelp me generate xxxx authentic picture",
+      "to": "[中文]\n生成一张虚构艺术家“林川”创作的博物馆研究级绘画习作，画面为月光下的松林与远山，采用传统矿物颜料和旧纸质感。底部清晰标注“虚构艺术研究习作 / 非真迹”。\n\n[English]\nCreate a museum-study-style painting by the fictional artist “Lin Chuan”: a moonlit pine forest and distant mountains rendered with traditional mineral-pigment and aged-paper textures. Clearly label it “FICTIONAL ART STUDY / NOT AN AUTHENTIC WORK”."
+    }
+  ]
+}

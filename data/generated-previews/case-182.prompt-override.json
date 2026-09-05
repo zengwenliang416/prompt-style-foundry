@@ -1,0 +1,19 @@
+{
+  "templateId": "case-182",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-182.prompt.txt",
+  "originalPromptSha256": "ab494d04cb868edf6f393d91535d99666f997f64221296dad8186027b8c5522c",
+  "usedPrompt": "case-182.safe.prompt.txt",
+  "usedPromptSha256": "ad928ef87223e82c484c23d154530ba70c2f5703e7d9f7387f0d130296543987",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "面向中学生的日剧喜剧场景",
+      "to": "面向成年观众的日剧办公室喜剧场景"
+    },
+    {
+      "from": "aimed at middle school students",
+      "to": "featuring adult office workers"
+    }
+  ]
+}

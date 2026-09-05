@@ -1,0 +1,24 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-031
+Template family: Photography & Realism
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成一张竖版手机纪实照片，主题是一袋橘子意外滚落发生在街角水果摊旁。
+主体：纸袋裂开、橘子散落且无人受伤，必须呈现真实的材质状态，例如纸袋褶皱与真实果皮。
+环境：粗糙水泥地与旧砖墙，保留自然杂乱和生活痕迹。
+光线：阴天散射光，阴影要符合真实方向，可加入树影。
+镜头：手持手机视角，略微俯拍或低角度，构图自然，像随手拍到的现场。
+画面质感：raw unedited photo look，自然色彩，真实纹理，高细节。
+负面约束：不要插画、动漫、CGI、棚拍光、过度干净、过度构图、假液体、漂浮物、品牌文字、水印、海报设计感。
+输出：一张可信的日常纪实摄影图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

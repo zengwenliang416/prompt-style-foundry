@@ -1,0 +1,36 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-002
+Template family: UI & Interfaces
+Template mode: interface
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "type": "UI Screenshot",
+  "platform": "iOS",
+  "product": "Fitness App",
+  "layout": "Card-based feed with bottom tab bar",
+  "style": {
+    "theme": "Dark Mode",
+    "primary_color": "Neon Green",
+    "typography": "Clean sans-serif"
+  },
+  "content": {
+    "header": "Today's Activity",
+    "cards": [
+      {"title": "Running", "data": "5.2 km", "button": "Start"},
+      {"title": "Calories", "data": "340 kcal"}
+    ]
+  },
+  "constraints": "High fidelity, readable text, 9:16 aspect ratio"
+}
+--- END VISUAL BLUEPRINT ---
+
+
+All brands, UI statistics, case studies and dimensions are fictional design examples, not verified commercial claims. Render a small DESIGN STUDY label where applicable.
+
+Return only the finished image.

@@ -1,0 +1,48 @@
+{
+  "id": "framework-008",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "d31720bf2e441f9a9c531805d72c4a3283cb8062ec7a3aaed0f6e4b4c3cb76be",
+  "sourceBlueprintSha256": "18ec72d2926d0643ae64640a3a2995b5d267a078147b14750f1a782125b2603f",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原海报字段填入虚构爵士活动，保留标题和几何主视觉。",
+  "replacements": [
+    {
+      "from": "[活动/产品/电影]",
+      "to": "虚构爵士音乐活动"
+    },
+    {
+      "from": "[主题词]",
+      "to": "夜航"
+    },
+    {
+      "from": "[主体元素]",
+      "to": "月亮与萨克斯风的几何剪影"
+    },
+    {
+      "from": "[标题]",
+      "to": "夜航爵士"
+    },
+    {
+      "from": "[副标题]",
+      "to": "让旋律照亮夜色"
+    },
+    {
+      "from": "[居中/左对齐/对角构图]",
+      "to": "左对齐"
+    },
+    {
+      "from": "[复古/未来/极简]",
+      "to": "复古"
+    },
+    {
+      "from": "[主色 + 辅色]",
+      "to": "深海蓝 + 黄铜金"
+    },
+    {
+      "from": "[情绪关键词]",
+      "to": "安静而有节奏"
+    }
+  ]
+}

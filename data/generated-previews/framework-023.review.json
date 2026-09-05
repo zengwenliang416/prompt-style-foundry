@@ -1,0 +1,56 @@
+{
+  "id": "framework-023",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "1316b5670c73f0765219c6473f28d5f626c8e1b17f8f5e884df5f409c393379f",
+  "sourceBlueprintSha256": "0a6c59107825f4a7656d271fb636b4f06968042047d091012db8dd92ca56bfe2",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原品牌触点模板填入同一虚构纸品品牌。",
+  "replacements": [
+    {
+      "from": "[品牌名]",
+      "to": "虚构品牌「苔原纸品」"
+    },
+    {
+      "from": "[行业/生活方式/产品品类]",
+      "to": "自然系文具"
+    },
+    {
+      "from": "[关键词1]",
+      "to": "安静"
+    },
+    {
+      "from": "[关键词2]",
+      "to": "细腻"
+    },
+    {
+      "from": "[关键词3]",
+      "to": "朴素"
+    },
+    {
+      "from": "[核心产品/服务/体验]",
+      "to": "笔记本与信封"
+    },
+    {
+      "from": "[材质表面/空间场景]",
+      "to": "浅木桌面"
+    },
+    {
+      "from": "[光线]",
+      "to": "窗边柔光"
+    },
+    {
+      "from": "[镜头]",
+      "to": "俯视与近景"
+    },
+    {
+      "from": "[现代极简/日式留白/奢华编辑/科技品牌]",
+      "to": "日式留白"
+    },
+    {
+      "from": "[颜色]",
+      "to": "苔绿与米白"
+    }
+  ]
+}

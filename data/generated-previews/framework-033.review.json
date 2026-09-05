@@ -1,0 +1,16 @@
+{
+  "id": "framework-033",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "ced6eb33145ba4794c0188a97b872c6627a29040798ea9dcb557031628f8883a",
+  "sourceBlueprintSha256": "e1a6efb4d129b3ed0c81b062014068ff87bf8900fb0ea938e66a4db012e646ef",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留飞鲸村落JSON，插画风格为手绘动画背景。",
+  "replacements": [
+    {
+      "from": "Studio Ghibli inspired anime style",
+      "to": "Hand-painted whimsical animation style"
+    }
+  ]
+}

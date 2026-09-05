@@ -147,6 +147,8 @@ def normalize_framework(record: dict[str, Any]) -> NormalizedTemplate:
 
 
 def build_catalog_item(template: NormalizedTemplate) -> dict[str, Any]:
+    generated_asset = ROOT / "data" / "generated-previews" / f"{template.id}.webp"
+    generated_prompt = ROOT / "data" / "generated-previews" / f"{template.id}.prompt.txt"
     return {
         "id": template.id,
         "title": template.title,
@@ -160,6 +162,8 @@ def build_catalog_item(template: NormalizedTemplate) -> dict[str, Any]:
         "blueprintInputMode": template.blueprint_input_mode,
         "requiresText": template.requires_text,
         "preview": template.preview,
+        "generatedPreview": f"previews/{template.id}.webp" if generated_asset.is_file() else None,
+        "generatedPromptPath": f"data/generated-previews/{template.id}.prompt.txt" if generated_prompt.is_file() else None,
         "promptPath": f"data/prompts/{template.id}.txt",
         "source": template.source,
         "promptSha256": template.as_dict(include_blueprint=False, include_prompt=False)["promptSha256"],

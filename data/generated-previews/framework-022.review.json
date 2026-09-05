@@ -1,0 +1,56 @@
+{
+  "id": "framework-022",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "fd3aac2f164ebfdcda3a060ee19f3c4d86703c18d76a9810acd8b567ae22e5a9",
+  "sourceBlueprintSha256": "5f22beb9dc82c63e7237128de6dd32830cf89dbb0149fb247433289490b44345",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原品牌手册的六项结构保留，用一张视觉手册总览表达。",
+  "replacements": [
+    {
+      "from": "[业务/产品]",
+      "to": "虚构纸品品牌"
+    },
+    {
+      "from": "[业务名]",
+      "to": "苔原纸品"
+    },
+    {
+      "from": "[一句话说明]",
+      "to": "以自然色彩设计日常笔记本"
+    },
+    {
+      "from": "[行业]",
+      "to": "文具纸品"
+    },
+    {
+      "from": "[详细描述]",
+      "to": "喜爱自然与书写的成年用户"
+    },
+    {
+      "from": "[3-5个]",
+      "to": "不引用真实竞争对手，用纸感、留白、图案三种方向比较"
+    },
+    {
+      "from": "[5个关键词]",
+      "to": "自然、安静、朴素、清晰、耐看"
+    },
+    {
+      "from": "[信任 / 兴奋 / 奢华 / 亲近 / 力量 / 其他]",
+      "to": "亲近"
+    },
+    {
+      "from": "[3个参考]",
+      "to": "几何叶片、素纸字标、细线山形"
+    },
+    {
+      "from": "[3个反例]",
+      "to": "拥挤排版、霓虹色、复杂阴影"
+    },
+    {
+      "from": "[免费 / 付费]",
+      "to": "免费字体方案"
+    }
+  ]
+}

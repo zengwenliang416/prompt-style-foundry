@@ -1,0 +1,45 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: case-198
+Template family: Photography & Realism
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "cameraParameters": {
+    "deviceType": "iPhone 15 Pro front selfie",
+    "lens": "24mm",
+    "composition": "High angle POV (first-person perspective)",
+    "postProcessing": "Computational photography style, clear digital readout, deep depth of field"
+  },
+  "subjectDescription": {
+    "features": "Clearly adult 30-year-old woman, pale natural skin, ice-blue eyes, natural proportions",
+    "expression": "Calm, relaxed expression",
+    "styling": "Platinum blonde tight double braids hairstyle, vibrant blue nail polish",
+    "clothing": "Loose opaque light-blue long-sleeve cotton shirt, closed collar, fully clothed head-and-shoulders portrait",
+    "action": "Looking up at the camera, blocking the glaring sunlight with one hand"
+  },
+  "environmentAndLighting": {
+    "scene": "Vast sandy beach, blurry horizon in the background",
+    "lighting": "High-key bright coastal daylight, 5500K color temperature, strong white sand reflection fill, even lighting",
+    "texture": "Natural skin texture and fine reflective white sand"
+  },
+  "technicalConstraints": {
+    "colorScience": "Soft pastel tones, linear neutral colors, high exposure",
+    "negativePrompts": [
+      "Heavy shadows",
+      "Snow",
+      "Red nails",
+      "Film grain"
+    ]
+  }
+}
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

@@ -1,0 +1,23 @@
+{
+  "templateId": "case-165",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-165.prompt.txt",
+  "originalPromptSha256": "5dd83ee14b1e61ce07bfc5e1ee04dd69237888fa8ee5722bf5ec900c44f077d8",
+  "usedPrompt": "case-165.safe.prompt.txt",
+  "usedPromptSha256": "04fe534a3f8a80e876795e9d7db1994a5ca3dff10eeb180bd6d9df1e6776e4d5",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "绝美佳人",
+      "to": "成年美食创作者"
+    },
+    {
+      "from": "嘴里叼着一根烧烤串，每只手各拿一根烧烤串交叉以模仿索隆的三刀流",
+      "to": "双手各拿一根烧烤串，以安全、自然的交叉姿势展示美食，嘴边不放置任何尖锐物"
+    },
+    {
+      "from": "a stunning beauty",
+      "to": "an adult food creator"
+    }
+  ]
+}

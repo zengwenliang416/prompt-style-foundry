@@ -1,0 +1,19 @@
+{
+  "templateId": "case-68",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-68.prompt.txt",
+  "originalPromptSha256": "3a6542b2f91148e4ac81a8869a45cedb28e2b438358b2504759e4dd6957321c4",
+  "usedPrompt": "case-68.safe.prompt.txt",
+  "usedPromptSha256": "604a3b5a82ce04771fd4ebbadde103e3f41761e2d83608c84318d213969af32c",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "\"type\": \"comprehensive medical infographic\"",
+      "to": "\"type\": \"educational conceptual metabolic infographic, clearly labeled NOT MEDICAL ADVICE\""
+    },
+    {
+      "from": "highly detailed 3D medical illustration",
+      "to": "stylized simplified 3D educational illustration"
+    }
+  ]
+}

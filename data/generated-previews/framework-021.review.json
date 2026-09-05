@@ -1,0 +1,44 @@
+{
+  "id": "framework-021",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "71b20a9e9a1bcc4583683610a3303bde03a58d36ddc48124cac6e63eb791cd25",
+  "sourceBlueprintSha256": "ad95d2b733281920c9ac94373b3ff61e2410cee8c48f523cac5c4b8ff7d36511",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "品牌识别模板填入虚构纸品品牌。",
+  "replacements": [
+    {
+      "from": "[品牌名]",
+      "to": "虚构品牌「苔原纸品」"
+    },
+    {
+      "from": "[关键词1]",
+      "to": "安静"
+    },
+    {
+      "from": "[关键词2]",
+      "to": "自然"
+    },
+    {
+      "from": "[关键词3]",
+      "to": "清晰"
+    },
+    {
+      "from": "[几何/字标/图形]",
+      "to": "几何"
+    },
+    {
+      "from": "[现代/高级/亲和]",
+      "to": "现代"
+    },
+    {
+      "from": "[行业]",
+      "to": "文具纸品"
+    },
+    {
+      "from": "[受众]",
+      "to": "成年设计爱好者"
+    }
+  ]
+}

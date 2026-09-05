@@ -1,0 +1,11 @@
+{
+  "templateId": "case-272",
+  "purpose": "Preview generation safety adjustment",
+  "sourcePrompt": "data/source/cases.json#case-272",
+  "changes": [
+    "Clarified that the subject is an adult",
+    "Replaced the slipped-open yukata with a fully wrapped modest yukata",
+    "Changed the pose and expression to calm, non-sexual editorial direction",
+    "Excluded nudity, cleavage, suggestive posing, and body-part emphasis"
+  ]
+}

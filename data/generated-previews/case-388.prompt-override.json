@@ -1,0 +1,15 @@
+{
+  "templateId": "case-388",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-388.prompt.txt",
+  "originalPromptSha256": "37f1ac0dc54929f7607abea728e5a0210d11d3c9257f3d507ffd376b75ebb35c",
+  "usedPrompt": "case-388.safe.prompt.txt",
+  "usedPromptSha256": "2464374b9a3bb51c0f5622b992d70947d388fffff8e43c268d4030f69f912546",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Claude",
+      "to": "CORA"
+    }
+  ]
+}

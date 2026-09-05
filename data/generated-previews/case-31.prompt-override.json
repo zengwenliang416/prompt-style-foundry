@@ -1,0 +1,23 @@
+{
+  "templateId": "case-31",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-31.prompt.txt",
+  "originalPromptSha256": "0eeb287117b3b859242079625d444e5669b5ff5ff18e7c80fa5f00815cd7b381",
+  "usedPrompt": "case-31.safe.prompt.txt",
+  "usedPromptSha256": "b3dd98a3f452a125c20f1ab58ee95705b32107cbb367004dc46c03a5fb430170",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "young woman",
+      "to": "adult woman"
+    },
+    {
+      "from": "Japanese school uniform with a light grey cardigan, white shirt, dark plaid bow tie, dark plaid pleated skirt, dark knee-high socks, and black leather loafers",
+      "to": "fashion-inspired tailored outfit with a light grey cardigan, white shirt, dark plaid necktie, dark plaid pleated skirt, opaque tights, and black leather loafers"
+    },
+    {
+      "from": "crouching down and looking slightly down at the camera from a low angle",
+      "to": "standing in a relaxed three-quarter pose at eye level"
+    }
+  ]
+}

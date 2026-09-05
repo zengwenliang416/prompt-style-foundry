@@ -1,0 +1,23 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-007
+Template family: Charts & Infographics
+Template mode: infographic
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+为橡树：叶片细胞、叶片、枝条、树冠、整株树、林地；各尺度大小仅用约略量级示意生成一张科学尺度缩放信息图。
+结构：6-8 个圆形或六边形框，按从微观到宏观的尺度递进排列。
+每个框包含：尺度名称、3-5 个词的洞察、测量单位或放大倍率，以及该尺度下的高细节 3D 渲染。
+用细线连接各尺度，避免重复层级。标题使用“橡树：叶片细胞、叶片、枝条、树冠、整株树、林地；各尺度大小仅用约略量级示意：AT EVERY SCALE”或“ZOOM: THE WORLD OF 橡树：叶片细胞、叶片、枝条、树冠、整株树、林地；各尺度大小仅用约略量级示意”。
+风格：科学编辑信息图、精准微距光、清晰层级、文字短而可读。
+约束：不要通用放大镜图标，不要把所有尺度画成同一大小，不要塞长段正文。
+--- END VISUAL BLUEPRINT ---
+
+
+All brands, UI statistics, case studies and dimensions are fictional design examples, not verified commercial claims. Render a small DESIGN STUDY label where applicable.
+
+Return only the finished image.

@@ -1,0 +1,12 @@
+{
+  "templateId": "case-240",
+  "purpose": "Preview generation safety adjustment",
+  "sourcePrompt": "case-240.prompt.txt",
+  "generationPrompt": "case-240.safe.prompt.txt",
+  "changes": [
+    "Clarified that the subject is an adult athlete",
+    "Replaced sexualized physical descriptions with realistic athletic direction",
+    "Changed the pose and expression to professional, confident, non-sexual direction",
+    "Excluded nudity, suggestive posing, and body-part close-ups"
+  ]
+}

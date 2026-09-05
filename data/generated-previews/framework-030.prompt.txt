@@ -1,0 +1,30 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-030
+Template family: Photography & Realism
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "type": "Hyper-realistic Photography",
+  "subject": {
+    "description": "A weary 30-year-old barista wiping a coffee cup",
+    "details": "Subtle sweat on forehead, detailed skin pores, wearing a denim apron"
+  },
+  "setting": "Dimly lit vintage cafe, rain visible through the window behind",
+  "camera_specs": {
+    "gear": "Shot on Sony A7R IV, 50mm lens",
+    "aperture": "f/1.4 (shallow depth of field, background completely blurred)",
+    "lighting": "Cinematic lighting, neon sign reflecting on wet window, soft rim light on subject's hair"
+  },
+  "film_aesthetic": "Kodak Portra 400 emulation, subtle film grain"
+}
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

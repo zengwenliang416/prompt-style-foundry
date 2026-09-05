@@ -1,0 +1,19 @@
+{
+  "type": "Infographic",
+  "topic": "Urban Metabolism",
+  "audience": "General Public",
+  "structure": {
+    "title_area": "城市生命系统图谱",
+    "layout": "Isometric cutaway, 12 numbered panels",
+    "modules": [
+      {"title": "能源", "icon": "lightning", "text": "Power flows"},
+      {"title": "水循环", "icon": "water_drop", "text": "Water flows"}
+    ]
+  },
+  "style": {
+    "aesthetic": "Scientific atlas",
+    "colors": "Low saturation, color-coded flows",
+    "background": "Light paper texture"
+  },
+  "constraints": "No cyberpunk, no gibberish text, strict structural layout"
+}

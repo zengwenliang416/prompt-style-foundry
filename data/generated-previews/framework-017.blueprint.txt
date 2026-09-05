@@ -1,0 +1,15 @@
+{
+  "type": "Movie Poster",
+  "theme": "Interstellar Journey",
+  "typography": {
+    "headline": "BEYOND STARS",
+    "subheading": "A New Era Begins",
+    "layout": "Centered, bold cinematic font, bottom heavy"
+  },
+  "visuals": {
+    "subject": "Silhouette of an astronaut looking at a glowing nebula",
+    "style": "Cinematic lighting, high contrast, dramatic shadows",
+    "color_palette": "Deep space blue, glowing orange accents"
+  },
+  "vibe": "Epic, mysterious, vast"
+}

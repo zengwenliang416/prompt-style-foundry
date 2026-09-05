@@ -1,0 +1,44 @@
+{
+  "id": "framework-032",
+  "batch": "batch-032",
+  "size": "1024x1536",
+  "promptSha256": "479cf00f0424aa6f386be1d92d9675528adeffbb8828f0cf706a966c5463eb66",
+  "sourceBlueprintSha256": "e15fcb9331d28a05b8312f0e1b6dc0579e1e99cfdff66a664c872cb299dbbf8f",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原插画模板填入狐狸邮局，水彩风格。",
+  "replacements": [
+    {
+      "from": "[题材]",
+      "to": "林间邮局"
+    },
+    {
+      "from": "[角色/主体]",
+      "to": "背着邮包的拟人狐狸"
+    },
+    {
+      "from": "[日漫/水彩/扁平/厚涂]",
+      "to": "水彩"
+    },
+    {
+      "from": "[细腻/粗犷]",
+      "to": "细腻"
+    },
+    {
+      "from": "[配色方案]",
+      "to": "苔绿、暖赭与奶白"
+    },
+    {
+      "from": "[简洁/复杂场景]",
+      "to": "复杂场景：树林中小木屋"
+    },
+    {
+      "from": "[近景/中景/远景]",
+      "to": "中景"
+    },
+    {
+      "from": "[细节]",
+      "to": "信件、树叶和毛发笔触"
+    }
+  ]
+}

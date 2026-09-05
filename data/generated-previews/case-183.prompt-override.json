@@ -1,0 +1,15 @@
+{
+  "templateId": "case-183",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-183.prompt.txt",
+  "originalPromptSha256": "e6709ded95157e94bd09696c7e8d4305f928b8be39af094f7dda8ec0c916e930",
+  "usedPrompt": "case-183.safe.prompt.txt",
+  "usedPromptSha256": "1df033deb45364db0ca790c1b33c0accc63a07b0cc23c5cc0437dfd75741f0e3",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "主题为：【xxx】",
+      "to": "主题为：【新手全身基础力量训练】"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "templateId": "case-56",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-56.prompt.txt",
+  "originalPromptSha256": "5dcc36fec8cc3c6b37ebfc13d2ecdb3494de4663fe6317f86cf49c4d46e344ae",
+  "usedPrompt": "case-56.safe.prompt.txt",
+  "usedPromptSha256": "2a2e91be8b490b0773956aae0de8440e20d0dfa470c1f8bb4eb082c3c8609c4c",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "children's coin-operated",
+      "to": "amusement-park coin-operated"
+    },
+    {
+      "from": "black lace-trimmed tank top",
+      "to": "modest black top"
+    },
+    {
+      "from": "black lace tights",
+      "to": "opaque black tights"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "framework-020",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "70a27394f1d3f8e8ceafd0a6aabc4c6b3793ab3aeddd49154167de04cc2cd8ac",
+  "sourceBlueprintSha256": "fd385543b3a5964094e9403c11fee6cda50e5cc86f270fff9fa67f333d522c7d",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留耳机商品JSON；删除价格和降噪性能宣称，使用虚构概念产品。",
+  "replacements": [
+    {
+      "from": "Noise Cancelling Headphones",
+      "to": "Fictional Over-ear Headphones"
+    },
+    {
+      "from": "\"$299\"",
+      "to": "\"DESIGN STUDY\""
+    },
+    {
+      "from": "Silence the World",
+      "to": "Everyday Rhythm"
+    }
+  ]
+}

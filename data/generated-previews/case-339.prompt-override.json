@@ -1,0 +1,23 @@
+{
+  "templateId": "case-339",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-339.prompt.txt",
+  "originalPromptSha256": "e56949707b8e1563ebdff61fbbf753f7e2c360da6c8f9574731164ec73be0676",
+  "usedPrompt": "case-339.safe.prompt.txt",
+  "usedPromptSha256": "9d5f84f9eae5852b9daeedc04e09cf6ae7b2e2510fa7e5be0480aa447d412785",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Apple keynote 风格",
+      "to": "极简白色产品发布式设计语言"
+    },
+    {
+      "from": "Apple 式产品发布海报语言",
+      "to": "克制的现代产品发布海报语言"
+    },
+    {
+      "from": "为稀有动物、昆虫、爬行动物、哺乳动物或其他小众生物",
+      "to": "为红熊猫"
+    }
+  ]
+}

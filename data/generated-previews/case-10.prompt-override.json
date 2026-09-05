@@ -1,0 +1,15 @@
+{
+  "templateId": "case-10",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-10.prompt.txt",
+  "originalPromptSha256": "eb0bab01aae21e1481db360fa46e32713cf90dd9c932b8afcf6c284d40267255",
+  "usedPrompt": "case-10.safe.prompt.txt",
+  "usedPromptSha256": "6b2f8fc9035be14c1c3aa447b3a0d4c6920063adfb3975ee8d01a03f491a08b4",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "人物包含Sam Altman、Dario Amodei、Elon Musk，Dario Amodei 带上红领巾",
+      "to": "人物包含三位虚构的人工智能研究者，穿着复古宣传画服饰"
+    }
+  ]
+}

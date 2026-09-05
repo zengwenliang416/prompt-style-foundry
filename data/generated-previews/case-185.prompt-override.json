@@ -1,0 +1,19 @@
+{
+  "templateId": "case-185",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-185.prompt.txt",
+  "originalPromptSha256": "e386b8761dc3c48055982ec1612d6a0917904dec54576a6cc1a6c6d3ff9fb40b",
+  "usedPrompt": "case-185.safe.prompt.txt",
+  "usedPromptSha256": "39d0c72aac0cf73c5e44197c55b36c8e735abdb2d3262996458b5343021865b8",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "发微博",
+      "to": "发布到虚构的古风微型博客"
+    },
+    {
+      "from": "posting on Weibo",
+      "to": "posting on a fictional microblog"
+    }
+  ]
+}

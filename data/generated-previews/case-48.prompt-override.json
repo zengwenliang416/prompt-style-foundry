@@ -1,0 +1,23 @@
+{
+  "templateId": "case-48",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-48.prompt.txt",
+  "originalPromptSha256": "041533e82c02330fa5ebad284ac93b5aab327db9bf02920f27a73510d06edad7",
+  "usedPrompt": "case-48.safe.prompt.txt",
+  "usedPromptSha256": "42d4afe55de94c3253928f4ddb81c62a7a238298a9bdb22ea4f28ba39a50818b",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Douyin livestream",
+      "to": "fictional livestream"
+    },
+    {
+      "from": "{argument name=\"celebrity\" default=\"Liu Yifei\"}",
+      "to": "{argument name=\"creator\" default=\"fictional adult host\"}"
+    },
+    {
+      "from": "Yifei",
+      "to": "the host"
+    }
+  ]
+}

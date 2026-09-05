@@ -1,0 +1,23 @@
+{
+  "templateId": "case-26",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-26.prompt.txt",
+  "originalPromptSha256": "659a5f3877c58dd632e37e34a5ffb7d5871bb15f281bc9ca24093af4fba11ca1",
+  "usedPrompt": "case-26.safe.prompt.txt",
+  "usedPromptSha256": "6b053ee0472e428cb381b5070d14f27edb387df3b75be4f2dff928adea1a3c69",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "young Asian woman",
+      "to": "adult Asian woman"
+    },
+    {
+      "from": "white ribbed tank top and a loose beige knit cardigan slipping off one shoulder",
+      "to": "high-neck blouse with a beige knit cardigan worn normally"
+    },
+    {
+      "from": "slightly parted lips",
+      "to": "relaxed closed lips"
+    }
+  ]
+}

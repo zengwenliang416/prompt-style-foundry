@@ -1,0 +1,23 @@
+{
+  "templateId": "case-187",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-187.prompt.txt",
+  "originalPromptSha256": "36f51a43235dbee9b75c0807452ec36fb900eb28a08d2a8ade4f3d552b33a999",
+  "usedPrompt": "case-187.safe.prompt.txt",
+  "usedPromptSha256": "0318022d503f4603e470dbb008ab4f08165ebd2de4f10ddf7643836eeba9f593",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "年轻韩国女性",
+      "to": "成年韩国女性"
+    },
+    {
+      "from": "柔软的吊带背心",
+      "to": "高领针织上衣"
+    },
+    {
+      "from": "微妙的性感",
+      "to": "克制的时装感"
+    }
+  ]
+}

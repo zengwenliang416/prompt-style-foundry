@@ -1,0 +1,15 @@
+{
+  "type": "Editorial Layout",
+  "document": "Fashion Magazine Double-page Spread",
+  "grid": "3-column grid, wide margins",
+  "content": {
+    "left_page": "Full-bleed high-fashion photograph of a model in a red dress",
+    "right_page": {
+      "headline": "THE RED RENAISSANCE",
+      "body_text": "(Simulated text blocks)",
+      "pull_quote": "\"Color is power.\""
+    }
+  },
+  "typography": "Elegant serif for headlines, clean sans-serif for body",
+  "palette": "Monochrome with stark red accents"
+}

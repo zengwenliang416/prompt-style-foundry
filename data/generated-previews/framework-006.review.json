@@ -1,0 +1,11 @@
+{
+  "id": "framework-006",
+  "batch": "batch-031",
+  "size": "1536x1024",
+  "promptSha256": "b502a6028d7d7afd43fa1ee4b57b662e9e3c80b8170262d62e83ebf42ec94563",
+  "sourceBlueprintSha256": "8fe6759df7699191f579961d224a6cdfc60d8659999904ed938fc35c72d95818",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留城市代谢JSON和12面板结构，仅展示概念流向。",
+  "replacements": []
+}

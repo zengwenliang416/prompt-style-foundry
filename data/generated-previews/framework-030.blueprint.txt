@@ -1,0 +1,14 @@
+{
+  "type": "Hyper-realistic Photography",
+  "subject": {
+    "description": "A weary 30-year-old barista wiping a coffee cup",
+    "details": "Subtle sweat on forehead, detailed skin pores, wearing a denim apron"
+  },
+  "setting": "Dimly lit vintage cafe, rain visible through the window behind",
+  "camera_specs": {
+    "gear": "Shot on Sony A7R IV, 50mm lens",
+    "aperture": "f/1.4 (shallow depth of field, background completely blurred)",
+    "lighting": "Cinematic lighting, neon sign reflecting on wet window, soft rim light on subject's hair"
+  },
+  "film_aesthetic": "Kodak Portra 400 emulation, subtle film grain"
+}

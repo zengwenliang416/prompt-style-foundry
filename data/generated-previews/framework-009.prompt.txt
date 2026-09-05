@@ -1,0 +1,24 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-009
+Template family: Posters & Typography
+Template mode: multi-panel
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+设计一张羽毛球商业 Campaign 海报。
+主体：穿完整运动服的30岁虚构成年运动员，姿态：挥拍。
+核心道具：无品牌羽毛球拍，以夸张比例或对角构图成为视觉锚点。
+版式：单张强主视觉。
+大字标题："向光挥拍"，辅助文案："每一次，都向前"。
+视觉风格：高端运动品牌广告，强光影，反光地面，干净构图，品牌化配色深绿与奶白。
+约束：主体清晰，文字可读，色调统一，不要杂乱拼贴，不要生成错误运动器材。
+输出：1:1 或 4:5，适合社媒传播的运动商业视觉。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

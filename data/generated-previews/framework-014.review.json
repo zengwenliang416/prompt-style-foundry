@@ -1,0 +1,16 @@
+{
+  "id": "framework-014",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "9c25f8d9caebca8ac35c48428d6222736a75dd320ff26a61a0487a20edd9cdb2",
+  "sourceBlueprintSha256": "adfdd24cb1c0b49724edebbac0eea335e4bf19627150ca82f86b0d0ae1b12a41",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "只填入山海，保留中文概念字体模板。",
+  "replacements": [
+    {
+      "from": "[标题/词语/短句]",
+      "to": "山海"
+    }
+  ]
+}

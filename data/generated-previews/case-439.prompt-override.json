@@ -1,0 +1,15 @@
+{
+  "templateId": "case-439",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-439.prompt.txt",
+  "originalPromptSha256": "9f9e5385bbf383e99abef329437aee0d7f54374010e84fdb5ca93b45c2a12239",
+  "usedPrompt": "case-439.safe.prompt.txt",
+  "usedPromptSha256": "fef5436304d1d913bda10cc9f672fa028c7c1392be855b1571beff212f31e741",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "teenage genius hacker girl",
+      "to": "adult cybersecurity engineer character"
+    }
+  ]
+}

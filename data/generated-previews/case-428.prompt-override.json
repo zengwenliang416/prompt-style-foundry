@@ -1,0 +1,27 @@
+{
+  "templateId": "case-428",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-428.prompt.txt",
+  "originalPromptSha256": "ab33f5bcc53a1abe3143d59f88f76852996c94ad76e91894cd5f6e84a99bdb75",
+  "usedPrompt": "case-428.safe.prompt.txt",
+  "usedPromptSha256": "4f964e68544514194dad028ad5016fafda6f480f40ae0b0e643748f63cd8e056",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "F1 live TV broadcast",
+      "to": "fictional international motorsport live broadcast"
+    },
+    {
+      "from": "Formula 1 race",
+      "to": "fictional open-wheel race"
+    },
+    {
+      "from": "girlfriend of an F1 driver",
+      "to": "adult invited paddock guest"
+    },
+    {
+      "from": "official live race broadcast",
+      "to": "fictional live race broadcast"
+    }
+  ]
+}

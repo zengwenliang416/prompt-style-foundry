@@ -1,0 +1,14 @@
+{
+  "type": "Architectural Visualization",
+  "space": {
+    "type": "Modern Cabin Interior",
+    "function": "Living room",
+    "materials": "Exposed concrete, large floor-to-ceiling glass, warm timber accents"
+  },
+  "environment": "Nestled in a dense, snowy pine forest visible through the glass",
+  "camera": {
+    "angle": "Eye-level perspective, wide-angle lens",
+    "lighting": "Golden hour, warm interior lights glowing, cool blue ambient light outside"
+  },
+  "render_quality": "Unreal Engine 5 style, hyper-realistic, 8k resolution, ray tracing"
+}

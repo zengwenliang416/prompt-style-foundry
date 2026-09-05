@@ -1,0 +1,19 @@
+{
+  "templateId": "case-2",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-2.prompt.txt",
+  "originalPromptSha256": "8675eab1ff46c23bca17024f987ec0ed815af7d0ab94f98836273196262dd068",
+  "usedPrompt": "case-2.safe.prompt.txt",
+  "usedPromptSha256": "19951b507d118f777e183fc68714d88659254e43bca4bb4e8533b402e32deb50",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "X 的内容截图",
+      "to": "一个虚构社交平台的内容截图"
+    },
+    {
+      "from": "@OpenAI 蓝勾认证账号",
+      "to": "虚构的蓝勾认证创作者账号"
+    }
+  ]
+}

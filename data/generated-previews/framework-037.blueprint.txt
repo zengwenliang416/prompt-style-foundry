@@ -1,0 +1,11 @@
+{
+  "type": "Character Concept Art",
+  "character": {
+    "identity": "Cybernetic Bounty Hunter",
+    "appearance": "Short silver hair, glowing red synthetic left eye, athletic build",
+    "attire": "Tactical trench coat with neon piping, holding a plasma rifle"
+  },
+  "pose": "Dynamic action stance, looking over shoulder with a smirk",
+  "environment": "Rainy neon-lit alleyway background (blurred)",
+  "style": "Concept art, sharp linework, vibrant cyberpunk palette"
+}

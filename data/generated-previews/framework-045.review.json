@@ -1,0 +1,52 @@
+{
+  "id": "framework-045",
+  "batch": "batch-033",
+  "size": "1536x1024",
+  "promptSha256": "8959e5496aeab71207300051691e6e71f57350a520b4c72a1e5c76442b472ed3",
+  "sourceBlueprintSha256": "b2efa29d9a984816f5fab4348a4fc610d80d678d0c5fb060322be9d5c189689f",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原通用模板保留主备两方案，在同一张对比板展示。",
+  "replacements": [
+    {
+      "from": "[你要生成的内容类型]",
+      "to": "两款桌面香薰灯概念对比板"
+    },
+    {
+      "from": "[主体]",
+      "to": "虚构无品牌陶瓷香薰灯"
+    },
+    {
+      "from": "[场景]",
+      "to": "简洁桌面"
+    },
+    {
+      "from": "[风格]",
+      "to": "工业设计可视化"
+    },
+    {
+      "from": "[配色]",
+      "to": "砂白和苔绿"
+    },
+    {
+      "from": "[高清/4K]",
+      "to": "高清"
+    },
+    {
+      "from": "[比例]",
+      "to": "3:2"
+    },
+    {
+      "from": "[构图方式]",
+      "to": "左右对照且留白"
+    },
+    {
+      "from": "[用途]",
+      "to": "设计概念展示"
+    },
+    {
+      "from": "[核心信息]",
+      "to": "灯罩曲线与柔和透光"
+    }
+  ]
+}

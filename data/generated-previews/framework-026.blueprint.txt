@@ -1,0 +1,15 @@
+{
+  "type": "Brand Identity Design",
+  "brand": {
+    "name": "Nova Dynamics",
+    "industry": "AI Technology",
+    "keywords": ["Innovative", "Minimalist", "Trustworthy"]
+  },
+  "deliverables": [
+    "Logo mark (geometric fusion of a neural network node and a star)",
+    "Color palette (Electric Blue and Pure White)",
+    "Business card mockup"
+  ],
+  "style": "Modern corporate, flat vector, high contrast",
+  "constraints": "No gradients, scalable vector style, clean white background for logo"
+}

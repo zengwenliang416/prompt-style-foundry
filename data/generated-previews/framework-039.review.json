@@ -1,0 +1,16 @@
+{
+  "id": "framework-039",
+  "batch": "batch-032",
+  "size": "1024x1536",
+  "promptSha256": "11054960c0060b5b1a3656f007649b00e7871ab98b997d2ca21d6115de2481ed",
+  "sourceBlueprintSha256": "42a6460b3ec19f4b8f352859a70f319904d96cd6bfdab4d2c0ddd0acd8410ae4",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留神庙光柱JSON，探险家明确为成年，无伤害。",
+  "replacements": [
+    {
+      "from": "A young explorer",
+      "to": "An adult 30-year-old explorer"
+    }
+  ]
+}

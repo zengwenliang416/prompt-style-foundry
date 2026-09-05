@@ -1,0 +1,19 @@
+{
+  "templateId": "case-369",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-369.prompt.txt",
+  "originalPromptSha256": "9f981035481833f20b1e17bf396f8a55d8a4e58f42314cf3e73de74a6a62700d",
+  "usedPrompt": "case-369.safe.prompt.txt",
+  "usedPromptSha256": "ad37d45d4f14faf347deff7c5fc5c3c0aae23cd8ce8b1038f59b8256a97aafd5",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "[エリア]",
+      "to": "架空の港町「青波町」"
+    },
+    {
+      "from": "観光エリアマップ",
+      "to": "イラスト観光エリアマップ（実際のナビには使用不可）"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "templateId": "case-354",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-354.prompt.txt",
+  "originalPromptSha256": "f69fa70dc93c603f4babb3ab4cac687b399974eeb9e0512d176f043fb9091bb8",
+  "usedPrompt": "case-354.safe.prompt.txt",
+  "usedPromptSha256": "fb6f50d7bbb107a001ccae4c428fe4ea32dc7bf654fff0990d32fcc879a6ee15",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "1. Logo概念生成提示词\n\n你是一位拥有20年经验的顶级Logo设计师，为全球知名品牌设计过即时识别且深具意义的标志。\n\n品牌名称：[你的品牌名]\n行业：[你的行业]\n品牌个性：[描述]\n目标受众：[描述]\n欣赏的视觉身份：[列举3个]\n讨厌的视觉身份：[列举3个]\n偏好风格：[如极简、大胆、几何、有机、复古、未来]\n\n为我的品牌生成5个完全不同的Logo概念。\n\n对每个概念提供：\n\n- 核心视觉理念及象征意义\n- 形状语言及为何适合品牌\n- 字体方向建议\n- 第一眼的情感触发\n- 为何适合目标受众\n- 在名片、App图标和广告牌上的效果\n- 何为永恒而非潮流\n\n然后告诉我，如果这是你的品牌，你会选哪个以及原因。\n\n2. 品牌身份基础提示词\n\n你是为财富500强公司和初创企业建立品牌身份的顶级品牌战略师，这些企业后来融资数百万。\n\n业务名称：[你的业务名]\n业务描述：[一句话]\n目标受众：[详细描述]\n竞争对手：[列举3-5个]\n想触发的感受：[如信任、兴奋、奢华、亲近、力量]\n想关联的词汇：[列举5-10个]\n不想关联的词汇：[列举5-10个]\n\n在设计任何视觉效果之前建立完整的品牌身份基础。\n\n为我提供：\n\n- 品牌原型及为何完美契合\n- 5个具体人类特征描述的品牌个性\n- 带示例的品牌语调指南\n- 核心品牌承诺（一句话）\n- 3个品牌应触发的情感层级\n- 与竞争对手的根本差异\n- 定义品牌的唯一关键词\n\n3. 配色方案提示词\n\n你是色彩心理学专家和品牌设计师，深知色彩如何触发情感、建立信任和驱动购买决策。\n\n品牌名称：[你的品牌名]\n行业：[你的行业]\n目标受众：[年龄、性别、收入、生活方式]\n想触发的首要情感：[如信任、能量、奢华、平静、兴奋]\n前3名竞争对手颜色：[列举]\n喜欢的颜色：[列举]\n讨厌的颜色：[列举]\n\n为我建立完整品牌配色板。\n\n为我提供：\n\n- 主色及其HEX代码和心理学解释\n- 两个辅助色及HEX代码\n- 一个强调色用于CTA和高亮\n- 一个中性色用于背景和文字\n- 每种颜色对目标受众的影响\n- 与竞争对手的差异化\n- 在网站、社交媒体和包装上的应用示例\n- 永远不要搭配的颜色组合及原因\n\n4. 字体方向提示词\n\n你是字体专家和品牌设计师，深知字体如何传达个性、建立可信度和实现品牌即时识别。\n\n品牌名称：[你的品牌名]\n品牌个性：[5个词]\n行业：[你的行业]\n目标受众：[描述]\n字体应触发的感受：[如权威、友好、创新、优雅、能量]\n喜欢的品牌字体：[列举3个]\n\n为我建立完整字体系统。\n\n为我提供：\n\n- 标题用主显示字体名称及为何完美\n- 长文本的辅助字体\n- 引言或重点的强调字体\n- 标题、副标题、正文、说明文字的精确字号层级\n- 字距和行高建议\n- 字体搭配方法\n- 预算有限时的免费替代方案\n- 你所在行业应避免的字体错误\n\n5. 完整品牌身份包提示词\n\n你是顶级品牌代理创意总监，交付覆盖每个触点的完整品牌身份系统。\n\n业务名称：[你的业务名]\n业务描述：[一句话]\n目标受众：[详细描述]\n品牌个性：[5个词]\n行业：[你的行业]\n竞争对手：[列举3个]\n设计工具预算：[免费或付费]\n时间表：[你需要的时间]\n\n在一个回复中交付我的完整品牌身份系统。\n\n包含所有元素：\n\n- 品牌战略基础、原型、个性、承诺和定位\n- Logo概念及3个变体\n- 完整配色板、HEX代码和使用规则\n- 字体系统、名称、字号和层级\n- 视觉方向指南\n- 品牌语调指南和标语选项\n- 社交媒体视觉模板\n- 3条永远不要打破的核心品牌规则\n\n将一切作为结构化品牌手册交付，任何设计师、开发者或AI工具都能在10分钟内完全理解你的品牌。",
+      "to": "Create a polished 16:9 brand identity presentation board for a fictional sustainable stationery company named “MOSS & INK”. Show one original geometric leaf-and-nib logo, wordmark, monochrome variant, app icon, business card, packaging label, color palette, and typography samples. Style: timeless, minimal, organic, professional, no resemblance to existing trademarks, clean neutral background, clear labels, high-end design-system layout."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "templateId": "case-471",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-471.prompt.txt",
+  "originalPromptSha256": "2f4478fab1746c5b984a27ebbb7ee3c4b370e1b93f049c9cfb7ba3adf76b411c",
+  "usedPrompt": "case-471.safe.prompt.txt",
+  "usedPromptSha256": "ca5dac5f2c80745adb60d35094b968fa8329183ae0c7793de6dc4586f8ee4647",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "young girl",
+      "to": "clearly adult woman, age 25"
+    }
+  ]
+}

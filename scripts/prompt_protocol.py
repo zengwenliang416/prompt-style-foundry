@@ -79,7 +79,7 @@ TEXT_PATTERNS = re.compile(
 )
 
 IMAGE_TO_IMAGE_BLUEPRINT_PATTERNS = (
-    re.compile(r"(?:@image\d*|\bimage1\b|\bREFERENCE[_ -]?\d+\b)", re.IGNORECASE),
+    re.compile(r"(?:@image\d*|\bimage1\b|\bREFERENCE[_ -]?\d+\b|\{argument\s+name=[\"']?reference)", re.IGNORECASE),
     re.compile(
         r"\b(?:uploaded|provided)\s+"
         r"(?:(?:primary|single|only|original|reference|exact|female|male|human|main)\s+){0,3}"
@@ -176,6 +176,14 @@ IMAGE_TO_IMAGE_BLUEPRINT_PATTERNS = (
         r"(?:从输入图中|图中的\[位置|参考图是|上传图片中的|输入的\[(?:签名图|图片|图像|照片)|"
         r"(?:绘制|重绘|转换|修改|编辑)(?:该|此|这张)(?:图|图片|图像|照片))"
     ),
+    re.compile(
+        r"(?:严格参考|作为严格参考|参考脸|保持我的脸(?:部)?(?:完全)?一致|"
+        r"基于真实菜单图片|根据此\s*(?:重新)?生成|使用(?:已附|附加)?的?(?:角色表|角色设定表|chibi插画|立绘)|"
+        r"このちびキャライラストと立ち絵|添付されたキャラクターシート|"
+        r"与这张图片完美匹配|重新设计这个商品广告|这个商品广告|exact face)",
+        re.IGNORECASE,
+    ),
+    re.compile(r"\b(?:of|about)\s+me\b|\bkeep\s+my\s+face\b", re.IGNORECASE),
 )
 
 

@@ -1,0 +1,32 @@
+{
+  "id": "framework-042",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "df34768dd069aa80966160770c695adc8a9e0466a8b58edde5744d207c862648",
+  "sourceBlueprintSha256": "256f7fba2c225742565ba803aa8da192a4994897749b565e07f40d9181549960",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原出版物模板填入虚构植物杂志，短文与图示。",
+  "replacements": [
+    {
+      "from": "[文档类型，如菜单/杂志内页/报纸版式]",
+      "to": "虚构植物杂志双页"
+    },
+    {
+      "from": "[栏数/页边距/标题层级]",
+      "to": "三栏、大页边距、主标题和短副标题"
+    },
+    {
+      "from": "[封面区/正文区/图表区/脚注]",
+      "to": "植物照片区、短正文、叶形图示、页码"
+    },
+    {
+      "from": "[衬线/无衬线]",
+      "to": "衬线"
+    },
+    {
+      "from": "[配色方案]",
+      "to": "米白、墨绿、深灰"
+    }
+  ]
+}

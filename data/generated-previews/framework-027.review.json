@@ -1,0 +1,44 @@
+{
+  "id": "framework-027",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "98bca90e95e328b0036f61fdeca3cb5005aa50e9cd64b9df27c8741816afcdbc",
+  "sourceBlueprintSha256": "48e80bec9ab4357b84817b98519d79cd70911d7489bbb9be19cf54d9b94a0228",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原空间模板填入山间阅读室，非真实建筑认证图。",
+  "replacements": [
+    {
+      "from": "[空间类型]",
+      "to": "山间阅读室"
+    },
+    {
+      "from": "[用途]",
+      "to": "安静阅读"
+    },
+    {
+      "from": "[现代简约/工业/新中式]",
+      "to": "现代简约"
+    },
+    {
+      "from": "[木/石/金属/玻璃]",
+      "to": "木与玻璃"
+    },
+    {
+      "from": "[开敞/分区]",
+      "to": "开敞"
+    },
+    {
+      "from": "[主通道说明]",
+      "to": "中央通道连接书架和窗边座椅"
+    },
+    {
+      "from": "[自然采光/人工照明方案]",
+      "to": "自然采光"
+    },
+    {
+      "from": "[白天/夜景]",
+      "to": "白天"
+    }
+  ]
+}

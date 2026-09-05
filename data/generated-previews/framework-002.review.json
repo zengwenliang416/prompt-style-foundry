@@ -1,0 +1,11 @@
+{
+  "id": "framework-002",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "ec8a0d01e6f13d5ea1d8ae60e9017819e4aa3f93314df28528ff11c7ab475e51",
+  "sourceBlueprintSha256": "6f590e8305ef9333899864073ea465b07a7578945872db1b7e26c82fa337ecd9",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留系统JSON健身UI示例，界面数字为演示数据。",
+  "replacements": []
+}

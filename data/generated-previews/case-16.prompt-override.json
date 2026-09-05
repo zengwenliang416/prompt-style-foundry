@@ -1,0 +1,27 @@
+{
+  "templateId": "case-16",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-16.prompt.txt",
+  "originalPromptSha256": "90392b743bd148b2cd59c142097286d98984c2dd07906b30b6e1701e11aa1e28",
+  "usedPrompt": "case-16.safe.prompt.txt",
+  "usedPromptSha256": "79344a15df543c347ff2e01aabccc07637be377079bf159c87f7299ca9d67107",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "xxxx队",
+      "to": "星河队"
+    },
+    {
+      "from": "xxx的大剪影",
+      "to": "队长的大剪影"
+    },
+    {
+      "from": "xx、土褐、",
+      "to": "深蓝、土褐、"
+    },
+    {
+      "from": "xx、xx、xx、xx以及xx",
+      "to": "星空、球场、风暴、火焰以及旗帜"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "templateId": "case-188",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-188.prompt.txt",
+  "originalPromptSha256": "595447cd2b93376b9b1c63ebe9f3052cb63ae118c51dbfbbb6c6701266a70c18",
+  "usedPrompt": "case-188.safe.prompt.txt",
+  "usedPromptSha256": "a30144e416400c8c583746e2c8259e5f57b8a09413e10f45bcd8e95798711b6b",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "ABCD（a black cover design) 的风格",
+      "to": "极简黑色封面设计语言"
+    },
+    {
+      "from": "In the style of ABCD (a black cover design)",
+      "to": "Using a generic minimalist black-cover design language"
+    }
+  ]
+}

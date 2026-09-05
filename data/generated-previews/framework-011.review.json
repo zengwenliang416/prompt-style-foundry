@@ -1,0 +1,20 @@
+{
+  "id": "framework-011",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "414c517821f05f0497edaacccc600773a553045d90500737f7a8d3c7c1c929b6",
+  "sourceBlueprintSha256": "9e524727c9b148e0631b66297e490e9ffa4322d3a0809cebe15c07858a061993",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "填入虚构姓名林禾，保留六种签名与2x3布局，不仿冒真实签名。",
+  "replacements": [
+    {
+      "from": "[姓名/昵称]",
+      "to": "林禾"
+    },
+    {
+      "from": "[姓名]",
+      "to": "林禾"
+    }
+  ]
+}

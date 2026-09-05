@@ -1,0 +1,19 @@
+{
+  "type": "Custom Generation",
+  "objective": "Generate [Specific content]",
+  "inputs": {
+    "subject": "[Main subject details]",
+    "scene": "[Background and context]",
+    "style": "[Artistic/Visual style]",
+    "palette": "[Color scheme]"
+  },
+  "quality_constraints": {
+    "resolution": "8k, hyper-detailed",
+    "aspect_ratio": "[e.g., 16:9]",
+    "composition": "[e.g., Rule of thirds]"
+  },
+  "output_requirements": {
+    "usage": "[Intended use case]",
+    "focus": "[Key element to highlight]"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "framework-041",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "13ab2276a689169221e7f83f42e264d94e00e9e7d4df0ae2c1a023e73b8724d0",
+  "sourceBlueprintSha256": "1b3649cbde099e147ac6bb8e077be92e6ec7e578ec6e6d119f3055ad711ca87d",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留唐风灯笼JSON；焰火改为灯会避免历史时期混淆。",
+  "replacements": [
+    {
+      "from": "looking at fireworks",
+      "to": "looking at a lantern festival"
+    }
+  ]
+}

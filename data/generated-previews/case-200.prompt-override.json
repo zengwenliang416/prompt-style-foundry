@@ -1,0 +1,27 @@
+{
+  "templateId": "case-200",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-200.prompt.txt",
+  "originalPromptSha256": "b90273aa3ce2339628d4b238a66f07a7e1c000fdf853adbb0dc34ef85445aacb",
+  "usedPrompt": "case-200.safe.prompt.txt",
+  "usedPromptSha256": "b59c38a62f2f4b7680e44f74d7f6148526786a4f13794517818718602ca98f39",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "丝袜和内衣",
+      "to": "围巾、袜子和日常服饰配件"
+    },
+    {
+      "from": "热度是18+",
+      "to": "热度是热门"
+    },
+    {
+      "from": "pantyhose and underwear",
+      "to": "scarves, socks, and everyday fashion accessories"
+    },
+    {
+      "from": "popularity rating is 18+",
+      "to": "popularity rating is trending"
+    }
+  ]
+}

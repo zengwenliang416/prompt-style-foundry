@@ -1,0 +1,15 @@
+{
+  "templateId": "case-477",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-477.prompt.txt",
+  "originalPromptSha256": "941ac2c3490b724c5c97252de97ed1f76728a9b1f4c60060ccf5099ec6e9dc12",
+  "usedPrompt": "case-477.safe.prompt.txt",
+  "usedPromptSha256": "b30124679892992b017e56e1db3cc1b4c16e7188ec9b5558aeefff9914017c20",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Top-down ultra-wide hyper-realistic shot of 4 real people seated at a square dining table. Pull the camera way back so a wide ring of empty floor surrounds the whole scene, giving a clean minimal composition. Scene [ATMOSPHERE + WARDROBE]: the four are styled in [OUTFIT STYLE]. Each one is doing something specific: [DESCRIBE EACH PERSON'S ACTION].\n\nThe table itself is a physical prop built to look like an Instagram post viewed from above:\n- A solid white band runs along the TOP and BOTTOM edges only, with no white on the left or right sides.\n- Top band: a small drawn profile avatar with [LOGO DESCRIPTION], the handle \"[USERNAME]\", a tiny blue verified check next to it, and a \"...\" on the far right.\n- Bottom band: red heart, comment bubble, and share icons painted on the left, bookmark icon on the right.\n\nThe center of the table is one flat color: [EXACT COLOR + HEX CODE]. All food, drinks, props, and any hand interacting with them must stay strictly inside that central colored zone, nothing crosses the white bands or the table edge. The floor around the table is [FLOOR COLOR] to create clear visual separation. Professional studio lighting with crisp shadows, 8k, tack-sharp focus.",
+      "to": "Top-down ultra-wide hyper-realistic studio photograph of four adults seated at a square dining table, with a wide ring of warm-gray floor around the scene. The table is a physical prop styled like an original fictional social post called TABLEGRAM, not any real platform. White bands appear only along the top and bottom edges. The top band shows an original orange sun avatar, handle “@supperclub”, a small gold creator dot, and a three-dot menu. The bottom band uses original outline icons for appreciate, discuss, send, and save. The center is solid terracotta #C95F45. One adult pours tea, one plates pasta, one photographs bread, and one passes a salad; all food and hands remain inside the colored zone. Wardrobe: sage, cream, navy, and rust casual tailoring. Crisp studio shadows, tack-sharp focus, no real logo, no verified badge, no platform clone, no URL, no watermark."
+    }
+  ]
+}

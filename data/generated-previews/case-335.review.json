@@ -1,0 +1,16 @@
+{
+  "id": "case-335",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "9b51f140a68fb5da95a76ffcfb8981b30c8531e6b586efa491daca37edcca143",
+  "sourceBlueprintSha256": "5f1beaaddfe213fce79641cf4ab39cfcd8b9dc68821de347866a137be5883bbf",
+  "promptVariant": "authored-from-template-description",
+  "decision": "approved-for-generation",
+  "reviewNotes": "源模板明确原文未公开；根据其社交截图与中文排版说明补写原创示例，必须标记为补写，不声称还原原文。",
+  "replacements": [
+    {
+      "from": "原文未公开，重点展示 GPT-Image2 在高仿社交截图与中文排版场景中的能力。",
+      "to": "生成一张原创虚构社交应用「林间」的竖版动态页面设计示例，展示中文排版能力。奶白背景与深绿导航，卡片布局、清晰字级、自然留白。虚构账号「林禾的周末」，叶片插画头像，正文「今天在山间散步，把安静带回生活。」配一张山林小径照片。下方两条简短虚构评论：「光线真好」「下次一起走走」。页脚显示「虚构界面 · 设计示例」。不使用真实平台标志、认证标识、真实账号或真实互动数据。输出一个完成的原创手机界面。"
+    }
+  ]
+}

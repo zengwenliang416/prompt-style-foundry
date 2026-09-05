@@ -1,0 +1,19 @@
+{
+  "templateId": "case-101",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-101.prompt.txt",
+  "originalPromptSha256": "d2f314025c199e685a55cc8c2d3e2d62c81c9a515e62f64c87202e6d3d377066",
+  "usedPrompt": "case-101.safe.prompt.txt",
+  "usedPromptSha256": "e9547a51849500f2064956348b4dfec5f145250241f62b44ed4f44cf48ca38bf",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "月30万 ChatGPT副業",
+      "to": "AI副業 基礎ガイド"
+    },
+    {
+      "from": "Stacks of 10,000 Yen bills",
+      "to": "notebook, calculator, and neutral business icons"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "id": "framework-016",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "c1ecf543c2a853877165a0c907dec335d3f64d9839953ea0b82768af76045c9c",
+  "sourceBlueprintSha256": "e56949707b8e1563ebdff61fbbf753f7e2c360da6c8f9574731164ec73be0676",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原自然科普海报填入大熊猫及保守基础事实，去掉品牌定向表述。",
+  "replacements": [
+    {
+      "from": "{中文物种名}",
+      "to": "大熊猫"
+    },
+    {
+      "from": "{一句有吸引力的物种定位}",
+      "to": "黑白之间的自然之美"
+    },
+    {
+      "from": "{英文物种名}",
+      "to": "Giant Panda"
+    },
+    {
+      "from": "{分布区域}",
+      "to": "中国中部山地"
+    },
+    {
+      "from": "{重点特征1标题}",
+      "to": "黑白毛色"
+    },
+    {
+      "from": "{重点特征1短说明}",
+      "to": "四肢与眼周呈黑色"
+    },
+    {
+      "from": "{重点特征2标题}",
+      "to": "宽大臼齿"
+    },
+    {
+      "from": "{重点特征2短说明}",
+      "to": "帮助咀嚼竹子"
+    },
+    {
+      "from": "{重点特征3标题}",
+      "to": "前掌结构"
+    },
+    {
+      "from": "{重点特征3短说明}",
+      "to": "便于抓握竹枝"
+    },
+    {
+      "from": "{重点特征4标题}",
+      "to": "竹林身影"
+    },
+    {
+      "from": "{重点特征4短说明}",
+      "to": "以竹子为主要食物"
+    },
+    {
+      "from": "{一句高级、克制、有记忆点的科普总结}",
+      "to": "在竹影中，看见自然的细节"
+    },
+    {
+      "from": "Apple keynote",
+      "to": "极简编辑"
+    },
+    {
+      "from": "Apple 式",
+      "to": "极简"
+    },
+    {
+      "from": "Apple-inspired",
+      "to": "minimal editorial"
+    },
+    {
+      "from": "Apple 风",
+      "to": "极简"
+    }
+  ]
+}

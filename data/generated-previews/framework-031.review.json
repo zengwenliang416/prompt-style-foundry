@@ -1,0 +1,40 @@
+{
+  "id": "framework-031",
+  "batch": "batch-032",
+  "size": "1024x1536",
+  "promptSha256": "8bc6403a75b181097cd0310f906e31e6aab21f7051ee0a9f6bdb314aec9c730b",
+  "sourceBlueprintSha256": "20b0261927c9234859b050b1a22a238cb964502fdb1accd7ee6f348319bfcd26",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原街头偶发摄影模板填入橘子散落，无伤害场面。",
+  "replacements": [
+    {
+      "from": "[意外事件/日常瞬间]",
+      "to": "一袋橘子意外滚落"
+    },
+    {
+      "from": "[街头/室外地点]",
+      "to": "街角水果摊旁"
+    },
+    {
+      "from": "[物品/人物动作/现场痕迹]",
+      "to": "纸袋裂开、橘子散落且无人受伤"
+    },
+    {
+      "from": "[液体扩散/冰块散落/纸张褶皱/灰尘颗粒]",
+      "to": "纸袋褶皱与真实果皮"
+    },
+    {
+      "from": "[地面材质/墙面/街景元素]",
+      "to": "粗糙水泥地与旧砖墙"
+    },
+    {
+      "from": "[正午强光/阴天散射光/夜间路灯]",
+      "to": "阴天散射光"
+    },
+    {
+      "from": "[人物影子/路牌影子/树影]",
+      "to": "树影"
+    }
+  ]
+}

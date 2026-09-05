@@ -1,0 +1,19 @@
+{
+  "templateId": "case-367",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-367.prompt.txt",
+  "originalPromptSha256": "72447a3e03b53a701c634361d554e5c4590c0194f01636b71886a865ec7eafbe",
+  "usedPrompt": "case-367.safe.prompt.txt",
+  "usedPromptSha256": "dd90a9c977524ba88215e19182eace47373a9336de897b4775a9e465e6ca1cb9",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Tom Ford, Dior inspired",
+      "to": "generic high-end fragrance editorial"
+    },
+    {
+      "from": "sensual",
+      "to": "refined"
+    }
+  ]
+}

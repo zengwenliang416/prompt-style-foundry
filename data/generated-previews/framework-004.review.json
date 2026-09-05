@@ -1,0 +1,48 @@
+{
+  "id": "framework-004",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "dc632c2e00a6d712b77c5926f9069a84af3a17408134b1ca0785a1cf013f4290",
+  "sourceBlueprintSha256": "fb22b8427887f51a1eb3b30e74bcebde0bc8e468d4d1cd1b1c35de74b6f9c9bd",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留直播UI结构；虚构成年陶艺师，不含真实商业背书。",
+  "replacements": [
+    {
+      "from": "[平台，如抖音/快手/B站]",
+      "to": "虚构原创直播应用「手作时光」"
+    },
+    {
+      "from": "[人物描述/名称]",
+      "to": "30岁成年陶艺师林禾"
+    },
+    {
+      "from": "[坐姿/站立/动作]",
+      "to": "坐在工作台前制作陶杯"
+    },
+    {
+      "from": "[服装描述]",
+      "to": "长袖棉衬衫与围裙"
+    },
+    {
+      "from": "[直播间背景描述]",
+      "to": "陶艺工作室木架与素烧陶器"
+    },
+    {
+      "from": "[暖色/冷色/混合]",
+      "to": "暖色"
+    },
+    {
+      "from": "[N]",
+      "to": "3"
+    },
+    {
+      "from": "[写实直播截图/高保真UI/暗黑系/粉嫩系]",
+      "to": "高保真UI"
+    },
+    {
+      "from": "高仿",
+      "to": "原创虚构"
+    }
+  ]
+}

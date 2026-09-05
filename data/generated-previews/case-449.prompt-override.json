@@ -1,0 +1,15 @@
+{
+  "templateId": "case-449",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-449.prompt.txt",
+  "originalPromptSha256": "6d3e3921a99997c14a809410c353805109b728cd420b299ea06ad10ae62cce6d",
+  "usedPrompt": "case-449.safe.prompt.txt",
+  "usedPromptSha256": "8457e33ad26afbfda7cf6e1a00460e19dae84c709caa03469688a366068a9e2c",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "2x2 grid 16:9, do this for 4 most expensive strangest watches ever made:\n\nclass Haute_Horlogerie_DNA:\n    def __init__(self):\n        self.subject = \"[TIMEPIECE]\"\n        self.parents = {\n            \"composition_parent\": \"Exploded movement diagram with transparent case\",\n            \"material_parent\": \"Brushed titanium, sapphire crystal, rose gold gears, alligator leather\",\n            \"graphic_parent\": \"Swiss manufacture technical brochure with elegant data panels\",\n            \"atmosphere_parent\": \"Crisp daylight studio, pure white background, subtle reflection on polished surfaces\"\n        }\n        self.mutations = {\n            \"semantic_mutation\": \"The balance wheel reveals a miniature cosmos ticking inside\",\n            \"information_mutation\": \"Power reserve indicator, frequency, complication callouts, hand-finishing grades, assembly timeline\",\n            \"medium_mutation\": \"Smooth matte premium paper with embossed logo\",\n            \"scale_mutation\": \"Grain-level view of Côtes de Genève finishing and jewel bearings\"\n        }\n        self.style_mix = [0.30, 0.30, 0.25, 0.10, 0.05]\n\n    def generate_subject(self):\n        subject = \"\"\"\n        [TIMEPIECE] shown in its full mechanical glory. The dial, hands, movement,\n        and strap float in perfect alignment against a bright, clean background.\n        Every gear and spring is highlighted with exacting clarity.\n        \"\"\"\n        return render(\n            subject,\n            format=\"luxury watch advertisement with technical insert\",\n            title=\"[MODEL REFERENCE]\",\n            subtitle=\"[MANUFACTURE / COLLECTION]\",\n            constraints=\"bright white space, metallic brilliance, hyper-detailed, modern elegance\"\n        )",
+      "to": "Create a premium 2x2 grid, 16:9 technical atlas of four entirely fictional haute-horlogerie concept watches. Each quadrant shows a different original timepiece with exploded movement diagram, transparent case, brushed titanium, sapphire crystal, rose-gold gears, and leather strap. Include clearly fictional names and illustrative sample specifications, not prices or real-world rankings. Use precise Swiss-manual-style labels, dark neutral background, gold accents, and museum-grade product rendering."
+    }
+  ]
+}

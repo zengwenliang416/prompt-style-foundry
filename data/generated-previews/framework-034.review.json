@@ -1,0 +1,40 @@
+{
+  "id": "framework-034",
+  "batch": "batch-032",
+  "size": "1024x1536",
+  "promptSha256": "60f8f40e559043316a476920af2dd5d0d41646c38c28d5963afbd00a28756dea",
+  "sourceBlueprintSha256": "12610447cc36abf3ccb69383d1409ada176640a52f05e4f84835424f4f0d89a8",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "角色模板填入35岁植物学探险家，完整服装。",
+  "replacements": [
+    {
+      "from": "[角色身份]",
+      "to": "成年植物学探险家"
+    },
+    {
+      "from": "[年龄/发型/服饰/配件]",
+      "to": "35岁、短发、长袖夹克、长裤、植物标本包"
+    },
+    {
+      "from": "[关键词]",
+      "to": "耐心、好奇"
+    },
+    {
+      "from": "[站姿/动态动作]",
+      "to": "站姿"
+    },
+    {
+      "from": "[情绪]",
+      "to": "平静微笑"
+    },
+    {
+      "from": "[时代/阵营/职业]",
+      "to": "当代虚构自然研究者"
+    },
+    {
+      "from": "[元素]",
+      "to": "植物手账与放大镜"
+    }
+  ]
+}

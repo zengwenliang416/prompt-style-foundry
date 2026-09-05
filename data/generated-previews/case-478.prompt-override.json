@@ -1,0 +1,15 @@
+{
+  "templateId": "case-478",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-478.prompt.txt",
+  "originalPromptSha256": "0eddbf44a2524ff493fc110ca4ecb2694868072a2596dab36aa84cc18fea881e",
+  "usedPrompt": "case-478.safe.prompt.txt",
+  "usedPromptSha256": "be5d917927787490edc88611345b99132f0891be73c04ba87f2c4b13f3992947",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "[BRAND NAME]. You are a world-class editorial designer.\n\nSTEP 1, DYNAMIC SUBJECT LOGIC:\n- Subject pick: independently study [BRAND NAME] and choose the right hero subject.\n- Sandwich layering: weave the subject through the background shapes. Parts of the car or figure must sit hidden behind geometric blocks, while other parts (wheels, limbs, props) overlap in front of those blocks to fake real 3D depth.\n\nSTEP 2, GRID & GEOMETRY:\n- Layout: a clean 2x2 grid composition.\n- Overlays: drop large bold geometric arcs and circles on top of the grid.\n- Visual balance: place one iconic product prop (a floating key fob for cars, a ball for sports, etc.) in its own quadrant to counterweight the subject.\n\nSTEP 3, SOPHISTICATED MUTED PALETTE:\n- No aggressive neon, no oversaturated colors.\n- Pull [BRAND NAME]'s core colors and shift them into a \"sophisticated muted\" range. Use desaturated, earthy, dusty versions of the brand colors (dusty rose instead of hot pink, sage green instead of bright mint, slate blue instead of royal blue).\n- Finish: matte flat color blocks, zero gradients.\n\nSTEP 4, PHOTOGRAPHY & LIGHTING:\n- Subject style: high-end commercial studio photography.\n- Lighting: soft diffused studio light, gentle highlights, no harsh shadows.\n- Integration: the subject must feel physically embedded into the graphic grid.\n\nSTEP 5, MINIMALIST BRANDING:\n- Drop a clean single-color [BRAND NAME] logo dead-center on one background block. No tagline, just the iconic symbol.",
+      "to": "Create a polished 2x2 editorial campaign for the entirely fictional urban-mobility brand AEROLITH. The hero subject is an original matte-sage electric bicycle photographed in a studio. Weave the bicycle through dusty coral, slate blue, sand, and sage geometric blocks: the rear wheel passes behind one block while the front wheel and handlebar overlap another. Put an original circular wing-and-path emblem in one quadrant and a floating unbranded key tag in another. Use matte flat colors, zero gradients, soft diffused light, clean negative space, and restrained high-end typography. Center the original AEROLITH wordmark on one block. No real trademark, existing product design, slogan, price, URL, or platform UI."
+    }
+  ]
+}

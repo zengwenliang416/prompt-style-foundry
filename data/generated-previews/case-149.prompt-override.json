@@ -1,0 +1,23 @@
+{
+  "templateId": "case-149",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-149.prompt.txt",
+  "originalPromptSha256": "28caeee0c8e5372f9436e5c27b2622a51d56a0e78262041852a202c5bc2fc5ab",
+  "usedPrompt": "case-149.safe.prompt.txt",
+  "usedPromptSha256": "04196d63d09ab53a935c9215e3bd500197150e8f69d7fa8dd68d718751ff681b",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Elon Musk",
+      "to": "fictional space technology host"
+    },
+    {
+      "from": "SPACEX",
+      "to": "ORBITAL FRONTIER"
+    },
+    {
+      "from": "Starship",
+      "to": "fictional interplanetary rocket"
+    }
+  ]
+}

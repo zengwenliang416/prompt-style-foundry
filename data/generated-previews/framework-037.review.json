@@ -1,0 +1,16 @@
+{
+  "id": "framework-037",
+  "batch": "batch-032",
+  "size": "1024x1536",
+  "promptSha256": "3b3fdab191267bf3ff5fb582fa9acf2f49de0860bcc034aca45d91a2f0fa0445",
+  "sourceBlueprintSha256": "3d7793aa195dc2be31585db83caac6108c43e3e15e40d26b13fdadf2b5866857",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留科幻赏金猎人JSON，指定成年、虚构、无伤害战斗场面。",
+  "replacements": [
+    {
+      "from": "Cybernetic Bounty Hunter",
+      "to": "Fictional 35-year-old Cybernetic Bounty Hunter"
+    }
+  ]
+}

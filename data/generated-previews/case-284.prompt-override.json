@@ -1,0 +1,10 @@
+{
+  "templateId": "case-284",
+  "purpose": "Preview generation safety adjustment",
+  "sourcePrompt": "data/source/cases.json#case-284",
+  "changes": [
+    "Clarified that the subject is an adult",
+    "Removed the age-specific wording",
+    "Excluded nudity, suggestive posing, and emphasis on body parts"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "templateId": "case-8",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-8.prompt.txt",
+  "originalPromptSha256": "bbee5177f9c285ced3ad88d0896d39f91baefdad126313011c2807827b6f6ad6",
+  "usedPrompt": "case-8.safe.prompt.txt",
+  "usedPromptSha256": "63dafcb2914edcacf145b1d97f28e7f2dec8a739650c55ecbff5d0bd00a0bf90",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "根据【主题】",
+      "to": "根据主题“城市植物”"
+    }
+  ]
+}

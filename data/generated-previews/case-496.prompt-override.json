@@ -1,0 +1,15 @@
+{
+  "templateId": "case-496",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-496.prompt.txt",
+  "originalPromptSha256": "50ad48c732ee111fd6841b9c793ec4546de77261220a7a4fb27342f846d4def1",
+  "usedPrompt": "case-496.safe.prompt.txt",
+  "usedPromptSha256": "ed2d065e761200bd2742cd41f62a2e30260eecc5250e893110e2cccf3dfb4b61",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Create a premium 3x2 grid collage of iconic global brand logos recreated entirely from dynamic water formations, floating above a crystal-clear ocean under a vibrant blue sky. Each panel features a different logo sculpted from realistic transparent water, with detailed splashes, droplets, reflections, refractions, and flowing liquid textures. The water forms should look physically accurate, elegant, and instantly recognizable while remaining made completely of water.",
+      "to": "Create a premium 3x2 grid collage of six entirely original abstract emblems sculpted from dynamic transparent water above a crystal-clear ocean under a vibrant blue sky. Each panel features a different fictional symbol: spiral sun, split crescent, three-leaf knot, angular wave, orbit star, and nested hexagon. Render physically accurate splashes, droplets, reflections, refractions, and flowing liquid textures. The emblems must not resemble or name any existing company, product, sports team, institution, or trademark. Elegant advertising composition, crisp daylight, consistent scale, no text, no watermark, no brand logos."
+    }
+  ]
+}

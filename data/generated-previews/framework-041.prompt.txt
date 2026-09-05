@@ -1,0 +1,28 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-041
+Template family: History & Classical Themes
+Template mode: scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "type": "Historical/Oriental Scene",
+  "setting": "Tang Dynasty Capital City at Night",
+  "subject": {
+    "identity": "Noblewoman",
+    "clothing": "Traditional Ruqun (襦裙) with elaborate floral embroidery",
+    "action": "Holding a glowing silk lantern, looking at a lantern festival"
+  },
+  "style": "Cinematic realism combined with subtle traditional ink wash (水墨) textures",
+  "details": "Accurate Tang architecture, bustling crowd in background",
+  "constraints": "No modern elements, historically accurate clothing structure"
+}
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

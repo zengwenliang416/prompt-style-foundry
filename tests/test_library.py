@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import unittest
 from collections import Counter
 from pathlib import Path
 
+from PIL import Image
+
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 class GeneratedLibraryTests(unittest.TestCase):
@@ -37,8 +44,8 @@ class GeneratedLibraryTests(unittest.TestCase):
         templates = self.library["templates"]
         counts = Counter(item["blueprintInputMode"] for item in templates)
         self.assertEqual(set(counts), {"text-to-image", "image-to-image"})
-        self.assertEqual(counts["text-to-image"], 501)
-        self.assertEqual(counts["image-to-image"], 75)
+        self.assertEqual(counts["text-to-image"], 493)
+        self.assertEqual(counts["image-to-image"], 83)
         self.assertEqual(sum(counts.values()), len(templates))
         self.assertEqual(self.library["stats"]["blueprintInputModes"], dict(sorted(counts.items())))
         self.assertEqual(self.catalog["stats"]["blueprintInputModes"], dict(sorted(counts.items())))
@@ -64,6 +71,34 @@ class GeneratedLibraryTests(unittest.TestCase):
             preview = ROOT / "public" / item["preview"]
             self.assertTrue(preview.is_file(), item["id"])
             self.assertGreater(preview.stat().st_size, 0, item["id"])
+
+    def test_reviewed_generated_previews_match_public_assets(self) -> None:
+        source_dir = ROOT / "data/generated-previews"
+        manifest = json.loads((source_dir / "manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schemaVersion"], "1.0.0")
+        self.assertGreater(len(manifest["entries"]), 0)
+
+        template_ids: set[str] = set()
+        for entry in manifest["entries"]:
+            template_id = entry["templateId"]
+            self.assertNotIn(template_id, template_ids)
+            template_ids.add(template_id)
+
+            source = source_dir / entry["asset"]
+            public = ROOT / "public/previews" / entry["asset"]
+            self.assertTrue(source.is_file(), template_id)
+            self.assertTrue(public.is_file(), template_id)
+            self.assertEqual(sha256_file(source), entry["sha256"], template_id)
+            self.assertEqual(sha256_file(public), entry["sha256"], template_id)
+
+            with Image.open(source) as image:
+                self.assertEqual(image.format, "WEBP", template_id)
+                self.assertEqual([image.width, image.height], entry["size"], template_id)
+
+            prompt_override = entry.get("promptOverride")
+            if prompt_override is not None:
+                self.assertEqual(prompt_override, f"{template_id}.prompt-override.json")
+                self.assertTrue((source_dir / prompt_override).is_file(), template_id)
 
 
 if __name__ == "__main__":

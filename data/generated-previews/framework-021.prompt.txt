@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-021
+Template family: Brand & Logos
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+为虚构品牌「苔原纸品」设计品牌视觉方案。
+品牌关键词：安静、自然、清晰。
+包含：Logo方向几何、辅助图形、主辅色、应用示意。
+风格：现代，行业：文具纸品，受众：成年设计爱好者。
+输出：统一风格的品牌识别视觉图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

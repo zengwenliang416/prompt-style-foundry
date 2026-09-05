@@ -1,0 +1,44 @@
+{
+  "id": "framework-009",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "cca5a6ab6ae120b0dc3895a7694f18009c956085d94bbe697df20f2da1aa31c2",
+  "sourceBlueprintSha256": "daf1bef08b1c29c87409a6034386bae05b38b461f07bbb6b6c74a9f5fa1eb25c",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原运动广告字段填入成年羽毛球运动员，无品牌或成绩宣称。",
+  "replacements": [
+    {
+      "from": "[运动项目/健身品类]",
+      "to": "羽毛球"
+    },
+    {
+      "from": "[运动员/模特/产品道具]",
+      "to": "穿完整运动服的30岁虚构成年运动员"
+    },
+    {
+      "from": "[坐姿/冲刺/挥拍/力量动作]",
+      "to": "挥拍"
+    },
+    {
+      "from": "[球拍/哑铃/球鞋/球衣]",
+      "to": "无品牌羽毛球拍"
+    },
+    {
+      "from": "[单张强主视觉/三联画/数据涂鸦海报]",
+      "to": "单张强主视觉"
+    },
+    {
+      "from": "[主标题]",
+      "to": "向光挥拍"
+    },
+    {
+      "from": "[短句/数据/精神口号]",
+      "to": "每一次，都向前"
+    },
+    {
+      "from": "[主色+辅助色]",
+      "to": "深绿与奶白"
+    }
+  ]
+}

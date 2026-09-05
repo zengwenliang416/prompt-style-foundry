@@ -1,0 +1,12 @@
+{
+  "templateId": "case-215",
+  "purpose": "Preview generation safety adjustment after output moderation block",
+  "sourcePrompt": "case-215.prompt.txt",
+  "generationPrompt": "case-215.safe.prompt.txt",
+  "changes": [
+    "Restricted the timeline to non-explicit Western art history for a general-audience educational infographic",
+    "Required fully clothed adult figures and non-sexualized framing",
+    "Excluded nudity, erotic scenes, sexualized poses, fetish content, and intimate body-part close-ups"
+  ],
+  "blockReason": "Image API output moderation blocked the original generation with sexual violation."
+}

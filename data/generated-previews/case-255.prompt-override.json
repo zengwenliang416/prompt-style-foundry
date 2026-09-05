@@ -1,0 +1,11 @@
+{
+  "templateId": "case-255",
+  "purpose": "Preview generation safety adjustment",
+  "sourcePrompt": "data/source/cases.json#case-255",
+  "changes": [
+    "Clarified that the presenter is an adult",
+    "Specified complete opaque non-revealing activewear",
+    "Changed the pose to a professional garment demonstration",
+    "Removed emphasis on body curves and body parts"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "templateId": "case-403",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-403.prompt.txt",
+  "originalPromptSha256": "09df426159bbfdf1883fda378038ab94005d92ecf8a4f3ef81156e828f3a970d",
+  "usedPrompt": "case-403.safe.prompt.txt",
+  "usedPromptSha256": "861abaa490d3688179a212a3cc0252bc746ef416e4bb810cad79626c851457d2",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "小红书帖文",
+      "to": "虚构生活方式社区帖文"
+    },
+    {
+      "from": "一位气质绝佳的女孩",
+      "to": "一位成年时尚创作者"
+    }
+  ]
+}

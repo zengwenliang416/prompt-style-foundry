@@ -1,0 +1,30 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-028
+Template family: Architecture & Spaces
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "type": "Architectural Visualization",
+  "space": {
+    "type": "Modern Cabin Interior",
+    "function": "Living room",
+    "materials": "Exposed concrete, large floor-to-ceiling glass, warm timber accents"
+  },
+  "environment": "Nestled in a dense, snowy pine forest visible through the glass",
+  "camera": {
+    "angle": "Eye-level perspective, wide-angle lens",
+    "lighting": "Golden hour, warm interior lights glowing, cool blue ambient light outside"
+  },
+  "render_quality": "Unreal Engine 5 style, hyper-realistic, 8k resolution, ray tracing"
+}
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

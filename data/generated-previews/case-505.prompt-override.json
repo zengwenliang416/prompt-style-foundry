@@ -1,0 +1,36 @@
+{
+  "templateId": "case-505",
+  "promptVariant": "safety-adjusted-preview",
+  "originalPrompt": "case-505.prompt.txt",
+  "originalPromptSha256": "7723d6a6d9103cfa064d7094ed514f39dafd82b676032a69b2439ed3fa58ccfa",
+  "safePrompt": "case-505.safe.prompt.txt",
+  "safePromptSha256": "050fd790aa269f0d43f0ce27545eda93feb446745e55a0dfb89a930fbeb9e168",
+  "reason": "原始提示在输出阶段触发 sexual 安全拦截；改为全覆盖、非性感生活方式肖像，保留手机冷光、沙发夜景和低照度摄影结构。",
+  "changes": [
+    {
+      "from": "A young adult woman",
+      "to": "An adult woman"
+    },
+    {
+      "from": "leaning forward across a dark upholstered couch at night",
+      "to": "sitting comfortably on a dark upholstered couch at night in a neutral, non-sensual lifestyle pose"
+    },
+    {
+      "from": "She wears a pale cream lace-trim camisole with thin straps and matching soft shorts.",
+      "to": "She wears an opaque pale cream long-sleeve knit top and loose matching lounge trousers, fully covered and non-revealing."
+    },
+    {
+      "from": "Her expression is dreamy and softly tired, eyes lifted toward the camera as if she just looked up from scrolling, lips gently closed in a relaxed pout.",
+      "to": "Her expression is calm and naturally tired, eyes lifted toward the camera as if she just looked up from scrolling, with a neutral relaxed expression."
+    },
+    {
+      "from": "Soft glam makeup: subtle eyeliner, long lashes, smooth skin, glossy pink-nude lips.",
+      "to": "Natural understated makeup, realistic skin texture, and a neutral lip color."
+    },
+    {
+      "from": "Realistic social-media night portrait aesthetic.",
+      "to": "Realistic non-sensual late-night lifestyle portrait aesthetic; no lingerie, no cleavage, no erotic framing, no exposed skin beyond head and hands."
+    }
+  ],
+  "reviewStatus": "pre-review-approved-for-retry"
+}

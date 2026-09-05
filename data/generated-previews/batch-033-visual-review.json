@@ -1,0 +1,40 @@
+{
+  "batch": "batch-033",
+  "items": [
+    {
+      "id": "framework-043",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "c996ac36fa3b965395bb505fde178fe10234b551aa69748f36dd413c9bf39063",
+      "imageSha256": "ad0d22b0a87d55193e3d03807c748c327a5ea5ed5e037141fe499a4c132b5ead"
+    },
+    {
+      "id": "framework-044",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "b756136448d46cd55ae4fd08d4357806c664c2e1535d9dcdcdfbac5211ad7f68",
+      "imageSha256": "088f54107c92464ffa9e655bc9a2f7c99fb4245a9782b0d32ff0c6744cac974c"
+    },
+    {
+      "id": "framework-045",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "8959e5496aeab71207300051691e6e71f57350a520b4c72a1e5c76442b472ed3",
+      "imageSha256": "922444b04f6bdf448b51aa86964f06f75a075c7584e32c2cc8cb0146cba21755"
+    },
+    {
+      "id": "framework-046",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "38d1e729074bb351f4784b39c02f984700bbff7a9db34eb04b8a26e5f20ad70b",
+      "imageSha256": "76724d08454e320a1e9e9ef8040bb4a5f640c15d585d39ba106c68241f31f911"
+    },
+    {
+      "id": "framework-047",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "9a9ca77e2af5d24bde4d0d617df8772a55ba2726cdb6ebbeb0c01d92ea914766",
+      "imageSha256": "a5a06d1785c517e9bb5afc02a04b3c070b8b8bb431d509eefcdd913df64bfa12"
+    }
+  ]
+}

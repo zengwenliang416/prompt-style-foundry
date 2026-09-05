@@ -1,0 +1,145 @@
+{
+  "batch": "batch-031",
+  "items": [
+    {
+      "id": "case-198",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "5e66ff5bafe1131f611c9dbbf0c79f3b8ed44d81af7ec8fbc47c197e1d40ed94",
+      "imageSha256": "1fcbe5c960ac7f2d38b2808e05ef07c5c4194450bdb2e32231104acfbad5a38b"
+    },
+    {
+      "id": "case-335",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "9b51f140a68fb5da95a76ffcfb8981b30c8531e6b586efa491daca37edcca143",
+      "imageSha256": "0ec8fda3e23dbb9d607807ce4e7a924db358538befb5385d5ed76334d35a4517"
+    },
+    {
+      "id": "case-364",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "2e9cc526cb0f58d880eff9773e110c44a1921d0e8da53fdc3192af53ebffadd2",
+      "imageSha256": "0a1eb2f237a7363797d41a4f12c2504897e816fdb8a44b149066bb9f6b1a5185"
+    },
+    {
+      "id": "case-463",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "c4bbb4cb466f498e7429b02d5644445ec909d2369fd5c6a8ccd2637714bc3efc",
+      "imageSha256": "8e88a3614f43e9ec076fe994c87bfe96663b3a83f3bbf358f438c3e251465cbc"
+    },
+    {
+      "id": "framework-001",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "6d7e4fe0eb62611fba271ddc5ab3c7cf5082473bddd076c9861700fa1686541d",
+      "imageSha256": "d6d459d2c7231f6836b7ee458aa2ad98215f7daa91fdc851c5463eab0624fba2"
+    },
+    {
+      "id": "framework-002",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "ec8a0d01e6f13d5ea1d8ae60e9017819e4aa3f93314df28528ff11c7ab475e51",
+      "imageSha256": "912969f3c5519632a6e6c39002a1146c326e0a9777ec42f40f7c467a78157237"
+    },
+    {
+      "id": "framework-003",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "fa30714aa1850695a794a780277a8110af40047fc66e66e7fb1e0903c590d66a",
+      "imageSha256": "0bb549733c11ede68e07d1996d76f4c33109836d6b114812f41c7e096ffb54bb"
+    },
+    {
+      "id": "framework-004",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "dc632c2e00a6d712b77c5926f9069a84af3a17408134b1ca0785a1cf013f4290",
+      "imageSha256": "58d7de39142571b58d9ce5934f9e84121c45f7df483b7321cbcb5cb085b0bff8"
+    },
+    {
+      "id": "framework-005",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "f29d3e18208de121f53435f0bc1e6ccfd6f88509acf13e0e45218e6417414b0b",
+      "imageSha256": "a11772499871c85e4c9f1303befc9c87e25e32c72e8a6c188e4647b41734f5ce"
+    },
+    {
+      "id": "framework-006",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "b502a6028d7d7afd43fa1ee4b57b662e9e3c80b8170262d62e83ebf42ec94563",
+      "imageSha256": "04f84a0a571952e6e96af30b9b4a04612af0ca408c43cd5c2bff269f2d3e6d3f"
+    },
+    {
+      "id": "framework-007",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "06b1e747f07c7cbc92cb8e83ec296f2367648491692c29bd22f10809646cad00",
+      "imageSha256": "44c2f753dc9be70ac5cf18521e2bff657ac3f9c1eba49519dd138c42e966cc5c"
+    },
+    {
+      "id": "framework-008",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "d31720bf2e441f9a9c531805d72c4a3283cb8062ec7a3aaed0f6e4b4c3cb76be",
+      "imageSha256": "4f9132b06a5a512f52eb18f9357504e7df9fd04fbec349adc9a9ec0cd5a7cfd0"
+    },
+    {
+      "id": "framework-009",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "cca5a6ab6ae120b0dc3895a7694f18009c956085d94bbe697df20f2da1aa31c2",
+      "imageSha256": "a8037eca7fe554e64bd03f93d984f0443c91bc392e87f4897b462b49ddf9cfff"
+    },
+    {
+      "id": "framework-010",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "5da30f7a0638e7bc2a78994206f160c5404824636515c0d7e3b520b03c722bc6",
+      "imageSha256": "ce6097d406ebc6adb4517936e447322b1eea5f2ef2a7d9d0870e90815f1329fc"
+    },
+    {
+      "id": "framework-011",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "414c517821f05f0497edaacccc600773a553045d90500737f7a8d3c7c1c929b6",
+      "imageSha256": "e98d8fd689a5effb91007bd3765e62139f15beb09e4a2469f049581843f0c02c"
+    },
+    {
+      "id": "framework-014",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "9c25f8d9caebca8ac35c48428d6222736a75dd320ff26a61a0487a20edd9cdb2",
+      "imageSha256": "c3b7e7f6d641302dc54d3e180e0ae6a702ec9ae4068bdf5dd10444e598ed3abc"
+    },
+    {
+      "id": "framework-015",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "3fe859d5b7e45ca77f43516b465498c5031b84f4a7c3e6807b5fb37976803693",
+      "imageSha256": "703ba2ca3ec501dc52c3ca777af92c1c948e1433172ba02f79dd0abf0872aa8c"
+    },
+    {
+      "id": "framework-016",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "c1ecf543c2a853877165a0c907dec335d3f64d9839953ea0b82768af76045c9c",
+      "imageSha256": "b8465046eb6e678a3502ce35d2db10cdafb4b122fb0774fb12c5d3da5ed7a20e"
+    },
+    {
+      "id": "framework-017",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "d4ca8000df65f8c6da730002090f49bc4b10e3f50657ac5c5a2fa79465f9a9f7",
+      "imageSha256": "4f1e505b99d1ecafc41b0b0573d5e91fd9be224860426ade02edfff7f6cb9372"
+    },
+    {
+      "id": "framework-018",
+      "status": "approved",
+      "notes": "Contact sheet reviewed: subject, layout and dominant visual system correspond to the resolved project template; no input image was used.",
+      "promptSha256": "dabec861ecafe8677ef5803c7ecbf1e199fa9a6c7bdaa956ea042a2aa7a8e9f6",
+      "imageSha256": "d7105b2bb82ebbbf0a78aab133a78a8f90b71b835930979da90a19c40c0cd934"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-027
+Template family: Architecture & Spaces
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成山间阅读室设计效果图，功能定位为安静阅读。
+风格：现代简约，材质：木与玻璃。
+空间结构：开敞，动线：中央通道连接书架和窗边座椅。
+光线：自然采光，时间：白天。
+输出：写实建筑空间渲染图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

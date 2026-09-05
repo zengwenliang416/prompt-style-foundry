@@ -1,0 +1,1863 @@
+{
+  "reviewed": [
+    {
+      "id": "case-198",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "5e66ff5bafe1131f611c9dbbf0c79f3b8ed44d81af7ec8fbc47c197e1d40ed94",
+      "sourceBlueprintSha256": "ddba037269c0108f9d8158e575055d2dfa357de74702db99646c8f0294c1fd91",
+      "promptVariant": "safe-rewrite",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留原JSON相机、蓝白配色、双辫、海滩日光和抬手遮阳；改为明确成年、闭领宽松衬衫的头肩肖像，移除性化衣领与负向指令。",
+      "replacements": [
+        {
+          "from": "[中文]\n{\n  \"相机参数\": {\n    \"设备类型\": \"iPhone 15 Pro 前置自拍\",\n    \"镜头\": \"24mm\",\n    \"构图\": \"高角度 POV（第一人称视角）\",\n    \"后期处理\": \"计算摄影风格，清晰的数字读出，深景深\"\n  },\n  \"主体描述\": {\n    \"特征\": \"陶瓷娃娃审美，无瑕的苍白皮肤，巨大的冰蓝色眼睛，小巧的鼻子，翘起的自然色嘴唇\",\n    \"表情\": \"面无表情，空洞，瞪大眼睛注视\",\n    \"造型\": \"白金色的双紧辫发型，鲜艳的蓝色美甲\",\n    \"服装\": \"浅蓝色紧身弹力棉上衣，极深超宽 V 领，深邃锁骨与领口线\",\n    \"动作\": \"抬头仰视镜头，用一只手遮挡刺眼的阳光\"\n  },\n  \"环境与灯光\": {\n    \"场景\": \"广阔的沙滩，背景中模糊的海平线\",\n    \"灯光\": \"高调明亮的沿海日光，5500K 色温，强烈的白沙反光填充，均匀照明\",\n    \"质感\": \"微带露水的无孔皮肤，细腻的反光白沙颗粒\"\n  },\n  \"技术约束\": {\n    \"色彩科学\": \"柔和的粉彩色调，线性中性色，高曝光\",\n    \"负面提示词\": [\n      \"重阴影\",\n      \"雪\",\n      \"冬装\",\n      \"红指甲\",\n      \"黑色上衣\",\n      \"保守的领口\",\n      \"胶片颗粒感\"\n    ]\n  }\n}\n\n[English]\n{\n  \"cameraParameters\": {\n    \"deviceType\": \"iPhone 15 Pro front selfie\",\n    \"lens\": \"24mm\",\n    \"composition\": \"High angle POV (first-person perspective)\",\n    \"postProcessing\": \"Computational photography style, clear digital readout, deep depth of field\"\n  },\n  \"subjectDescription\": {\n    \"features\": \"Porcelain doll aesthetic, flawless pale skin, huge ice-blue eyes, small nose, slightly upturned natural-colored lips\",\n    \"expression\": \"Expressionless, hollow, wide-eyed staring\",\n    \"styling\": \"Platinum blonde tight double braids hairstyle, vibrant blue nail polish\",\n    \"clothing\": \"Light blue tight stretch cotton top, extremely deep ultra-wide V-neck, deep collarbone and neckline\",\n    \"action\": \"Looking up at the camera, blocking the glaring sunlight with one hand\"\n  },\n  \"environmentAndLighting\": {\n    \"scene\": \"Vast sandy beach, blurry horizon in the background\",\n    \"lighting\": \"High-key bright coastal daylight, 5500K color temperature, strong white sand reflection fill, even lighting\",\n    \"texture\": \"Slightly dewy poreless skin, fine reflective white sand particles\"\n  },\n  \"technicalConstraints\": {\n    \"colorScience\": \"Soft pastel tones, linear neutral colors, high exposure\",\n    \"negativePrompts\": [\n      \"Heavy shadows\",\n      \"Snow\",\n      \"Winter clothing\",\n      \"Red nails\",\n      \"Black top\",\n      \"Conservative neckline\",\n      \"Film grain\"\n    ]\n  }\n}",
+          "to": "{\n  \"cameraParameters\": {\n    \"deviceType\": \"iPhone 15 Pro front selfie\",\n    \"lens\": \"24mm\",\n    \"composition\": \"High angle POV (first-person perspective)\",\n    \"postProcessing\": \"Computational photography style, clear digital readout, deep depth of field\"\n  },\n  \"subjectDescription\": {\n    \"features\": \"Clearly adult 30-year-old woman, pale natural skin, ice-blue eyes, natural proportions\",\n    \"expression\": \"Calm, relaxed expression\",\n    \"styling\": \"Platinum blonde tight double braids hairstyle, vibrant blue nail polish\",\n    \"clothing\": \"Loose opaque light-blue long-sleeve cotton shirt, closed collar, fully clothed head-and-shoulders portrait\",\n    \"action\": \"Looking up at the camera, blocking the glaring sunlight with one hand\"\n  },\n  \"environmentAndLighting\": {\n    \"scene\": \"Vast sandy beach, blurry horizon in the background\",\n    \"lighting\": \"High-key bright coastal daylight, 5500K color temperature, strong white sand reflection fill, even lighting\",\n    \"texture\": \"Natural skin texture and fine reflective white sand\"\n  },\n  \"technicalConstraints\": {\n    \"colorScience\": \"Soft pastel tones, linear neutral colors, high exposure\",\n    \"negativePrompts\": [\n      \"Heavy shadows\",\n      \"Snow\",\n      \"Red nails\",\n      \"Film grain\"\n    ]\n  }\n}"
+        }
+      ]
+    },
+    {
+      "id": "case-335",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "9b51f140a68fb5da95a76ffcfb8981b30c8531e6b586efa491daca37edcca143",
+      "sourceBlueprintSha256": "5f1beaaddfe213fce79641cf4ab39cfcd8b9dc68821de347866a137be5883bbf",
+      "promptVariant": "authored-from-template-description",
+      "decision": "approved-for-generation",
+      "reviewNotes": "源模板明确原文未公开；根据其社交截图与中文排版说明补写原创示例，必须标记为补写，不声称还原原文。",
+      "replacements": [
+        {
+          "from": "原文未公开，重点展示 GPT-Image2 在高仿社交截图与中文排版场景中的能力。",
+          "to": "生成一张原创虚构社交应用「林间」的竖版动态页面设计示例，展示中文排版能力。奶白背景与深绿导航，卡片布局、清晰字级、自然留白。虚构账号「林禾的周末」，叶片插画头像，正文「今天在山间散步，把安静带回生活。」配一张山林小径照片。下方两条简短虚构评论：「光线真好」「下次一起走走」。页脚显示「虚构界面 · 设计示例」。不使用真实平台标志、认证标识、真实账号或真实互动数据。输出一个完成的原创手机界面。"
+        }
+      ]
+    },
+    {
+      "id": "case-364",
+      "batch": "batch-031",
+      "size": "1536x1024",
+      "promptSha256": "2e9cc526cb0f58d880eff9773e110c44a1921d0e8da53fdc3192af53ebffadd2",
+      "sourceBlueprintSha256": "52c80362adc2b5f8c7361dbb9bdb542048259a55cf92917b22c2cb4337888cd8",
+      "promptVariant": "safe-rewrite",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留原十分区、暖纸色、肖像、配色与衣橱结构；虚构成年人物，去除诊断/功效与品牌指向。",
+      "replacements": [
+        {
+          "from": "Studio portrait of subject as anchor",
+          "to": "Studio portrait of a fictional, fully clothed 30-year-old woman as anchor"
+        },
+        {
+          "from": "skin retouched to luminous glass-like perfection",
+          "to": "natural, softly lit skin"
+        },
+        {
+          "from": "Vogue Italia beauty supplement",
+          "to": "original fashion color supplement"
+        },
+        {
+          "from": "UNDERTONE DIAGNOSIS",
+          "to": "COLOR INSPIRATION"
+        },
+        {
+          "from": "precision needle marker on subject's reading",
+          "to": "decorative palette marker, not a measured skin reading"
+        },
+        {
+          "from": "subject's optimal season",
+          "to": "a coordinated warm autumn-inspired palette"
+        },
+        {
+          "from": "COLORS TO AVOID",
+          "to": "ALTERNATIVE COLORS"
+        },
+        {
+          "from": "Net-a-Porter editorial aesthetic",
+          "to": "original refined editorial aesthetic"
+        }
+      ]
+    },
+    {
+      "id": "case-463",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "c4bbb4cb466f498e7429b02d5644445ec909d2369fd5c6a8ccd2637714bc3efc",
+      "sourceBlueprintSha256": "7bf7d3127fddc78f51e36bccdbddef117045a6913d7e21bb66b87e734a3bdafd",
+      "promptVariant": "safe-rewrite",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原模板为穿戴单款系列且曾被安全拒绝；保留八类纹理、配色和标注结构，实质改为纯织物平铺总览，不含人物或身体，标记为改写示例。",
+      "replacements": [
+        {
+          "from": "《黑色丝袜图鉴款式单图》提示词：\n\n请基于同一套「黑色丝袜 / 吊带袜图鉴」系列风格，继续生成 8 张对应单款的独立展示图。\n\n【系列要求】\n- 这些图片必须和已完成的总览图鉴属于同一个系列\n- 整体版式、字体、色调、背景、质感、排版逻辑保持一致\n- 都是竖版、高完成度、暖白 / 浅灰白背景、轻奢女性向时尚图鉴风格\n- 每一张都像同一个品牌或同一套视觉系统下的延展页面\n\n【每张单图的共同结构】\n1. 顶部标题区\n- 英文系列标题：BLACK GARTER GUIDE\n- 中文主标题：黑色丝袜 / 吊带袜单款展示\n- 当前款式名称：__________\n- 一句简短副标题：突出该款式的核心特点\n\n2. 中部主体区\n- 以 1 位成人女性模特穿戴展示为主\n- 重点展示对应款式的关键细节：\n  - 经典蕾丝款：袜口蕾丝、优雅氛围\n  - 细网眼款：网格纹理、轻盈通透\n  - 波点款：波点图案、复古俏皮\n  - 后缝线款：背后缝线、线条感\n  - 竖条纹款：纵向条纹、修饰腿型\n  - 交叉绑带款：绑带结构、设计感\n  - 极简透肤款：透明感、基础百搭\n  - 花纹蕾丝款：花纹装饰、浪漫氛围\n- 每张图的人物长相、发型、姿势、镜头角度要不同，但都要保持高级、真实、性感、写实\n- 允许使用站姿、坐姿、交叉腿、倚靠、回眸等不同姿势\n- 画面要有立体感、阴影层次和高级编辑感\n\n3. 注释区\n- 每张图都要保留 3 到 5 条手绘式标注\n- 可以使用箭头、短线、圈注、手写风标签\n- 标注内容要围绕该款式最关键的细节，比如：\n  - 袜口结构\n  - 花纹纹理\n  - 透明度\n  - 缝线位置\n  - 绑带方式\n  - 腿部线条效果\n- 标注文字简洁、清楚、统一风格\n\n4. 底部信息区\n- 加入简短的 “Style Notes / 风格速记”\n- 用 1 到 2 句说明该款适合的场景和氛围\n- 保持简洁，不要抢主体\n\n【统一视觉要求】\n- 保持和总览图鉴完全统一的整体视觉系统\n- 背景统一为暖白、浅灰白或奶白\n- 风格统一为高级、干净、时尚图鉴感、轻奢女性视觉\n- 模特必须真实、立体、写实、自然肤质\n- 每张图都要突出产品，不要低俗，不要过度情色化\n- 每张图都应像同一系列里的不同章节，避免呈现为彼此割裂的作品\n\n【款式列表】\n1. 经典蕾丝款 / Classic Lace\n2. 细网眼款 / Fine Fishnet\n3. 波点款 / Dot Sheer\n4. 后缝线款 / Back Seam\n5. 竖条纹款 / Stripe Sheer\n6. 交叉绑带款 / Cross Strap\n7. 极简透肤款 / Minimal Sheer\n8. 花纹蕾丝袜 / Floral Lace\n\n【输出目标】\n按以上 8 个款式，分别生成 8 张独立展示图。\n要求每张都保留统一系列感，同时人物造型、发型、姿势和镜头语言明显不同，确保整套看起来完整、专业、可收藏。",
+          "to": "生成一张竖版「黑色织物纹理图鉴」产品平铺设计板。保留原模板的奶白背景、精致时尚图鉴排版、标题区、手绘箭头标注、底部 Style Notes 和八种纹理分类。标题 BLACK TEXTILE GUIDE / 黑色织物纹理图鉴。中部用2列4行展示八块黑色织物方形样布：经典蕾丝、细网眼、波点、后缝线、竖条纹、交叉织带、极简薄纱、花纹蕾丝。每块样布平铺在纸面，真实纤维纹理，柔和侧光与细微阴影；每格短标题和两条材质标注。底部短句「从纹理到结构」。这是纯织物设计参考：无人物、无人台、无身体部位、无穿戴展示。只生成一张完整图鉴总览。"
+        }
+      ]
+    },
+    {
+      "id": "framework-001",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "6d7e4fe0eb62611fba271ddc5ab3c7cf5082473bddd076c9861700fa1686541d",
+      "sourceBlueprintSha256": "bc1391e88ff81698a9a0761048de5f4f77152ffa1f280319b7cefe8fa808b8b1",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "用具体读书应用填入原模板字段，原创UI，无输入图依赖。",
+      "replacements": [
+        {
+          "from": "[产品类型]",
+          "to": "读书笔记应用"
+        },
+        {
+          "from": "[平台，如 iOS/Android/Web]",
+          "to": "iOS"
+        },
+        {
+          "from": "[功能点A]",
+          "to": "书架"
+        },
+        {
+          "from": "[功能点B]",
+          "to": "阅读进度"
+        },
+        {
+          "from": "[功能点C]",
+          "to": "笔记收藏"
+        },
+        {
+          "from": "[极简/科技/拟物]",
+          "to": "极简"
+        },
+        {
+          "from": "[颜色]",
+          "to": "森林绿与米白"
+        },
+        {
+          "from": "[顶部导航/双栏/卡片流]",
+          "to": "卡片流"
+        },
+        {
+          "from": "[9:16/16:9]",
+          "to": "9:16"
+        }
+      ]
+    },
+    {
+      "id": "framework-002",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "ec8a0d01e6f13d5ea1d8ae60e9017819e4aa3f93314df28528ff11c7ab475e51",
+      "sourceBlueprintSha256": "6f590e8305ef9333899864073ea465b07a7578945872db1b7e26c82fa337ecd9",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留系统JSON健身UI示例，界面数字为演示数据。",
+      "replacements": []
+    },
+    {
+      "id": "framework-003",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "fa30714aa1850695a794a780277a8110af40047fc66e66e7fb1e0903c590d66a",
+      "sourceBlueprintSha256": "7e58cb194d4ab4887928596a81fd587046e2fb329853eac135443a30d2a5fd80",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留社交截图模板结构；填入虚构平台、虚构账号及演示互动数据。",
+      "replacements": [
+        {
+          "from": "[平台，如 X/抖音/小红书/微信朋友圈]",
+          "to": "虚构社交应用「林间」"
+        },
+        {
+          "from": "[深色/浅色]",
+          "to": "浅色"
+        },
+        {
+          "from": "[9:16 / 3:4 / 1:1]",
+          "to": "9:16"
+        },
+        {
+          "from": "[头像描述 / 用户名 / 认证标识]",
+          "to": "手绘叶片头像 / 林间日记 / 无认证标识"
+        },
+        {
+          "from": "[具体文本内容，包含指定中文]",
+          "to": "今天把时间留给森林。记录一片叶子，也记录片刻安静。"
+        },
+        {
+          "from": "[点赞/评论/转发/收藏数量]",
+          "to": "虚构示例：点赞128 / 评论12 / 收藏36"
+        },
+        {
+          "from": "[状态栏/导航栏/搜索栏]",
+          "to": "原创状态栏与林间导航栏"
+        },
+        {
+          "from": "[操作栏/Tab栏/输入框]",
+          "to": "原创操作栏和输入框"
+        },
+        {
+          "from": "[浮窗/弹幕/礼物特效/购物车卡片]",
+          "to": "小型森林照片卡片"
+        },
+        {
+          "from": "高仿",
+          "to": "原创虚构"
+        }
+      ]
+    },
+    {
+      "id": "framework-004",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "dc632c2e00a6d712b77c5926f9069a84af3a17408134b1ca0785a1cf013f4290",
+      "sourceBlueprintSha256": "fb22b8427887f51a1eb3b30e74bcebde0bc8e468d4d1cd1b1c35de74b6f9c9bd",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留直播UI结构；虚构成年陶艺师，不含真实商业背书。",
+      "replacements": [
+        {
+          "from": "[平台，如抖音/快手/B站]",
+          "to": "虚构原创直播应用「手作时光」"
+        },
+        {
+          "from": "[人物描述/名称]",
+          "to": "30岁成年陶艺师林禾"
+        },
+        {
+          "from": "[坐姿/站立/动作]",
+          "to": "坐在工作台前制作陶杯"
+        },
+        {
+          "from": "[服装描述]",
+          "to": "长袖棉衬衫与围裙"
+        },
+        {
+          "from": "[直播间背景描述]",
+          "to": "陶艺工作室木架与素烧陶器"
+        },
+        {
+          "from": "[暖色/冷色/混合]",
+          "to": "暖色"
+        },
+        {
+          "from": "[N]",
+          "to": "3"
+        },
+        {
+          "from": "[写实直播截图/高保真UI/暗黑系/粉嫩系]",
+          "to": "高保真UI"
+        },
+        {
+          "from": "高仿",
+          "to": "原创虚构"
+        }
+      ]
+    },
+    {
+      "id": "framework-005",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "f29d3e18208de121f53435f0bc1e6ccfd6f88509acf13e0e45218e6417414b0b",
+      "sourceBlueprintSha256": "dadbb3af8ffe55966dd6a9ed9c41754ee0a416fc89e31448b938465da71402ae",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "填入纸艺流程，避免原占位示例中的医疗建议。",
+      "replacements": [
+        {
+          "from": "[主题：明确、具体，避免宽泛。例如：“老年人日常健康管理指南”而非“健康”]",
+          "to": "从纸张到手工笔记本的装订流程"
+        },
+        {
+          "from": "[人群:细化人群特征，如年龄段、职业、兴趣等]",
+          "to": "喜欢纸艺的成年初学者"
+        },
+        {
+          "from": "[3-5]",
+          "to": "4"
+        },
+        {
+          "from": "[流程图/对比图/关系图/时间线]",
+          "to": "流程图"
+        },
+        {
+          "from": "[专业报告/科普插画/儿童教育等]",
+          "to": "科普插画"
+        },
+        {
+          "from": "[颜色]",
+          "to": "靛蓝与米白"
+        },
+        {
+          "from": "[浅色/深色]",
+          "to": "浅色"
+        }
+      ]
+    },
+    {
+      "id": "framework-006",
+      "batch": "batch-031",
+      "size": "1536x1024",
+      "promptSha256": "b502a6028d7d7afd43fa1ee4b57b662e9e3c80b8170262d62e83ebf42ec94563",
+      "sourceBlueprintSha256": "8fe6759df7699191f579961d224a6cdfc60d8659999904ed938fc35c72d95818",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留城市代谢JSON和12面板结构，仅展示概念流向。",
+      "replacements": []
+    },
+    {
+      "id": "framework-007",
+      "batch": "batch-031",
+      "size": "1536x1024",
+      "promptSha256": "06b1e747f07c7cbc92cb8e83ec296f2367648491692c29bd22f10809646cad00",
+      "sourceBlueprintSha256": "6eb919d203f11dec51f8521814b617574002da1cf4bd925d02500bb99906fe0a",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "填入橡树六级尺度，量级仅为图示，不声称测量结果。",
+      "replacements": [
+        {
+          "from": "[主题]",
+          "to": "橡树：叶片细胞、叶片、枝条、树冠、整株树、林地；各尺度大小仅用约略量级示意"
+        }
+      ]
+    },
+    {
+      "id": "framework-008",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "d31720bf2e441f9a9c531805d72c4a3283cb8062ec7a3aaed0f6e4b4c3cb76be",
+      "sourceBlueprintSha256": "18ec72d2926d0643ae64640a3a2995b5d267a078147b14750f1a782125b2603f",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原海报字段填入虚构爵士活动，保留标题和几何主视觉。",
+      "replacements": [
+        {
+          "from": "[活动/产品/电影]",
+          "to": "虚构爵士音乐活动"
+        },
+        {
+          "from": "[主题词]",
+          "to": "夜航"
+        },
+        {
+          "from": "[主体元素]",
+          "to": "月亮与萨克斯风的几何剪影"
+        },
+        {
+          "from": "[标题]",
+          "to": "夜航爵士"
+        },
+        {
+          "from": "[副标题]",
+          "to": "让旋律照亮夜色"
+        },
+        {
+          "from": "[居中/左对齐/对角构图]",
+          "to": "左对齐"
+        },
+        {
+          "from": "[复古/未来/极简]",
+          "to": "复古"
+        },
+        {
+          "from": "[主色 + 辅色]",
+          "to": "深海蓝 + 黄铜金"
+        },
+        {
+          "from": "[情绪关键词]",
+          "to": "安静而有节奏"
+        }
+      ]
+    },
+    {
+      "id": "framework-009",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "cca5a6ab6ae120b0dc3895a7694f18009c956085d94bbe697df20f2da1aa31c2",
+      "sourceBlueprintSha256": "daf1bef08b1c29c87409a6034386bae05b38b461f07bbb6b6c74a9f5fa1eb25c",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原运动广告字段填入成年羽毛球运动员，无品牌或成绩宣称。",
+      "replacements": [
+        {
+          "from": "[运动项目/健身品类]",
+          "to": "羽毛球"
+        },
+        {
+          "from": "[运动员/模特/产品道具]",
+          "to": "穿完整运动服的30岁虚构成年运动员"
+        },
+        {
+          "from": "[坐姿/冲刺/挥拍/力量动作]",
+          "to": "挥拍"
+        },
+        {
+          "from": "[球拍/哑铃/球鞋/球衣]",
+          "to": "无品牌羽毛球拍"
+        },
+        {
+          "from": "[单张强主视觉/三联画/数据涂鸦海报]",
+          "to": "单张强主视觉"
+        },
+        {
+          "from": "[主标题]",
+          "to": "向光挥拍"
+        },
+        {
+          "from": "[短句/数据/精神口号]",
+          "to": "每一次，都向前"
+        },
+        {
+          "from": "[主色+辅助色]",
+          "to": "深绿与奶白"
+        }
+      ]
+    },
+    {
+      "id": "framework-010",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "5da30f7a0638e7bc2a78994206f160c5404824636515c0d7e3b520b03c722bc6",
+      "sourceBlueprintSha256": "eb92a1825bebefa596c5989ec8b7ec03e679c340b3ac651764869dfd5972ffd9",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "只填入GRAVITY，保留原概念字体海报规则。",
+      "replacements": [
+        {
+          "from": "[标题/词语/短句]",
+          "to": "GRAVITY"
+        }
+      ]
+    },
+    {
+      "id": "framework-011",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "414c517821f05f0497edaacccc600773a553045d90500737f7a8d3c7c1c929b6",
+      "sourceBlueprintSha256": "9e524727c9b148e0631b66297e490e9ffa4322d3a0809cebe15c07858a061993",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "填入虚构姓名林禾，保留六种签名与2x3布局，不仿冒真实签名。",
+      "replacements": [
+        {
+          "from": "[姓名/昵称]",
+          "to": "林禾"
+        },
+        {
+          "from": "[姓名]",
+          "to": "林禾"
+        }
+      ]
+    },
+    {
+      "id": "framework-014",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "9c25f8d9caebca8ac35c48428d6222736a75dd320ff26a61a0487a20edd9cdb2",
+      "sourceBlueprintSha256": "adfdd24cb1c0b49724edebbac0eea335e4bf19627150ca82f86b0d0ae1b12a41",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "只填入山海，保留中文概念字体模板。",
+      "replacements": [
+        {
+          "from": "[标题/词语/短句]",
+          "to": "山海"
+        }
+      ]
+    },
+    {
+      "id": "framework-015",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "3fe859d5b7e45ca77f43516b465498c5031b84f4a7c3e6807b5fb37976803693",
+      "sourceBlueprintSha256": "00187a0f8542556a6a91435e84834fcfbae7521a8e2f51c6226afdfcb2135d7a",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原水墨双重曝光模板填入虚构成年旅行者及山谷。",
+      "replacements": [
+        {
+          "from": "[人物/角色/品牌主理人/运动员]",
+          "to": "虚构的成年旅行者"
+        },
+        {
+          "from": "[站姿/动作姿态/凝视镜头]",
+          "to": "站姿"
+        },
+        {
+          "from": "[关键场景]",
+          "to": "云雾山谷"
+        },
+        {
+          "from": "[象征物]",
+          "to": "松树"
+        },
+        {
+          "from": "[叙事片段]",
+          "to": "山间行路"
+        },
+        {
+          "from": "[环境纹理]",
+          "to": "层叠山石"
+        },
+        {
+          "from": "[标题/姓名/短句]",
+          "to": "远山"
+        }
+      ]
+    },
+    {
+      "id": "framework-016",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "c1ecf543c2a853877165a0c907dec335d3f64d9839953ea0b82768af76045c9c",
+      "sourceBlueprintSha256": "e56949707b8e1563ebdff61fbbf753f7e2c360da6c8f9574731164ec73be0676",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原自然科普海报填入大熊猫及保守基础事实，去掉品牌定向表述。",
+      "replacements": [
+        {
+          "from": "{中文物种名}",
+          "to": "大熊猫"
+        },
+        {
+          "from": "{一句有吸引力的物种定位}",
+          "to": "黑白之间的自然之美"
+        },
+        {
+          "from": "{英文物种名}",
+          "to": "Giant Panda"
+        },
+        {
+          "from": "{分布区域}",
+          "to": "中国中部山地"
+        },
+        {
+          "from": "{重点特征1标题}",
+          "to": "黑白毛色"
+        },
+        {
+          "from": "{重点特征1短说明}",
+          "to": "四肢与眼周呈黑色"
+        },
+        {
+          "from": "{重点特征2标题}",
+          "to": "宽大臼齿"
+        },
+        {
+          "from": "{重点特征2短说明}",
+          "to": "帮助咀嚼竹子"
+        },
+        {
+          "from": "{重点特征3标题}",
+          "to": "前掌结构"
+        },
+        {
+          "from": "{重点特征3短说明}",
+          "to": "便于抓握竹枝"
+        },
+        {
+          "from": "{重点特征4标题}",
+          "to": "竹林身影"
+        },
+        {
+          "from": "{重点特征4短说明}",
+          "to": "以竹子为主要食物"
+        },
+        {
+          "from": "{一句高级、克制、有记忆点的科普总结}",
+          "to": "在竹影中，看见自然的细节"
+        },
+        {
+          "from": "Apple keynote",
+          "to": "极简编辑"
+        },
+        {
+          "from": "Apple 式",
+          "to": "极简"
+        },
+        {
+          "from": "Apple-inspired",
+          "to": "minimal editorial"
+        },
+        {
+          "from": "Apple 风",
+          "to": "极简"
+        }
+      ]
+    },
+    {
+      "id": "framework-017",
+      "batch": "batch-031",
+      "size": "1024x1536",
+      "promptSha256": "d4ca8000df65f8c6da730002090f49bc4b10e3f50657ac5c5a2fa79465f9a9f7",
+      "sourceBlueprintSha256": "8b0bc3bfde7eb0cdf42a6f5e2d62a6ac98ff7e6a335028a25fbbb408faa6a76e",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留系统星际海报JSON、标题和主视觉。",
+      "replacements": []
+    },
+    {
+      "id": "framework-018",
+      "batch": "batch-031",
+      "size": "1536x1024",
+      "promptSha256": "dabec861ecafe8677ef5803c7ecbf1e199fa9a6c7bdaa956ea042a2aa7a8e9f6",
+      "sourceBlueprintSha256": "feee6c08c1c0d8561431bc3ed72713934d252c640cefb9e62dbd3c62e491b070",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "商品模板填入虚构陶杯，仅展示可见形状和材质。",
+      "replacements": [
+        {
+          "from": "[商品名]",
+          "to": "虚构无品牌陶瓷杯"
+        },
+        {
+          "from": "[卖点1]",
+          "to": "哑光釉面"
+        },
+        {
+          "from": "[卖点2]",
+          "to": "圆润杯柄"
+        },
+        {
+          "from": "[纯色棚拍/生活方式场景]",
+          "to": "纯色棚拍"
+        },
+        {
+          "from": "[特写/半身/全景]",
+          "to": "特写"
+        },
+        {
+          "from": "[材质关键词]",
+          "to": "细腻陶瓷与浅色釉面"
+        },
+        {
+          "from": "[柔光/侧光/轮廓光]",
+          "to": "柔光"
+        },
+        {
+          "from": "[价格角标/卖点icon/促销文案]",
+          "to": "简短材质标签，不写价格或性能承诺"
+        }
+      ]
+    },
+    {
+      "id": "framework-020",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "70a27394f1d3f8e8ceafd0a6aabc4c6b3793ab3aeddd49154167de04cc2cd8ac",
+      "sourceBlueprintSha256": "fd385543b3a5964094e9403c11fee6cda50e5cc86f270fff9fa67f333d522c7d",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留耳机商品JSON；删除价格和降噪性能宣称，使用虚构概念产品。",
+      "replacements": [
+        {
+          "from": "Noise Cancelling Headphones",
+          "to": "Fictional Over-ear Headphones"
+        },
+        {
+          "from": "\"$299\"",
+          "to": "\"DESIGN STUDY\""
+        },
+        {
+          "from": "Silence the World",
+          "to": "Everyday Rhythm"
+        }
+      ]
+    },
+    {
+      "id": "framework-021",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "71b20a9e9a1bcc4583683610a3303bde03a58d36ddc48124cac6e63eb791cd25",
+      "sourceBlueprintSha256": "ad95d2b733281920c9ac94373b3ff61e2410cee8c48f523cac5c4b8ff7d36511",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "品牌识别模板填入虚构纸品品牌。",
+      "replacements": [
+        {
+          "from": "[品牌名]",
+          "to": "虚构品牌「苔原纸品」"
+        },
+        {
+          "from": "[关键词1]",
+          "to": "安静"
+        },
+        {
+          "from": "[关键词2]",
+          "to": "自然"
+        },
+        {
+          "from": "[关键词3]",
+          "to": "清晰"
+        },
+        {
+          "from": "[几何/字标/图形]",
+          "to": "几何"
+        },
+        {
+          "from": "[现代/高级/亲和]",
+          "to": "现代"
+        },
+        {
+          "from": "[行业]",
+          "to": "文具纸品"
+        },
+        {
+          "from": "[受众]",
+          "to": "成年设计爱好者"
+        }
+      ]
+    },
+    {
+      "id": "framework-022",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "fd3aac2f164ebfdcda3a060ee19f3c4d86703c18d76a9810acd8b567ae22e5a9",
+      "sourceBlueprintSha256": "5f22beb9dc82c63e7237128de6dd32830cf89dbb0149fb247433289490b44345",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原品牌手册的六项结构保留，用一张视觉手册总览表达。",
+      "replacements": [
+        {
+          "from": "[业务/产品]",
+          "to": "虚构纸品品牌"
+        },
+        {
+          "from": "[业务名]",
+          "to": "苔原纸品"
+        },
+        {
+          "from": "[一句话说明]",
+          "to": "以自然色彩设计日常笔记本"
+        },
+        {
+          "from": "[行业]",
+          "to": "文具纸品"
+        },
+        {
+          "from": "[详细描述]",
+          "to": "喜爱自然与书写的成年用户"
+        },
+        {
+          "from": "[3-5个]",
+          "to": "不引用真实竞争对手，用纸感、留白、图案三种方向比较"
+        },
+        {
+          "from": "[5个关键词]",
+          "to": "自然、安静、朴素、清晰、耐看"
+        },
+        {
+          "from": "[信任 / 兴奋 / 奢华 / 亲近 / 力量 / 其他]",
+          "to": "亲近"
+        },
+        {
+          "from": "[3个参考]",
+          "to": "几何叶片、素纸字标、细线山形"
+        },
+        {
+          "from": "[3个反例]",
+          "to": "拥挤排版、霓虹色、复杂阴影"
+        },
+        {
+          "from": "[免费 / 付费]",
+          "to": "免费字体方案"
+        }
+      ]
+    },
+    {
+      "id": "framework-023",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "1316b5670c73f0765219c6473f28d5f626c8e1b17f8f5e884df5f409c393379f",
+      "sourceBlueprintSha256": "0a6c59107825f4a7656d271fb636b4f06968042047d091012db8dd92ca56bfe2",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原品牌触点模板填入同一虚构纸品品牌。",
+      "replacements": [
+        {
+          "from": "[品牌名]",
+          "to": "虚构品牌「苔原纸品」"
+        },
+        {
+          "from": "[行业/生活方式/产品品类]",
+          "to": "自然系文具"
+        },
+        {
+          "from": "[关键词1]",
+          "to": "安静"
+        },
+        {
+          "from": "[关键词2]",
+          "to": "细腻"
+        },
+        {
+          "from": "[关键词3]",
+          "to": "朴素"
+        },
+        {
+          "from": "[核心产品/服务/体验]",
+          "to": "笔记本与信封"
+        },
+        {
+          "from": "[材质表面/空间场景]",
+          "to": "浅木桌面"
+        },
+        {
+          "from": "[光线]",
+          "to": "窗边柔光"
+        },
+        {
+          "from": "[镜头]",
+          "to": "俯视与近景"
+        },
+        {
+          "from": "[现代极简/日式留白/奢华编辑/科技品牌]",
+          "to": "日式留白"
+        },
+        {
+          "from": "[颜色]",
+          "to": "苔绿与米白"
+        }
+      ]
+    },
+    {
+      "id": "framework-026",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "8441efd0ff7136a728aa0fc4ee5a2f83fdff850d2ac199695737bd53b4451ef3",
+      "sourceBlueprintSha256": "fecaa38d6b774e3c62fecac9a25afa8d0849f9e863e94d9911fda6657aa5ed34",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留Nova Dynamics JSON，明确为虚构品牌概念。",
+      "replacements": []
+    },
+    {
+      "id": "framework-027",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "98bca90e95e328b0036f61fdeca3cb5005aa50e9cd64b9df27c8741816afcdbc",
+      "sourceBlueprintSha256": "48e80bec9ab4357b84817b98519d79cd70911d7489bbb9be19cf54d9b94a0228",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原空间模板填入山间阅读室，非真实建筑认证图。",
+      "replacements": [
+        {
+          "from": "[空间类型]",
+          "to": "山间阅读室"
+        },
+        {
+          "from": "[用途]",
+          "to": "安静阅读"
+        },
+        {
+          "from": "[现代简约/工业/新中式]",
+          "to": "现代简约"
+        },
+        {
+          "from": "[木/石/金属/玻璃]",
+          "to": "木与玻璃"
+        },
+        {
+          "from": "[开敞/分区]",
+          "to": "开敞"
+        },
+        {
+          "from": "[主通道说明]",
+          "to": "中央通道连接书架和窗边座椅"
+        },
+        {
+          "from": "[自然采光/人工照明方案]",
+          "to": "自然采光"
+        },
+        {
+          "from": "[白天/夜景]",
+          "to": "白天"
+        }
+      ]
+    },
+    {
+      "id": "framework-028",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "f6b96b728bfa2f90b967e86def1cb15a1e7f80eb9265c7bf82e5cb5340a75363",
+      "sourceBlueprintSha256": "071c1d3b374a12a1ab907c766b9878915b5986b45f43c392846206d28da896e9",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留林间小屋JSON，作为建筑概念渲染。",
+      "replacements": []
+    },
+    {
+      "id": "framework-029",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "9fc7b03d329bb10f20ed178a76d0383730f39e5eecdee3009ace892e5bb225f6",
+      "sourceBlueprintSha256": "a8daf764ddb3be4fe8f856b23fa1baac927ef6b33bd61cd1d4ef99bbb819d743",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原摄影模板填入雨巷自行车，无人物参考需求。",
+      "replacements": [
+        {
+          "from": "[人物/物品/街景]",
+          "to": "一台无品牌复古自行车"
+        },
+        {
+          "from": "[地点]",
+          "to": "雨后石板巷口"
+        },
+        {
+          "from": "[35mm/85mm]",
+          "to": "35mm"
+        },
+        {
+          "from": "[浅景深/深景深]",
+          "to": "浅景深"
+        },
+        {
+          "from": "[纪实/电影感]",
+          "to": "纪实"
+        },
+        {
+          "from": "[自然光/夜景霓虹/逆光]",
+          "to": "自然光"
+        },
+        {
+          "from": "[情绪词]",
+          "to": "宁静"
+        },
+        {
+          "from": "[肤质/材质/颗粒感]",
+          "to": "金属水珠、石板纹理与细微颗粒"
+        }
+      ]
+    },
+    {
+      "id": "framework-030",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "dbd94347c1f8590a1047453b15768fa13111e2417f2248b6e058fb0f775e35cc",
+      "sourceBlueprintSha256": "e5644828173111ffb63e568974798a48d68665a129d035fdc6cad283720dfff9",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留30岁咖啡师JSON，无真实人物身份要求。",
+      "replacements": []
+    },
+    {
+      "id": "framework-031",
+      "batch": "batch-032",
+      "size": "1024x1536",
+      "promptSha256": "8bc6403a75b181097cd0310f906e31e6aab21f7051ee0a9f6bdb314aec9c730b",
+      "sourceBlueprintSha256": "20b0261927c9234859b050b1a22a238cb964502fdb1accd7ee6f348319bfcd26",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原街头偶发摄影模板填入橘子散落，无伤害场面。",
+      "replacements": [
+        {
+          "from": "[意外事件/日常瞬间]",
+          "to": "一袋橘子意外滚落"
+        },
+        {
+          "from": "[街头/室外地点]",
+          "to": "街角水果摊旁"
+        },
+        {
+          "from": "[物品/人物动作/现场痕迹]",
+          "to": "纸袋裂开、橘子散落且无人受伤"
+        },
+        {
+          "from": "[液体扩散/冰块散落/纸张褶皱/灰尘颗粒]",
+          "to": "纸袋褶皱与真实果皮"
+        },
+        {
+          "from": "[地面材质/墙面/街景元素]",
+          "to": "粗糙水泥地与旧砖墙"
+        },
+        {
+          "from": "[正午强光/阴天散射光/夜间路灯]",
+          "to": "阴天散射光"
+        },
+        {
+          "from": "[人物影子/路牌影子/树影]",
+          "to": "树影"
+        }
+      ]
+    },
+    {
+      "id": "framework-032",
+      "batch": "batch-032",
+      "size": "1024x1536",
+      "promptSha256": "479cf00f0424aa6f386be1d92d9675528adeffbb8828f0cf706a966c5463eb66",
+      "sourceBlueprintSha256": "e15fcb9331d28a05b8312f0e1b6dc0579e1e99cfdff66a664c872cb299dbbf8f",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原插画模板填入狐狸邮局，水彩风格。",
+      "replacements": [
+        {
+          "from": "[题材]",
+          "to": "林间邮局"
+        },
+        {
+          "from": "[角色/主体]",
+          "to": "背着邮包的拟人狐狸"
+        },
+        {
+          "from": "[日漫/水彩/扁平/厚涂]",
+          "to": "水彩"
+        },
+        {
+          "from": "[细腻/粗犷]",
+          "to": "细腻"
+        },
+        {
+          "from": "[配色方案]",
+          "to": "苔绿、暖赭与奶白"
+        },
+        {
+          "from": "[简洁/复杂场景]",
+          "to": "复杂场景：树林中小木屋"
+        },
+        {
+          "from": "[近景/中景/远景]",
+          "to": "中景"
+        },
+        {
+          "from": "[细节]",
+          "to": "信件、树叶和毛发笔触"
+        }
+      ]
+    },
+    {
+      "id": "framework-033",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "ced6eb33145ba4794c0188a97b872c6627a29040798ea9dcb557031628f8883a",
+      "sourceBlueprintSha256": "e1a6efb4d129b3ed0c81b062014068ff87bf8900fb0ea938e66a4db012e646ef",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留飞鲸村落JSON，插画风格为手绘动画背景。",
+      "replacements": [
+        {
+          "from": "Studio Ghibli inspired anime style",
+          "to": "Hand-painted whimsical animation style"
+        }
+      ]
+    },
+    {
+      "id": "framework-034",
+      "batch": "batch-032",
+      "size": "1024x1536",
+      "promptSha256": "60f8f40e559043316a476920af2dd5d0d41646c38c28d5963afbd00a28756dea",
+      "sourceBlueprintSha256": "12610447cc36abf3ccb69383d1409ada176640a52f05e4f84835424f4f0d89a8",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "角色模板填入35岁植物学探险家，完整服装。",
+      "replacements": [
+        {
+          "from": "[角色身份]",
+          "to": "成年植物学探险家"
+        },
+        {
+          "from": "[年龄/发型/服饰/配件]",
+          "to": "35岁、短发、长袖夹克、长裤、植物标本包"
+        },
+        {
+          "from": "[关键词]",
+          "to": "耐心、好奇"
+        },
+        {
+          "from": "[站姿/动态动作]",
+          "to": "站姿"
+        },
+        {
+          "from": "[情绪]",
+          "to": "平静微笑"
+        },
+        {
+          "from": "[时代/阵营/职业]",
+          "to": "当代虚构自然研究者"
+        },
+        {
+          "from": "[元素]",
+          "to": "植物手账与放大镜"
+        }
+      ]
+    },
+    {
+      "id": "framework-035",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "8f493d0a072eb0397a40b27aadc1135bbdf6afa2553c8543ed60250e048cfd3b",
+      "sourceBlueprintSha256": "32908dedbe407bb0e351c62d05c9348fdd41a7465d90552e516051b0d4f7c51d",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "16格动作模板填入成年舞者、完整服装；非外部人物参考。",
+      "replacements": [
+        {
+          "from": "[角色/人物]",
+          "to": "穿长袖运动衫和长裤的30岁成年舞者"
+        },
+        {
+          "from": "[黑白线稿/3D 灰阶/漫画分镜/教学图]",
+          "to": "黑白线稿"
+        },
+        {
+          "from": "[从基础站姿到结束动作的完整步骤]",
+          "to": "站立、抬臂、侧步、收步、转身预备、半转、停稳、前步、后步、重心左移、重心右移、伸臂、屈膝、起身、收臂、结束站姿；每格说明不超过两行"
+        }
+      ]
+    },
+    {
+      "id": "framework-037",
+      "batch": "batch-032",
+      "size": "1024x1536",
+      "promptSha256": "3b3fdab191267bf3ff5fb582fa9acf2f49de0860bcc034aca45d91a2f0fa0445",
+      "sourceBlueprintSha256": "3d7793aa195dc2be31585db83caac6108c43e3e15e40d26b13fdadf2b5866857",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留科幻赏金猎人JSON，指定成年、虚构、无伤害战斗场面。",
+      "replacements": [
+        {
+          "from": "Cybernetic Bounty Hunter",
+          "to": "Fictional 35-year-old Cybernetic Bounty Hunter"
+        }
+      ]
+    },
+    {
+      "id": "framework-038",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "d7b5bd36634a1e7fcef6562aa24cb0f734ffa10f39ab6ed4fee859558a01c890",
+      "sourceBlueprintSha256": "9d9f1b67feb78dc6d3ebce0ba8fb1d7c6166dc960036fae419e143adca17d363",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原叙事模板填入成年旅人雨夜归家。",
+      "replacements": [
+        {
+          "from": "[故事主题]",
+          "to": "雨夜归家"
+        },
+        {
+          "from": "[时间+地点]",
+          "to": "秋日傍晚的小镇车站"
+        },
+        {
+          "from": "[事件描述]",
+          "to": "成年旅人找到前来接站的家人"
+        },
+        {
+          "from": "[角色]",
+          "to": "35岁旅人及其成年家人"
+        },
+        {
+          "from": "[冲突]",
+          "to": "雨幕与灯光之间寻找熟悉身影"
+        },
+        {
+          "from": "[广角建立镜头/中景叙事/特写]",
+          "to": "中景叙事"
+        },
+        {
+          "from": "[紧张/温暖/悬疑]",
+          "to": "温暖"
+        },
+        {
+          "from": "[冷/暖/高反差]",
+          "to": "冷雨与暖灯"
+        }
+      ]
+    },
+    {
+      "id": "framework-039",
+      "batch": "batch-032",
+      "size": "1024x1536",
+      "promptSha256": "11054960c0060b5b1a3656f007649b00e7871ab98b997d2ca21d6115de2481ed",
+      "sourceBlueprintSha256": "42a6460b3ec19f4b8f352859a70f319904d96cd6bfdab4d2c0ddd0acd8410ae4",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留神庙光柱JSON，探险家明确为成年，无伤害。",
+      "replacements": [
+        {
+          "from": "A young explorer",
+          "to": "An adult 30-year-old explorer"
+        }
+      ]
+    },
+    {
+      "id": "framework-040",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "5020a113d4d7ee7181fce1ec7bbd06a007853ae929a337d1616c75c45ed35461",
+      "sourceBlueprintSha256": "6d735258848fa27564d601e484a99880fe30bd7db50c70b859282c6363fa1c55",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原古风模板填入唐代庭院听雨，统一时代器物。",
+      "replacements": [
+        {
+          "from": "[朝代/古风设定]",
+          "to": "唐代风格"
+        },
+        {
+          "from": "[主题]",
+          "to": "庭院听雨"
+        },
+        {
+          "from": "[身份/服饰/器物]",
+          "to": "成年文士、圆领袍、陶杯"
+        },
+        {
+          "from": "[宫廷/市井/山水]",
+          "to": "山水庭院"
+        },
+        {
+          "from": "[工笔/写意/影视写实]",
+          "to": "工笔"
+        },
+        {
+          "from": "[色调]",
+          "to": "墨绿与浅赭"
+        },
+        {
+          "from": "[纹样/礼制/建筑要素]",
+          "to": "木构回廊与瓦当，不混入现代器物"
+        }
+      ]
+    },
+    {
+      "id": "framework-041",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "13ab2276a689169221e7f83f42e264d94e00e9e7d4df0ae2c1a023e73b8724d0",
+      "sourceBlueprintSha256": "1b3649cbde099e147ac6bb8e077be92e6ec7e578ec6e6d119f3055ad711ca87d",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留唐风灯笼JSON；焰火改为灯会避免历史时期混淆。",
+      "replacements": [
+        {
+          "from": "looking at fireworks",
+          "to": "looking at a lantern festival"
+        }
+      ]
+    },
+    {
+      "id": "framework-042",
+      "batch": "batch-032",
+      "size": "1536x1024",
+      "promptSha256": "df34768dd069aa80966160770c695adc8a9e0466a8b58edde5744d207c862648",
+      "sourceBlueprintSha256": "256f7fba2c225742565ba803aa8da192a4994897749b565e07f40d9181549960",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原出版物模板填入虚构植物杂志，短文与图示。",
+      "replacements": [
+        {
+          "from": "[文档类型，如菜单/杂志内页/报纸版式]",
+          "to": "虚构植物杂志双页"
+        },
+        {
+          "from": "[栏数/页边距/标题层级]",
+          "to": "三栏、大页边距、主标题和短副标题"
+        },
+        {
+          "from": "[封面区/正文区/图表区/脚注]",
+          "to": "植物照片区、短正文、叶形图示、页码"
+        },
+        {
+          "from": "[衬线/无衬线]",
+          "to": "衬线"
+        },
+        {
+          "from": "[配色方案]",
+          "to": "米白、墨绿、深灰"
+        }
+      ]
+    },
+    {
+      "id": "framework-043",
+      "batch": "batch-033",
+      "size": "1536x1024",
+      "promptSha256": "c996ac36fa3b965395bb505fde178fe10234b551aa69748f36dd413c9bf39063",
+      "sourceBlueprintSha256": "e4c4c015328944a0510952e1b5248fdc0c0b3b60e36fc77129aba76e39f47ac1",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留红裙杂志JSON，模特明确成年，短文替代模拟乱码。",
+      "replacements": [
+        {
+          "from": "a model in a red dress",
+          "to": "an adult 30-year-old model in an opaque red evening dress"
+        },
+        {
+          "from": "(Simulated text blocks)",
+          "to": "A study in red. Form, fabric, and movement."
+        }
+      ]
+    },
+    {
+      "id": "framework-044",
+      "batch": "batch-033",
+      "size": "1536x1024",
+      "promptSha256": "b756136448d46cd55ae4fd08d4357806c664c2e1535d9dcdcdfbac5211ad7f68",
+      "sourceBlueprintSha256": "d20d5498df3bbaa519bf87ef5450fecc108adeaaffdf0e60c218ebfa57a9dc02",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "保留企业画册六部分，填入虚构家具品牌，案例和数据标记为概念。",
+      "replacements": [
+        {
+          "from": "【品牌名称】",
+          "to": "虚构品牌「林序家具」"
+        },
+        {
+          "from": "【行业 / 产品 / 解决方案】",
+          "to": "木质家具设计"
+        },
+        {
+          "from": "【深色科技美学 / 白色极简商务 / 高端工业风 / 艺术化品牌画册】",
+          "to": "白色极简商务"
+        }
+      ]
+    },
+    {
+      "id": "framework-045",
+      "batch": "batch-033",
+      "size": "1536x1024",
+      "promptSha256": "8959e5496aeab71207300051691e6e71f57350a520b4c72a1e5c76442b472ed3",
+      "sourceBlueprintSha256": "b2efa29d9a984816f5fab4348a4fc610d80d678d0c5fb060322be9d5c189689f",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原通用模板保留主备两方案，在同一张对比板展示。",
+      "replacements": [
+        {
+          "from": "[你要生成的内容类型]",
+          "to": "两款桌面香薰灯概念对比板"
+        },
+        {
+          "from": "[主体]",
+          "to": "虚构无品牌陶瓷香薰灯"
+        },
+        {
+          "from": "[场景]",
+          "to": "简洁桌面"
+        },
+        {
+          "from": "[风格]",
+          "to": "工业设计可视化"
+        },
+        {
+          "from": "[配色]",
+          "to": "砂白和苔绿"
+        },
+        {
+          "from": "[高清/4K]",
+          "to": "高清"
+        },
+        {
+          "from": "[比例]",
+          "to": "3:2"
+        },
+        {
+          "from": "[构图方式]",
+          "to": "左右对照且留白"
+        },
+        {
+          "from": "[用途]",
+          "to": "设计概念展示"
+        },
+        {
+          "from": "[核心信息]",
+          "to": "灯罩曲线与柔和透光"
+        }
+      ]
+    },
+    {
+      "id": "framework-046",
+      "batch": "batch-033",
+      "size": "1536x1024",
+      "promptSha256": "38d1e729074bb351f4784b39c02f984700bbff7a9db34eb04b8a26e5f20ad70b",
+      "sourceBlueprintSha256": "4ecaa367e6f32ca24d20cde9995d7e970e3211dcf17ff899e48d8558d55a95c9",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原产品研发板填入贝壳椅，规格明确为概念尺寸。",
+      "replacements": [
+        {
+          "from": "[产品/家具/装置]",
+          "to": "家具"
+        },
+        {
+          "from": "[灵感来源，如揉皱纸团/贝壳/折纸/机械结构]",
+          "to": "贝壳"
+        },
+        {
+          "from": "[产品类型]",
+          "to": "阅读扶手椅"
+        },
+        {
+          "from": "[一句话说明功能与情绪，例如“把受控混乱转化为高舒适度座椅”]",
+          "to": "用贝壳般的包裹感营造安静阅读空间"
+        },
+        {
+          "from": "[灵感来源]",
+          "to": "贝壳"
+        }
+      ]
+    },
+    {
+      "id": "framework-047",
+      "batch": "batch-033",
+      "size": "1536x1024",
+      "promptSha256": "9a9ca77e2af5d24bde4d0d617df8772a55ba2726cdb6ebbeb0c01d92ea914766",
+      "sourceBlueprintSha256": "48a2572fd6209e225b875d022876f6f7be0895d5c6d90757b91a4934403e9630",
+      "promptVariant": "reviewed-template-example",
+      "decision": "approved-for-generation",
+      "reviewNotes": "原通用JSON填入蕨类水彩封面，所有字段有具体值。",
+      "replacements": [
+        {
+          "from": "[Specific content]",
+          "to": "a botanical illustration cover"
+        },
+        {
+          "from": "[Main subject details]",
+          "to": "a small fern growing from a mossy stone"
+        },
+        {
+          "from": "[Background and context]",
+          "to": "quiet forest floor"
+        },
+        {
+          "from": "[Artistic/Visual style]",
+          "to": "delicate watercolor"
+        },
+        {
+          "from": "[Color scheme]",
+          "to": "moss green, warm ochre, cream"
+        },
+        {
+          "from": "[e.g., 16:9]",
+          "to": "3:2"
+        },
+        {
+          "from": "[e.g., Rule of thirds]",
+          "to": "Rule of thirds"
+        },
+        {
+          "from": "[Intended use case]",
+          "to": "nature journal cover"
+        },
+        {
+          "from": "[Key element to highlight]",
+          "to": "fern silhouette and paper texture"
+        }
+      ]
+    }
+  ],
+  "skipped": [
+    {
+      "id": "framework-012",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "26c0162c790e99a58c00cfe78ef3284e378af0bc0faad76d1e85f0fe1966d760"
+    },
+    {
+      "id": "framework-013",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "516df7aa3d20976f21077d59f1600b589698a44be76845b32dbca2d053a91a9f"
+    },
+    {
+      "id": "framework-019",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "5dbc6b8a8554f9c993968e9b9422520c3ab3d380b3a44e0bd79ccfcbabda28aa"
+    },
+    {
+      "id": "framework-024",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "df487095c5fd9a9bf8ad4d9c244c4b8212b01c209a8ffb46f87f49448ad7ff8b"
+    },
+    {
+      "id": "framework-025",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "ece6df36e418c03c4d93d901a3bc0f5b0759e78a07208f4cb6c215bbc7c5ce3f"
+    },
+    {
+      "id": "framework-036",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "995089d6121fd084c870586f793efb56ab2c52291bfe6e72af909099492fa602"
+    },
+    {
+      "id": "case-530",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "38a01bced41e9e7c96e001f26467a8be4446d450c6b069b8b3541daff91ed05e"
+    },
+    {
+      "id": "case-529",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "92b2896098082138300278f9d5620fbcab20ffff4f74681835909e8a4d9bc9d9"
+    },
+    {
+      "id": "case-528",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "1bda7820090044e8dbce63a365deaebe6fd4183846c6faf7770144fbd764c372"
+    },
+    {
+      "id": "case-525",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "ba872111ad4a8c81f2617f1eae5c610653d8d992f6406b19bcfaa41ea57a644f"
+    },
+    {
+      "id": "case-524",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "8f0d30b20db7afb247ca1e3fa60d6743985b6e6428061f1c86922651ef1e38d9"
+    },
+    {
+      "id": "case-522",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "11949921e8436a8d16eb233c3221c483e07ef238c624ca49639c08c957f5d099"
+    },
+    {
+      "id": "case-521",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "a5de223c96938e6fd5f92a4215ac12169c1ddc09f041f92515f541c6a15905e9"
+    },
+    {
+      "id": "case-519",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "c3c6292052eaa9c4d0b26e9c7caafba1cd8fca10cd2d9b0c3941df9b6985988c"
+    },
+    {
+      "id": "case-512",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "8fb8ed172e7a2b0c714783115a0c96e1ecf9c0bde8d0ce1b17b95dbd6d2c5b18"
+    },
+    {
+      "id": "case-504",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "eeff3e52d623f88fe1611c7fe3c9cd6f47b70996de6f5e292ee47298a8689916"
+    },
+    {
+      "id": "case-502",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "d4e9a038c4782f6fb0f168e9c4d28bc76f1825ef27a00e1c5288440c4ecdd8bc"
+    },
+    {
+      "id": "case-499",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "7897bd3c7069422ccbc5f461a54332550c4fab06217f5985993c16a8970562b5"
+    },
+    {
+      "id": "case-498",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "a5b68d85ec03dcd108f6155d6d12d580c2e716441099e88dc86ccf301674e38c"
+    },
+    {
+      "id": "case-490",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "c85e8485dcb871820144322d14b720917a885c11c3f2cc772eddd655ad524f3a"
+    },
+    {
+      "id": "case-486",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "f40df984ef975a2100b9294fae001ce65050daaf6fe42791cbb1e3344dea8f0a"
+    },
+    {
+      "id": "case-479",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "46b046daf5552a9ac9a1ad8a31fe5432de1c9711006cee30e648098ba9f3091d"
+    },
+    {
+      "id": "case-475",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "a60a62c2c7ee4d8d4179666aba4fec45122f8befb4126cf284168066f1d8251a"
+    },
+    {
+      "id": "case-466",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "386754aca33ba0ce73ccbedc1602d8a7072d03d0f6f7b86c2162e7660db4ca35"
+    },
+    {
+      "id": "case-462",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "16b90dcf1b92711baa0c17840facd97063e1a6103be747a99476394a3f58f08c"
+    },
+    {
+      "id": "case-452",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "b59dc28615f58abedb73cae0c6f5e508553acc15e4e0028f340f64869d17c12a"
+    },
+    {
+      "id": "case-448",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "7ed228b6ab73b66501572499d9cb528db558c6d54df424b92c9fcba0f3f1e281"
+    },
+    {
+      "id": "case-445",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "fd14e8226a287ad3250645aa67d30ea0094580c4e9ce311f9ce65edce3248681"
+    },
+    {
+      "id": "case-437",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "1fafc9ee7968c7790fc4958dc9dcaafc727ac59426e4acf35178282c96d8fdc0"
+    },
+    {
+      "id": "case-427",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "a075df7d336fa7753fa5529955e95876e34fe4e677b74262b95784aa94ea07af"
+    },
+    {
+      "id": "case-421",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "3173bb08fffa063c78eb15b04484d55751a5f187b0f80f05764ebcdcdb6394d0"
+    },
+    {
+      "id": "case-420",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "c45726fa837d3ec03ce423f7b3f6b738d5c31f26f65286c56cfa199c744d611a"
+    },
+    {
+      "id": "case-416",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "2416fc33899162bc49e9aab423ac20865b9e8c9387c1afdf07eba70bf13f3eea"
+    },
+    {
+      "id": "case-413",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "db452fdd7a034127f0e33d6a0fab89aaf598238c8b9d20f1fe649019a55a63ed"
+    },
+    {
+      "id": "case-412",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "a60d7c41849c8f9cc8461816eabf6456d2314f6cd9b1adff9bca3a44d4d28237"
+    },
+    {
+      "id": "case-410",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "9e10e4b5a65c05d27419e4dc2c78b5a2a4ab9bf01d971915db9b942413ea317e"
+    },
+    {
+      "id": "case-409",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "33ba1b288f6b4c9b57df8a4c75a65ee82d699de6efb1596d0cef33dd5c6d8e57"
+    },
+    {
+      "id": "case-405",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "e954ca25fc59ca4e6e2afef0c61d9687aa400d76e1dc993116e45a899bb345d4"
+    },
+    {
+      "id": "case-404",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "dfee6028c13e0a3ca075164b305f3957bf9431d1771dcfa0673410c91f440e2d"
+    },
+    {
+      "id": "case-398",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "06f27506605d968d750ff38a419623d76d5754cb04b4add5354d344eb467e166"
+    },
+    {
+      "id": "case-389",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "1bfb8c70f2277dd001600d55b6cb8bb79c53169ed006f08a8094a90e1dcc289f"
+    },
+    {
+      "id": "case-387",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "a8c01fee409960a3909b6eed8e37f86acace186a712f4028704470412b0f09b5"
+    },
+    {
+      "id": "case-384",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "c844389f78f2f9872571d253100827c871c6ca7aee7c7a7b603897f1f281d480"
+    },
+    {
+      "id": "case-382",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "572fba60175e708533a75b424faa53bee67c52439077acdc380ce26f07b6f086"
+    },
+    {
+      "id": "case-381",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "c5baea05b64e81a1315fb9423b877831002965d5b401e768db153ce9fd296f49"
+    },
+    {
+      "id": "case-379",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "901e975a360bd67005216979dbd0b47d8249299414a3b2055d75b824da87ea65"
+    },
+    {
+      "id": "case-378",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "278a3a8533f28efbd46c9b7fef33976fb95f50d102e8bc5fc975cf89cfe4629d"
+    },
+    {
+      "id": "case-377",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "93e759ac84c1335457671700c0a4b12669d314205a18bb7134252b248eb607eb"
+    },
+    {
+      "id": "case-374",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "7afd8b786bde12e367f6c065b30173568e8e8ab177475a59672dd8e91f5ac8dc"
+    },
+    {
+      "id": "case-372",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "071afbc828feaf3b32370c9d1a871190d144d06f053cb8d76479e03c6afb5ccc"
+    },
+    {
+      "id": "case-371",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "c33dec9261244d38b355340d801e69c392965ea24459b2d31145afaad8640cf7"
+    },
+    {
+      "id": "case-368",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "6f26c8da30635c7bd0ee580741379f12fae5807f4344b40fae93ccd558069c3b"
+    },
+    {
+      "id": "case-363",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "cd5bb6c6368ccefc07ca473b4dc679b685c114cbf399e7988092a1fa663c313d"
+    },
+    {
+      "id": "case-357",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "de2aa7b5282823809dbb02b7cd956b92803f1d3538484435947937f6a5c84c7d"
+    },
+    {
+      "id": "case-353",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "279e60c351925e4e53b1fec6d7449f6ac24ef4c30121f35a24affea995311425"
+    },
+    {
+      "id": "case-348",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "4f632758c754237100fd17073776e1deaaa93953c2a4d7f6a547d7b4fcf17626"
+    },
+    {
+      "id": "case-347",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "abb0e29d7ac89438ba0b8d5eb94689ce5ec2fa54ccabca30b9f99bd837b72425"
+    },
+    {
+      "id": "case-329",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "463dfd30a36c47eb737d9e9aca181638e81207c30c233a842955840934c4836f"
+    },
+    {
+      "id": "case-328",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "18dce0c6ac0ee75e6c0362cdb0d4dc6e35661549b7240298dd7b3b6ea16228c2"
+    },
+    {
+      "id": "case-323",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "23a42db560e71bf00d8a506c049aa40885384f0ff44a98554d25a41872043ca2"
+    },
+    {
+      "id": "case-322",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "6ec5a432465aa783dbb91fbe67865ce0870af82f4bf045d14b32e758421cd374"
+    },
+    {
+      "id": "case-318",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "8260438b879300d67a4fd4b043593a9bf8f7f6a259ba59994629120ca8814fef"
+    },
+    {
+      "id": "case-317",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "ed209267e54d71af572cc657ddbe9ab1bbb8fa13727fe8ddd5f36fc85ce17e82"
+    },
+    {
+      "id": "case-306",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "6d65095336cd83b7a3800f3f5a1a7d615af5fb7402186e07c2da048a6e49c511"
+    },
+    {
+      "id": "case-297",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "44e756df72e01e84c29861f1735691a725e5a1dd5702eb256fee7aee987340b9"
+    },
+    {
+      "id": "case-285",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "ca3bcd425c10213126f2376920032fddba03bdaca25439b4d70441e12fbf19bb"
+    },
+    {
+      "id": "case-270",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "bc68f60052a4c3c481f226b33f7acfbdddce8cc86c6a47678a8ac1fdfd66f761"
+    },
+    {
+      "id": "case-263",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "1cca785c637dc09800a4a9a9c5b1296b510b1c3fe3e09aaf9a814141410885fa"
+    },
+    {
+      "id": "case-228",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "75aa3e370594a3bf3a0e89fbd3031c1573062b660e94f56f52e3c80d45dad364"
+    },
+    {
+      "id": "case-226",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "7600d0e5770239136e86741bd78068a2df14245b3fa6f0995350a6df36f90af8"
+    },
+    {
+      "id": "case-216",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "0a909020e6dc8a891881d12c115ba0ee81415f8b4770c25339c9d7574407f1a9"
+    },
+    {
+      "id": "case-212",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "619deee65f8c1206603921b1999dc67c425109a76e7729df804c8a14197a8602"
+    },
+    {
+      "id": "case-181",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "54fda801a21462f9392b2825ab5831b7c9c9f41d8afe72dd4d46377148501771"
+    },
+    {
+      "id": "case-153",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "d6fd222de9aa2bd2db5a95e8a89d395030c3ddeed2aa63c4eff4cf3bc57ecfc0"
+    },
+    {
+      "id": "case-80",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "de684c374aa0e0168ef3b0445a26a69f6e2d7dd5fdce854741707cec53f44a22"
+    },
+    {
+      "id": "case-79",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "de684c374aa0e0168ef3b0445a26a69f6e2d7dd5fdce854741707cec53f44a22"
+    },
+    {
+      "id": "case-78",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "de684c374aa0e0168ef3b0445a26a69f6e2d7dd5fdce854741707cec53f44a22"
+    },
+    {
+      "id": "case-44",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "ab1d9c5dbd2a1477bb6b561caba62324cdfd6759c3b8e3af9cb7c093a38fccf6"
+    },
+    {
+      "id": "case-29",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "0b9671e355a106e3baf4ba5ab757066beb4d1e71f3fd409f274c04e54edf5e81"
+    },
+    {
+      "id": "case-25",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "d010ec1baf1d14c79fa0685e56c19682a50f7ddf64612e7464bb92bcbcd23fc9"
+    },
+    {
+      "id": "case-23",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "36ef962401201ffc4379428239105e5578a573d71c420064cac3d1b4ab649845"
+    },
+    {
+      "id": "case-7",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "dcf8b501726a5b5ead147cc55b08216407685ac81e9a947d87e59d3fd691f116"
+    },
+    {
+      "id": "case-6",
+      "decision": "image-to-image-requires-input",
+      "sourceBlueprintSha256": "4a421b8735017676155db96a1373228abc7b8cc9901000f93d1ffbcb7fcac5dc"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "templateId": "case-4",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-4.prompt.txt",
+  "originalPromptSha256": "e177fd7865252536890c8a27609e021461062436c4f27c20757ed20214b9144a",
+  "usedPrompt": "case-4.safe.prompt.txt",
+  "usedPromptSha256": "06579e85d60e867461c2edb7a1b0f1bbbac5ba3176cf78ea9e6b305ebe2d2e50",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "特朗普",
+      "to": "一位虚构的科技企业家"
+    },
+    {
+      "from": "抖音直播间",
+      "to": "虚构的短视频直播间"
+    },
+    {
+      "from": "老干妈",
+      "to": "辣椒酱品牌"
+    },
+    {
+      "from": "SpaceX",
+      "to": "未来航天企业"
+    },
+    {
+      "from": "特斯拉车主",
+      "to": "电动车车主"
+    }
+  ]
+}

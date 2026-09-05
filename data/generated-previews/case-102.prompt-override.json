@@ -1,0 +1,23 @@
+{
+  "templateId": "case-102",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-102.prompt.txt",
+  "originalPromptSha256": "519b5996bfe763e9239ad4f1926c766d81a239cc8ad6a765c1f417637dfa428f",
+  "usedPrompt": "case-102.safe.prompt.txt",
+  "usedPromptSha256": "1112a98b95199c18c1ba8bf2be59be75029002d81cb10d26104212ddb08ecbe4",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Search the web for",
+      "to": "Create a fictional sports highlight for"
+    },
+    {
+      "from": "this week’s standout individual performance in Champion’s League",
+      "to": "an imaginary continental football tournament"
+    },
+    {
+      "from": "using exact stats and game summary",
+      "to": "using clearly fictional sample statistics and a fictional game summary"
+    }
+  ]
+}

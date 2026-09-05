@@ -1,0 +1,19 @@
+{
+  "templateId": "case-167",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-167.prompt.txt",
+  "originalPromptSha256": "a0e394de31c9b72ab200dd9a86b8487b3be2dd3f3fe967cc5686632e484b7112",
+  "usedPrompt": "case-167.safe.prompt.txt",
+  "usedPromptSha256": "707924919405f971a6935ad2c411598cea559936edb7ec1afdcb0399cd8d3002",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "朋友圈",
+      "to": "虚构社交动态时间线"
+    },
+    {
+      "from": "WeChat Moments",
+      "to": "a fictional social timeline"
+    }
+  ]
+}

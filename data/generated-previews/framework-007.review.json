@@ -1,0 +1,16 @@
+{
+  "id": "framework-007",
+  "batch": "batch-031",
+  "size": "1536x1024",
+  "promptSha256": "06b1e747f07c7cbc92cb8e83ec296f2367648491692c29bd22f10809646cad00",
+  "sourceBlueprintSha256": "6eb919d203f11dec51f8521814b617574002da1cf4bd925d02500bb99906fe0a",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "填入橡树六级尺度，量级仅为图示，不声称测量结果。",
+  "replacements": [
+    {
+      "from": "[主题]",
+      "to": "橡树：叶片细胞、叶片、枝条、树冠、整株树、林地；各尺度大小仅用约略量级示意"
+    }
+  ]
+}

@@ -8,8 +8,8 @@
     "dev": "python3 scripts/serve.py",
     "serve": "python3 scripts/serve.py",
     "import:source": "python3 scripts/import_source.py",
-    "build": "python3 scripts/build_library.py",
-    "validate": "python3 scripts/validate_library.py",
+    "build": "python3 scripts/build_library.py && python3 scripts/install_generated_previews.py",
+    "validate": "python3 scripts/validate_library.py && python3 scripts/install_generated_previews.py --check",
     "test": "python3 -m unittest discover -s tests -p 'test_*.py'",
     "check": "npm run build && npm run validate && npm run test"
   },

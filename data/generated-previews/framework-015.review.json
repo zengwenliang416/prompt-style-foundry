@@ -1,0 +1,40 @@
+{
+  "id": "framework-015",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "3fe859d5b7e45ca77f43516b465498c5031b84f4a7c3e6807b5fb37976803693",
+  "sourceBlueprintSha256": "00187a0f8542556a6a91435e84834fcfbae7521a8e2f51c6226afdfcb2135d7a",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原水墨双重曝光模板填入虚构成年旅行者及山谷。",
+  "replacements": [
+    {
+      "from": "[人物/角色/品牌主理人/运动员]",
+      "to": "虚构的成年旅行者"
+    },
+    {
+      "from": "[站姿/动作姿态/凝视镜头]",
+      "to": "站姿"
+    },
+    {
+      "from": "[关键场景]",
+      "to": "云雾山谷"
+    },
+    {
+      "from": "[象征物]",
+      "to": "松树"
+    },
+    {
+      "from": "[叙事片段]",
+      "to": "山间行路"
+    },
+    {
+      "from": "[环境纹理]",
+      "to": "层叠山石"
+    },
+    {
+      "from": "[标题/姓名/短句]",
+      "to": "远山"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "templateId": "case-5",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-5.prompt.txt",
+  "originalPromptSha256": "f0cb68dc4e3da4135364295aa6431808c8721342ef1f8f569befe268c353e406",
+  "usedPrompt": "case-5.safe.prompt.txt",
+  "usedPromptSha256": "d77302dddfce7c3082f155abb3dbffa8c1f7349ad804a436218b434c48937314",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "【XXX主题】",
+      "to": "【未来城市主题】"
+    }
+  ]
+}

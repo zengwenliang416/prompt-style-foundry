@@ -1,0 +1,27 @@
+{
+  "templateId": "case-46",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-46.prompt.txt",
+  "originalPromptSha256": "4cb22c935f987c5f3c96a5e59f8ae1a1b0fe0ccb3bad19bf09912eab4aacbd70",
+  "usedPrompt": "case-46.safe.prompt.txt",
+  "usedPromptSha256": "16501c278f0e2fa2b1c389317ee2cf4f74af360093527873f4b9f9983bae9b65",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "young East Asian woman",
+      "to": "adult East Asian woman"
+    },
+    {
+      "from": "gold tiered mini skirt",
+      "to": "gold tiered knee-length skirt"
+    },
+    {
+      "from": "white corset top",
+      "to": "structured white top"
+    },
+    {
+      "from": "thigh-high boots",
+      "to": "knee-high boots"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "framework-001",
+  "batch": "batch-031",
+  "size": "1024x1536",
+  "promptSha256": "6d7e4fe0eb62611fba271ddc5ab3c7cf5082473bddd076c9861700fa1686541d",
+  "sourceBlueprintSha256": "bc1391e88ff81698a9a0761048de5f4f77152ffa1f280319b7cefe8fa808b8b1",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "用具体读书应用填入原模板字段，原创UI，无输入图依赖。",
+  "replacements": [
+    {
+      "from": "[产品类型]",
+      "to": "读书笔记应用"
+    },
+    {
+      "from": "[平台，如 iOS/Android/Web]",
+      "to": "iOS"
+    },
+    {
+      "from": "[功能点A]",
+      "to": "书架"
+    },
+    {
+      "from": "[功能点B]",
+      "to": "阅读进度"
+    },
+    {
+      "from": "[功能点C]",
+      "to": "笔记收藏"
+    },
+    {
+      "from": "[极简/科技/拟物]",
+      "to": "极简"
+    },
+    {
+      "from": "[颜色]",
+      "to": "森林绿与米白"
+    },
+    {
+      "from": "[顶部导航/双栏/卡片流]",
+      "to": "卡片流"
+    },
+    {
+      "from": "[9:16/16:9]",
+      "to": "9:16"
+    }
+  ]
+}

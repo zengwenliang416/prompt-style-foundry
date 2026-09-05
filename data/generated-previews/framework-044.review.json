@@ -1,0 +1,24 @@
+{
+  "id": "framework-044",
+  "batch": "batch-033",
+  "size": "1536x1024",
+  "promptSha256": "b756136448d46cd55ae4fd08d4357806c664c2e1535d9dcdcdfbac5211ad7f68",
+  "sourceBlueprintSha256": "d20d5498df3bbaa519bf87ef5450fecc108adeaaffdf0e60c218ebfa57a9dc02",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "保留企业画册六部分，填入虚构家具品牌，案例和数据标记为概念。",
+  "replacements": [
+    {
+      "from": "【品牌名称】",
+      "to": "虚构品牌「林序家具」"
+    },
+    {
+      "from": "【行业 / 产品 / 解决方案】",
+      "to": "木质家具设计"
+    },
+    {
+      "from": "【深色科技美学 / 白色极简商务 / 高端工业风 / 艺术化品牌画册】",
+      "to": "白色极简商务"
+    }
+  ]
+}

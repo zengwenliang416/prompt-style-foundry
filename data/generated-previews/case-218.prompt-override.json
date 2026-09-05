@@ -1,0 +1,19 @@
+{
+  "templateId": "case-218",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-218.prompt.txt",
+  "originalPromptSha256": "44f4d0235e5063099b1b95e778a4e8fc040cf3f082f31159e33069600c290a28",
+  "usedPrompt": "case-218.safe.prompt.txt",
+  "usedPromptSha256": "262c3aabf711911a262b0a7aa5d5e79fd2f9b68d7018ec76ab2e4f9f78050b13",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "从【人物、植物、动物】中任选其一",
+      "to": "选择植物题材"
+    },
+    {
+      "from": "具体对象：【例如：大王乌贼 / 列奥纳多・达・芬奇 / 红杉树】",
+      "to": "具体对象：红杉树"
+    }
+  ]
+}

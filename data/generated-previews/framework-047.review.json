@@ -1,0 +1,48 @@
+{
+  "id": "framework-047",
+  "batch": "batch-033",
+  "size": "1536x1024",
+  "promptSha256": "9a9ca77e2af5d24bde4d0d617df8772a55ba2726cdb6ebbeb0c01d92ea914766",
+  "sourceBlueprintSha256": "48a2572fd6209e225b875d022876f6f7be0895d5c6d90757b91a4934403e9630",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原通用JSON填入蕨类水彩封面，所有字段有具体值。",
+  "replacements": [
+    {
+      "from": "[Specific content]",
+      "to": "a botanical illustration cover"
+    },
+    {
+      "from": "[Main subject details]",
+      "to": "a small fern growing from a mossy stone"
+    },
+    {
+      "from": "[Background and context]",
+      "to": "quiet forest floor"
+    },
+    {
+      "from": "[Artistic/Visual style]",
+      "to": "delicate watercolor"
+    },
+    {
+      "from": "[Color scheme]",
+      "to": "moss green, warm ochre, cream"
+    },
+    {
+      "from": "[e.g., 16:9]",
+      "to": "3:2"
+    },
+    {
+      "from": "[e.g., Rule of thirds]",
+      "to": "Rule of thirds"
+    },
+    {
+      "from": "[Intended use case]",
+      "to": "nature journal cover"
+    },
+    {
+      "from": "[Key element to highlight]",
+      "to": "fern silhouette and paper texture"
+    }
+  ]
+}

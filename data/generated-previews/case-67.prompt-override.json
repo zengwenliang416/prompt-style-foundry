@@ -1,0 +1,19 @@
+{
+  "templateId": "case-67",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-67.prompt.txt",
+  "originalPromptSha256": "a468ddbf884113a5c0a22f4db19d2ccf3068459039e11eee939c6eb0ace17080",
+  "usedPrompt": "case-67.safe.prompt.txt",
+  "usedPromptSha256": "d98b5b33c259d681c511616cec9553fa3026575722eccdbf657c2e496c14b97f",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "\"type\": \"medical infographic poster\"",
+      "to": "\"type\": \"educational conceptual health infographic poster, clearly labeled NOT MEDICAL ADVICE\""
+    },
+    {
+      "from": "highly detailed anatomical illustrations",
+      "to": "stylized simplified anatomical illustrations"
+    }
+  ]
+}

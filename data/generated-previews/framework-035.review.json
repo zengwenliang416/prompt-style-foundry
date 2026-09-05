@@ -1,0 +1,24 @@
+{
+  "id": "framework-035",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "8f493d0a072eb0397a40b27aadc1135bbdf6afa2553c8543ed60250e048cfd3b",
+  "sourceBlueprintSha256": "32908dedbe407bb0e351c62d05c9348fdd41a7465d90552e516051b0d4f7c51d",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "16格动作模板填入成年舞者、完整服装；非外部人物参考。",
+  "replacements": [
+    {
+      "from": "[角色/人物]",
+      "to": "穿长袖运动衫和长裤的30岁成年舞者"
+    },
+    {
+      "from": "[黑白线稿/3D 灰阶/漫画分镜/教学图]",
+      "to": "黑白线稿"
+    },
+    {
+      "from": "[从基础站姿到结束动作的完整步骤]",
+      "to": "站立、抬臂、侧步、收步、转身预备、半转、停稳、前步、后步、重心左移、重心右移、伸臂、屈膝、起身、收臂、结束站姿；每格说明不超过两行"
+    }
+  ]
+}

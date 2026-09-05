@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-001
+Template family: UI & Interfaces
+Template mode: interface
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+为读书笔记应用生成一张iOS界面图。
+核心功能：书架、阅读进度、笔记收藏。
+视觉风格：极简，主色森林绿与米白，强调色森林绿与米白。
+布局：卡片流，信息层级清晰，留白充足。
+输出：高保真UI截图，文字清晰可读，比例9:16。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

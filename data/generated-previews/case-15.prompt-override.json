@@ -1,0 +1,15 @@
+{
+  "templateId": "case-15",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-15.prompt.txt",
+  "originalPromptSha256": "df9c3a42adc52f5dc3a71f7b5e99d8ebe1d7b56e202eee3ee22068105bdeda92",
+  "usedPrompt": "case-15.safe.prompt.txt",
+  "usedPromptSha256": "7165a50730eac3c6cebe5b1c144112cbcd173fce9174f70969c07c37f4e620c4",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "19岁的中国少女",
+      "to": "25岁的中国成年女性"
+    }
+  ]
+}

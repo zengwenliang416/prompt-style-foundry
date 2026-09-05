@@ -45,6 +45,8 @@ const elements = {
   dialogLanguage: document.querySelector("#dialog-language"),
   dialogSource: document.querySelector("#dialog-source"),
   dialogPrompt: document.querySelector("#dialog-prompt"),
+  generatedPromptSection: document.querySelector("#generated-prompt-section"),
+  dialogGeneratedPrompt: document.querySelector("#dialog-generated-prompt"),
   dialogFavorite: document.querySelector("#dialog-favorite"),
   copyPrompt: document.querySelector("#copy-prompt"),
   downloadPrompt: document.querySelector("#download-prompt"),
@@ -195,8 +197,9 @@ function sortTemplates(templates) {
 }
 
 function makePreview(template, large = false) {
-  if (template.preview) {
-    return `<img src="${escapeHtml(template.preview)}" alt="${escapeHtml(template.title)}" loading="lazy" decoding="async" />${
+  const preview = template.preview || template.generatedPreview;
+  if (preview) {
+    return `<img src="${escapeHtml(preview)}" alt="${escapeHtml(template.title)}" loading="lazy" decoding="async" />${
       large ? "" : '<span class="preview-overlay"></span>'
     }`;
   }
@@ -405,6 +408,8 @@ async function openDialog(template) {
   elements.dialogLanguage.textContent = template.language === "zh" ? "中文优先" : "英文优先";
   elements.dialogSource.innerHTML = sourceMarkup(template);
   elements.dialogPrompt.textContent = "正在载入提示词…";
+  elements.generatedPromptSection.hidden = true;
+  elements.dialogGeneratedPrompt.textContent = "正在载入示例提示词…";
   updateDialogFavorite();
   resetGenPanel();
 
@@ -418,6 +423,14 @@ async function openDialog(template) {
     if (state.currentTemplate?.id !== template.id) return;
     state.currentPrompt = prompt;
     elements.dialogPrompt.innerHTML = highlightPrompt(prompt);
+    if (template.generatedPromptPath) {
+      const generatedResponse = await fetch(template.generatedPromptPath);
+      if (generatedResponse.ok && state.currentTemplate?.id === template.id) {
+        const generatedPrompt = await generatedResponse.text();
+        elements.dialogGeneratedPrompt.innerHTML = highlightPrompt(generatedPrompt);
+        elements.generatedPromptSection.hidden = false;
+      }
+    }
     refreshGenRunState();
   } catch (error) {
     console.error(error);

@@ -1,0 +1,19 @@
+{
+  "templateId": "case-385",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-385.prompt.txt",
+  "originalPromptSha256": "e1a182b13f200f57ec747026874b2571422b21874ab661c9fdc422e8565ed15e",
+  "usedPrompt": "case-385.safe.prompt.txt",
+  "usedPromptSha256": "91878f45637143b2cffbb4067467c5a20aee6669f668740ec38641900da7195c",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "Tsingtao (China beer)",
+      "to": "a fictional emerald-and-gold sparkling beverage"
+    },
+    {
+      "from": "this product",
+      "to": "this fictional beverage package"
+    }
+  ]
+}

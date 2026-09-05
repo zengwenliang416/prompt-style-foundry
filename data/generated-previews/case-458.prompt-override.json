@@ -1,0 +1,19 @@
+{
+  "templateId": "case-458",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-458.prompt.txt",
+  "originalPromptSha256": "722f7574f3095617250c9aff561dee9af90a6a6c89c21ac7a3bb8f7d35a16132",
+  "usedPrompt": "case-458.safe.prompt.txt",
+  "usedPromptSha256": "62b207590235618aeda90c8cb3cc9093bf81642c072aded0b5c3a8dd49781ed7",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "young woman",
+      "to": "clearly adult woman"
+    },
+    {
+      "from": "interlocking CC logo",
+      "to": "original interlocking crescent-and-line emblem with no resemblance to an existing trademark"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "templateId": "case-402",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-402.prompt.txt",
+  "originalPromptSha256": "6056688b7755c6a5a27a2634138c2c7dec28082bd8d7c721b0636a9c50841b76",
+  "usedPrompt": "case-402.safe.prompt.txt",
+  "usedPromptSha256": "e8de0083a452cb19d58de60158be5423b210aeef611a0b76f7734e1d72a5cb91",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "小红书",
+      "to": "虚构生活方式社区"
+    },
+    {
+      "from": "一个女孩",
+      "to": "一位成年女性"
+    }
+  ]
+}

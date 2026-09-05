@@ -1,0 +1,44 @@
+{
+  "id": "framework-038",
+  "batch": "batch-032",
+  "size": "1536x1024",
+  "promptSha256": "d7b5bd36634a1e7fcef6562aa24cb0f734ffa10f39ab6ed4fee859558a01c890",
+  "sourceBlueprintSha256": "9d9f1b67feb78dc6d3ebce0ba8fb1d7c6166dc960036fae419e143adca17d363",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原叙事模板填入成年旅人雨夜归家。",
+  "replacements": [
+    {
+      "from": "[故事主题]",
+      "to": "雨夜归家"
+    },
+    {
+      "from": "[时间+地点]",
+      "to": "秋日傍晚的小镇车站"
+    },
+    {
+      "from": "[事件描述]",
+      "to": "成年旅人找到前来接站的家人"
+    },
+    {
+      "from": "[角色]",
+      "to": "35岁旅人及其成年家人"
+    },
+    {
+      "from": "[冲突]",
+      "to": "雨幕与灯光之间寻找熟悉身影"
+    },
+    {
+      "from": "[广角建立镜头/中景叙事/特写]",
+      "to": "中景叙事"
+    },
+    {
+      "from": "[紧张/温暖/悬疑]",
+      "to": "温暖"
+    },
+    {
+      "from": "[冷/暖/高反差]",
+      "to": "冷雨与暖灯"
+    }
+  ]
+}

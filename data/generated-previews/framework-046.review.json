@@ -1,0 +1,32 @@
+{
+  "id": "framework-046",
+  "batch": "batch-033",
+  "size": "1536x1024",
+  "promptSha256": "38d1e729074bb351f4784b39c02f984700bbff7a9db34eb04b8a26e5f20ad70b",
+  "sourceBlueprintSha256": "4ecaa367e6f32ca24d20cde9995d7e970e3211dcf17ff899e48d8558d55a95c9",
+  "promptVariant": "reviewed-template-example",
+  "decision": "approved-for-generation",
+  "reviewNotes": "原产品研发板填入贝壳椅，规格明确为概念尺寸。",
+  "replacements": [
+    {
+      "from": "[产品/家具/装置]",
+      "to": "家具"
+    },
+    {
+      "from": "[灵感来源，如揉皱纸团/贝壳/折纸/机械结构]",
+      "to": "贝壳"
+    },
+    {
+      "from": "[产品类型]",
+      "to": "阅读扶手椅"
+    },
+    {
+      "from": "[一句话说明功能与情绪，例如“把受控混乱转化为高舒适度座椅”]",
+      "to": "用贝壳般的包裹感营造安静阅读空间"
+    },
+    {
+      "from": "[灵感来源]",
+      "to": "贝壳"
+    }
+  ]
+}

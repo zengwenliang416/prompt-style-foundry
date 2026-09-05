@@ -1,0 +1,15 @@
+{
+  "templateId": "case-168",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-168.prompt.txt",
+  "originalPromptSha256": "8147ea8637c9c5d20d4f10c258fdc229de7932359780ca256a70f3db02697b59",
+  "usedPrompt": "case-168.safe.prompt.txt",
+  "usedPromptSha256": "46f8cfb9d21ef9f6419bec8ccc1248a8ab9e4bed3a8f46c3152ba5f7103c5127",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "[中文]\n生成一张手写中/西医药方图\n\n[English]\nGenerate an image of a handwritten traditional Chinese medicine or Western medicine prescription",
+      "to": "[中文]\n生成一张影视道具风格的手写中西药方练习纸，使用完全虚构的药名和无效剂量，醒目标注“虚构样例 / 非医疗建议”，不得出现真实医院、医生签名或可执行处方。\n\n[English]\nCreate a handwritten East/West medicine prescription prop for a fictional film scene. Use invented medicine names and non-actionable placeholder doses. Clearly label it “FICTIONAL SAMPLE / NOT MEDICAL ADVICE”. Do not show a real hospital, doctor signature, or actionable prescription."
+    }
+  ]
+}

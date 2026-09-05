@@ -1,0 +1,35 @@
+{
+  "templateId": "case-201",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-201.prompt.txt",
+  "originalPromptSha256": "4a432e553be2c9d0287d2b59bf319e7607b2d27d71c2079ca77c972e4ac9df5d",
+  "usedPrompt": "case-201.safe.prompt.txt",
+  "usedPromptSha256": "67d8af5936b6ce181d51c4f686f58ae357bba11eae0fa9923658061dbb3528c1",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "一张三甲医院的门诊处方笺",
+      "to": "一张虚构影视道具医院的门诊处方笺，醒目标注“虚构样例 / 非医疗建议”"
+    },
+    {
+      "from": "真实合理的 诊断、药品名、剂量",
+      "to": "完全虚构、不可执行的诊断占位文字、虚构药品名和无效剂量"
+    },
+    {
+      "from": "医生签名和科室章",
+      "to": "虚构道具签名和“PROP”印章"
+    },
+    {
+      "from": "An outpatient prescription sheet from a Grade 3A hospital",
+      "to": "A fictional hospital prescription prop clearly labeled FICTIONAL SAMPLE / NOT MEDICAL ADVICE"
+    },
+    {
+      "from": "realistic and reasonable diagnosis, drug names, dosages",
+      "to": "invented non-actionable diagnosis placeholders, fictional medicine names, and invalid sample doses"
+    },
+    {
+      "from": "a doctor's signature and department stamp",
+      "to": "a fictional prop signature and PROP stamp"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "templateId": "case-20",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-20.prompt.txt",
+  "originalPromptSha256": "967d370c120d9c00fca6f63a92b1321b6288c4131a086253829b301ab9a94d25",
+  "usedPrompt": "case-20.safe.prompt.txt",
+  "usedPromptSha256": "ed7e8becf04d9f1ff2e8428849ee935755928c15c029f38fa841cb754dce0e93",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "\"Irasutoya\"",
+      "to": "gentle hand-drawn Japanese educational illustration"
+    },
+    {
+      "from": "\"Kasumigaseki slides\"",
+      "to": "dense government-report-style information layout"
+    }
+  ]
+}

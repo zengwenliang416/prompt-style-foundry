@@ -1,0 +1,27 @@
+{
+  "templateId": "case-440",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-440.prompt.txt",
+  "originalPromptSha256": "34812e323058235b7ba82c98bc64fd44cccc02ead38348d62f8460912b259d07",
+  "usedPrompt": "case-440.safe.prompt.txt",
+  "usedPromptSha256": "c60538b38f61ba3cb25c9550c324e7a3e819d2f1d1d88c552b592a7746f9aaed",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "FaceTime",
+      "to": "fictional video-call app"
+    },
+    {
+      "from": "macOS",
+      "to": "fictional desktop operating system"
+    },
+    {
+      "from": "Notes",
+      "to": "Memo"
+    },
+    {
+      "from": "Finder",
+      "to": "Files"
+    }
+  ]
+}

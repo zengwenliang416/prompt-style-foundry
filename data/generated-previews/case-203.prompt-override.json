@@ -1,0 +1,15 @@
+{
+  "templateId": "case-203",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-203.prompt.txt",
+  "originalPromptSha256": "80435ece84b4c5f82f0395586e48a6754ae2e004a39df509c6e2d8be52aef606",
+  "usedPrompt": "case-203.safe.prompt.txt",
+  "usedPromptSha256": "5d7b6dd39503c3362cfc0039c3a6af0ee2dca2e485fcf0841828d4d9a0e24552",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "[中文]\n杠精视角文案 + GPT Image 2\n\n[English]\nTroll perspective copywriting + GPT Image 2",
+      "to": "[中文]\n生成一张“杠精视角看 AI 效率神话”的讽刺编辑海报：主标题“你说效率翻倍，我问需求改了几遍？”，使用夸张对话气泡、红色批注、黑白报纸拼贴与醒目黄色高亮，明确为幽默虚构观点，不攻击真实个人或群体。\n\n[English]\nCreate a satirical editorial poster titled “You say AI doubled productivity; I ask how many times the brief changed.” Use exaggerated speech bubbles, red annotations, black-and-white newspaper collage, and bold yellow highlights. Keep it fictional and humorous, targeting no real person or protected group."
+    }
+  ]
+}

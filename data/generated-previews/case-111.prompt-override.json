@@ -1,0 +1,19 @@
+{
+  "templateId": "case-111",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-111.prompt.txt",
+  "originalPromptSha256": "0921b0f002592bf6c422b15554722550b5bccbc9d121dcc4baec59de4cbed422",
+  "usedPrompt": "case-111.safe.prompt.txt",
+  "usedPromptSha256": "ed92e11d8709c9ddad6efb3c7b80a0227eb2ea4099cd651fe3f022bb5273e6b2",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "resembling Jeffrey Epstein",
+      "to": "with no resemblance to any real person"
+    },
+    {
+      "from": "true crime investigation",
+      "to": "fictional mystery investigation"
+    }
+  ]
+}

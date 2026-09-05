@@ -1,0 +1,11 @@
+{
+  "type": "Artistic Illustration",
+  "art_style": "Studio Ghibli inspired anime style",
+  "scene": {
+    "description": "A giant flying whale carrying a small cozy village on its back",
+    "details": "Windmills turning, tiny people looking over the edge, fluffy white clouds"
+  },
+  "palette": "Vibrant sky blue, lush greens, soft pastel accents",
+  "technique": "Cel shading, detailed background art, soft glowing magical aura",
+  "mood": "Whimsical, adventurous, nostalgic"
+}

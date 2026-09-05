@@ -1,0 +1,19 @@
+{
+  "templateId": "case-176",
+  "promptVariant": "safe-rewrite",
+  "originalPrompt": "case-176.prompt.txt",
+  "originalPromptSha256": "8fca9eb02862a99bd06904df78c7bbffb79450984fe8e93299207d811b569d67",
+  "usedPrompt": "case-176.safe.prompt.txt",
+  "usedPromptSha256": "a2bf93d62f760513fdc5bd875e4dbdb3458113c6ba61840137059dd91a66ee4c",
+  "reason": "pre-review safety/brand/age ambiguity mitigation",
+  "replacements": [
+    {
+      "from": "小红书截图",
+      "to": "虚构旅行日记动态卡片"
+    },
+    {
+      "from": "Xiaohongshu screenshot",
+      "to": "fictional travel diary social card"
+    }
+  ]
+}
