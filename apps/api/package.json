@@ -1,0 +1,26 @@
+{
+  "name": "@onepic/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck:test": "tsc -p tsconfig.test.json --noEmit",
+    "migrate": "node dist/db/migrate-cli.js",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@onepic/contracts": "0.0.0",
+    "fastify": "^5.12.3",
+    "jose": "^6.2.12",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@onepic/test-support": "0.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.23.1",
+    "pg": "^8.23.0",
+    "typescript": "^5.9.3"
+  }
+}
