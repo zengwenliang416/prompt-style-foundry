@@ -4,6 +4,10 @@
   "private": true,
   "description": "Standalone single-image visual prompt template library with 576 normalized templates.",
   "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "python3 scripts/serve.py",
     "serve": "python3 scripts/serve.py",
@@ -11,7 +15,29 @@
     "build": "python3 scripts/build_library.py && python3 scripts/install_generated_previews.py",
     "validate": "python3 scripts/validate_library.py && python3 scripts/install_generated_previews.py --check",
     "test": "python3 -m unittest discover -s tests -p 'test_*.py'",
-    "check": "npm run build && npm run validate && npm run test"
+    "check": "npm run build && npm run validate && npm run test",
+    "build:workspaces": "npm run build -w @onepic/contracts && npm run build -w @onepic/client && npm run build -w @onepic/test-support && npm run build -w @onepic/api && npm run build -w @onepic/worker && npm run build -w @onepic/web",
+    "typecheck": "npm run typecheck -w @onepic/contracts && npm run typecheck -w @onepic/client && npm run typecheck -w @onepic/test-support && npm run typecheck -w @onepic/api && npm run typecheck:test -w @onepic/api && npm run typecheck:test -w @onepic/worker && npm run typecheck -w @onepic/worker && npm run typecheck -w @onepic/web",
+    "lint": "eslint .",
+    "format": "prettier --write apps packages tsconfig.base.json eslint.config.js vitest.config.ts vitest.integration.config.ts playwright.config.ts",
+    "format:check": "prettier --check apps packages tsconfig.base.json eslint.config.js vitest.config.ts vitest.integration.config.ts playwright.config.ts",
+    "test:unit": "vitest run --config vitest.config.ts",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "test:e2e": "playwright test",
+    "lint:contract": "redocly lint packages/contracts/openapi/api-v1.yaml",
+    "gen:api": "npm run generate -w @onepic/contracts",
+    "gen:api:check": "npm run generate:check -w @onepic/contracts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
+    "@redocly/cli": "^2.51.2",
+    "eslint": "^10.10.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.10.0",
+    "prettier": "^3.9.6",
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^5.0.0"
   },
   "engines": {
     "node": ">=20",

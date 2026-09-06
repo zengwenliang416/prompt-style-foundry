@@ -1,0 +1,190 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OnePic API",
+    "version": "0.1.0",
+    "summary": "OnePic 单图模板库的首期受控生图 API",
+    "description": "首期 API 表面（docs/full-stack-architecture.md §6、ADR 0001 D-1）：\n本版本仅包含健康检查端点，上传、生成、取消端点随 B/M/J 阶段清单落地时\n加入本契约。响应统一为 `{ data, meta }` 成功信封与 `{ error }` 失败信封；\n字段命名 camelCase，时间 UTC ISO-8601，ID 使用 UUID/ULID，分页使用 cursor。\n本契约是生成类型与运行时校验的唯一事实来源。\n"
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "health",
+      "description": "进程与依赖探针（语义由 B06 最终确定）"
+    }
+  ],
+  "paths": {
+    "/health/live": {
+      "get": {
+        "operationId": "getHealthLive",
+        "tags": [
+          "health"
+        ],
+        "summary": "进程存活探针",
+        "description": "返回 200 表示 API 进程在监听；不探测任何外部依赖，不触发付费调用。",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "进程存活",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfHealthLive"
+                },
+                "example": {
+                  "data": {
+                    "status": "ok"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "operationId": "getHealthReady",
+        "tags": [
+          "health"
+        ],
+        "summary": "依赖就绪探针",
+        "security": [],
+        "description": "返回 200 与 status=ok 表示依赖就绪，status=degraded 表示部分依赖不可用； 不得触发付费 provider 探测（B06 语义占位，当前无依赖恒为 ok）。\n",
+        "responses": {
+          "200": {
+            "description": "就绪状态",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfHealthReady"
+                },
+                "example": {
+                  "data": {
+                    "status": "ok"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApiMeta": {
+        "type": "object",
+        "description": "与 data 并列的分页/追踪元数据；结构随端点补充。",
+        "additionalProperties": true
+      },
+      "ApiErrorBody": {
+        "type": "object",
+        "description": "稳定错误码信封；客户端不得依赖 message 文本做逻辑判断。",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "message",
+          "correlationId"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "稳定机器可读错误码（错误码目录见 D06 数据字典）。"
+          },
+          "message": {
+            "type": "string",
+            "description": "面向人类的错误说明；不得包含密钥或提示词正文。"
+          },
+          "details": {
+            "type": "object",
+            "description": "结构化错误细节；不得包含密钥。",
+            "additionalProperties": true
+          },
+          "correlationId": {
+            "type": "string",
+            "description": "请求关联 ID，用于日志与支持排查。"
+          }
+        }
+      },
+      "ApiFailure": {
+        "type": "object",
+        "description": "失败响应信封。",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ApiErrorBody"
+          }
+        }
+      },
+      "HealthLive": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok"
+          }
+        }
+      },
+      "HealthReady": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "degraded"
+            ]
+          }
+        }
+      },
+      "ApiSuccessOfHealthLive": {
+        "type": "object",
+        "description": "成功信封（/health/live）。",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/HealthLive"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "ApiSuccessOfHealthReady": {
+        "type": "object",
+        "description": "成功信封（/health/ready）。",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/HealthReady"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      }
+    }
+  }
+}

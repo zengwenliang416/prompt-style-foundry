@@ -1,0 +1,24 @@
+{
+  "name": "@onepic/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./openapi/*": "./openapi/*"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "generate": "openapi-typescript openapi/api-v1.yaml -o src/generated/api-v1.d.ts && js-yaml openapi/api-v1.yaml > openapi/api-v1.json",
+    "generate:check": "before=$(mktemp) && after=$(mktemp) && shasum -a 256 src/generated/api-v1.d.ts openapi/api-v1.json > \"$before\" && npm run generate > /dev/null && shasum -a 256 src/generated/api-v1.d.ts openapi/api-v1.json > \"$after\" && diff \"$before\" \"$after\" && rm -f \"$before\" \"$after\" && echo 'no drift'"
+  },
+  "devDependencies": {
+    "js-yaml": "^5.4.1",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5.9.3"
+  }
+}

@@ -7,3 +7,10 @@ node_modules/
 coverage/
 *.log
 .tmp/
+dist/
+.env
+.env.*
+!.env.example
+test-results/
+playwright-report/
+playwright/.cache/

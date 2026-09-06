@@ -1,0 +1,11 @@
+extends:
+  - recommended
+
+# Project rules: this is a first-phase contract (architecture §6) whose
+# error semantics and full 4xx responses are finalized with B06; keep those
+# recommendations visible as warnings without blocking the gate.
+rules:
+  operation-4xx-response: warn
+  operation-operationId: error
+  no-unresolved-refs: error
+  info-license: off
