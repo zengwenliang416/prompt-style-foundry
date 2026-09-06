@@ -1,0 +1,19 @@
+{
+  "name": "@onepic/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck:test": "tsc -p tsconfig.test.json --noEmit",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@onepic/test-support": "0.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.23.1",
+    "pg": "^8.23.0",
+    "typescript": "^5.9.3"
+  }
+}
