@@ -1,0 +1,10 @@
+:root { color-scheme: light; }
+body { max-width: 980px; margin: 0 auto; padding: 3rem 1.25rem; background: #f4efe5; color: #17252a; font: 16px/1.7 -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; }
+h1, h2, h3 { color: #0c4f56; line-height: 1.25; }
+h1 { border-bottom: 3px solid #d28b3d; padding-bottom: .6rem; }
+table { border-collapse: collapse; width: 100%; background: #fffdf7; }
+th, td { border: 1px solid #cfc6b5; padding: .55rem .7rem; vertical-align: top; }
+th { background: #dce9e5; color: #0c4f56; }
+code, pre { background: #ebe5d9; }
+pre { padding: 1rem; overflow-x: auto; border-left: 4px solid #d28b3d; }
+a { color: #0c6870; }

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>OnePic 前后端工程设计评审版</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="engineering-review.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">OnePic 前后端工程设计评审版</h1>
+</header>
+<h1 id="前后端架构设计">前后端架构设计</h1>
+<h2 id="状态与边界">1. 状态与边界</h2>
+<p>这是待实施的目标方案，不代表后端已经存在。当前项目是静态前端：浏览器读取生成目录、提示词和预览，生图时直连用户配置的
+BYOK
+服务。项目规则目前明确禁止服务端代理、账号、数据库和遥测，因此实施本方案前必须单独批准并修订该边界。</p>
+<p>必须保留的约束：上游 ZIP 和 data/source 只读；Python
+编译器是提示词唯一权威；公共模板要求一张参考图、无必填文本、保持比例和方向；私人生成结果不自动进入
+public/previews；API 不可用时仍可浏览和复制提示词。</p>
+<h2 id="推荐拓扑">2. 推荐拓扑</h2>
+<pre class="text"><code>Browser -&gt; Static CDN/Nginx
+       -&gt; HTTPS API/BFF -&gt; Catalog module
+                         -&gt; Generation module
+                         -&gt; PostgreSQL metadata
+                         -&gt; Private object storage
+                         -&gt; PostgreSQL job table + Worker
+                         -&gt; Provider adapters</code></pre>
+<p>首期采用模块化单体 API 加独立 Worker，不引入微服务、Kubernetes、Redis
+或独立服务网格。目录继续由现有 Python import/build/validate
+流水线生成，API 只读取不可变版本，不在运行时修改源数据。</p>
+<h2 id="技术选型">3. 技术选型</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>层</th>
+<th>推荐</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前端</td>
+<td>Vue 3、TypeScript、Vite</td>
+<td>五页共享表单和异步任务需要组件化，同时可继续静态部署</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>Vue Router、Pinia、query 缓存</td>
+<td>搜索条件可分享，任务状态不重复存储</td>
+</tr>
+<tr>
+<td>API</td>
+<td>TypeScript、Fastify</td>
+<td>轻量模块化单体；Controller 与领域层易分离</td>
+</tr>
+<tr>
+<td>契约</td>
+<td>OpenAPI 3.1、JSON Schema</td>
+<td>输入输出运行时校验并生成客户端类型</td>
+</tr>
+<tr>
+<td>数据</td>
+<td>PostgreSQL、SQL migrations</td>
+<td>任务、配额、审计需要事务；SQLite 只用于本地演示</td>
+</tr>
+<tr>
+<td>队列</td>
+<td>首期 PostgreSQL job 表和 Worker 租约</td>
+<td>减少基础设施；吞吐不足时再替换队列适配器</td>
+</tr>
+<tr>
+<td>文件</td>
+<td>S3-compatible 私有对象存储</td>
+<td>图片不写数据库、Git 或 80 服务器长期磁盘</td>
+</tr>
+<tr>
+<td>部署</td>
+<td>Nginx 同域 API、API/Worker 两进程</td>
+<td>减少跨域和部署拓扑复杂度</td>
+</tr>
+</tbody>
+</table>
+<h2 id="模块与代码边界">4. 模块与代码边界</h2>
+<pre class="text"><code>apps/web/src/{app,pages,features,entities,shared}
+apps/api/src/modules/{catalog,generation,media,identity,workspace,policy}
+apps/api/src/{bootstrap}
+apps/worker/src/
+packages/contracts/
+packages/client/
+scripts/
+ops/</code></pre>
+<p>Controller 只做协议转换和鉴权；Application 编排用例；Domain
+定义不变量、端口和状态机；Infrastructure
+实现数据库、对象存储和供应商。页面不得导入后端内部类型，领域层不得依赖
+HTTP 框架、SQL driver 或 provider SDK。</p>
+<h2 id="五页职责">5. 五页职责</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>路由</th>
+<th>任务</th>
+<th>当前静态能力</th>
+<th>目标服务端能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/</td>
+<td>总览、最近模板、入口</td>
+<td>目录统计、本地最近项</td>
+<td>本人任务、配额和状态</td>
+</tr>
+<tr>
+<td>/discover</td>
+<td>搜索、分类、蓝图类型、收藏</td>
+<td>静态 catalog、按需提示词</td>
+<td>版本和能力验证，首期不重复建目录 API</td>
+</tr>
+<tr>
+<td>/studio/:templateId</td>
+<td>单图、预审、生成、结果</td>
+<td>提示词、预览、direct BYOK</td>
+<td>上传隔离、幂等任务、异步状态、下载</td>
+</tr>
+<tr>
+<td>/workspace</td>
+<td>收藏、集合、历史、重试、导出</td>
+<td>localStorage 收藏</td>
+<td>登录后的跨设备私人记录</td>
+</tr>
+<tr>
+<td>/guide</td>
+<td>来源、输入约束、隐私</td>
+<td>静态文档</td>
+<td>展示真实存储和保留策略</td>
+</tr>
+</tbody>
+</table>
+<p>运行模式为
+catalog-only、direct-BYOK、managed-generation。模式切换必须重新展示数据去向；不得自动把浏览器旧密钥转发到服务器。</p>
+<h2 id="api-约定">6. API 约定</h2>
+<p>Base path 为 /api/v1。成功响应为 data 和 meta，错误为
+error.code、error.message、details 和 correlationId。JSON 使用
+camelCase，数据库使用 snake_case，时间使用 UTC ISO-8601，ID 使用
+UUID/ULID，分页使用 cursor。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>路径</th>
+<th>语义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/templates</td>
+<td>目录元数据和筛选</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/templates/{id}</td>
+<td>模板与不可变提示词版本</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/uploads</td>
+<td>短期上传目标</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/generations</td>
+<td>幂等创建任务，长任务返回 202</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/generations/{id}</td>
+<td>状态和结果元数据</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/generations/{id}/cancel</td>
+<td>取消可取消任务</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/health/live</td>
+<td>进程存活</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/health/ready</td>
+<td>依赖就绪</td>
+</tr>
+</tbody>
+</table>
+<p>创建任务必须携带
+templateId、templateVersion、promptSha256、sourceObjectId、settings 和
+Idempotency-Key。服务端重新读取不可变提示词并校验哈希，不接受浏览器任意正文替换公共模板。不能把
+provider 超时直接当失败重试。</p>
+<h2 id="数据一致性与图像关联">7. 数据一致性与图像关联</h2>
+<p>Generation 必须记录
+templateId、templateVersion、catalogReleaseId、compiledPromptSha256、effectivePromptSha256、inputObjectId、inputSha256、providerId、model、settings
+和 idempotencyKey。Attempt 记录真实发送的提示词哈希、上游 request
+ID、状态和错误码。结果记录实际 MIME、字节数、宽高、哈希和 Attempt
+ID。</p>
+<p>预审需要改变提示词时必须阻断请求，由维护流程创建候选版本、差异和新哈希；前台不能偷偷缩短、翻译或重写再冒用旧版本。默认
+effective prompt 等于编译 prompt。请求 high/4K 不等于实际输出
+high/4K。</p>
+<h2 id="身份安全隐私">8. 身份、安全、隐私</h2>
+<p>统一服务器密钥的生图上线前必须完成身份、对象级授权和配额。推荐受信
+OIDC 加服务端 opaque
+session；未配置身份源时只开放目录。游客只能读目录，成员只能访问 ownerId
+资源，管理员默认不能读取用户图片。</p>
+<p>Provider key 由 secret manager 或受管密钥文件注入 Worker，禁止任意
+baseUrl 服务器转发。强制 TLS、严格 CORS、短期 signed URL、魔数和 MIME
+校验、字节与像素上限、限流和 provider 并发限制。日志不得写
+Authorization、API key、图片 URL、完整提示词、用户图片或 provider
+响应正文。发送到外部 provider 前必须明确同意。</p>
+<p>首期限额建议：输入 20 MiB、40 MP，仅 JPEG/PNG/WebP；结果 60 MiB、64
+MP。上传先 quarantine，解码校验后才 ready；首期拒绝
+SVG、HTML、动画和压缩包。输入和结果自动过期并审计删除。</p>
+<h2 id="任务可靠性与运维">9. 任务可靠性与运维</h2>
+<pre class="text"><code>created -&gt; queued -&gt; running -&gt; succeeded
+                         |-&gt; failed / cancelled / expired / outcome_unknown</code></pre>
+<p>状态转换集中定义，重复事件幂等。Provider 超时或连接中断先进入
+outcome_unknown，通过 request ID
+查询或人工处置，避免重复计费。只有有证据的 retryable
+错误才重试，耗尽后进入 dead-letter。创建 generation 与 outbox
+事件应同事务写入；PG job 表必须有租约、心跳、CAS、过期回收和 dead-letter
+字段。</p>
+<p>默认保留值是待产品确认的设计建议：未完成上传 1 小时；输入终态后 24
+小时；结果 7 天；任务和提示词快照 30 天；脱敏安全事件 90 天。80
+服务器只放服务、元数据和有界临时文件；磁盘 70% 告警、85%
+停止新媒体写入，不自动删除业务数据。</p>
+<h2 id="实施和验收">10. 实施和验收</h2>
+<ol type="1">
+<li>单独批准架构、身份、隐私和 AGENTS 边界。</li>
+<li>先实现五页静态模式，真实处理
+loading、空态、失败、重试和本地状态。</li>
+<li>建立 OpenAPI、OIDC、对象授权、配额和不可变 catalog
+导入；此阶段关闭付费生图。</li>
+<li>打通一个模板的上传、预审、Worker、未知结果、存储、删除和审计。</li>
+<li>完成工作区、恢复演练、安全、压力和 E2E 后开放
+managed-generation。</li>
+</ol>
+<p>门禁包括契约 lint、类型检查、单元、PostgreSQL 集成、provider
+合约、浏览器
+E2E、越权/重放/上传绕过/日志泄漏/限流/删除测试，以及现有静态构建验证。迁移采用
+expand/contract，破坏性 SQL 不随应用回滚。未完成实现前不得在 README 或
+UI 宣称后端已上线。</p>
+<h1 id="onepic-前后端设计与代码规范">OnePic 前后端设计与代码规范</h1>
+<h2 id="设计规范">设计规范</h2>
+<h3 id="前端">前端</h3>
+<ul>
+<li>页面、状态、网络、存储和渲染分层；组件不直接拼接 API URL。</li>
+<li>以任务组织界面：发现模板、检查提示词、上传单图、生成、查看本地记录。</li>
+<li>明确显示单图约束、提示词版本、隐私边界以及
+loading、空态、失败、重试、取消、过期状态。</li>
+<li>支持键盘、焦点可见、语义标签、响应式布局和减少动态效果偏好。</li>
+</ul>
+<h3 id="后端">后端</h3>
+<ul>
+<li>Controller 只做协议转换和鉴权；Use Case 编排业务；Repository
+隔离存储；Gateway 隔离供应商。</li>
+<li>API 资源使用名词、动作使用 HTTP 方法；长任务返回 <code>202</code> 和
+job ID。</li>
+<li>所有写操作支持幂等键；DTO 与数据库模型分离，禁止字段透传。</li>
+<li>供应商差异只存在于 provider adapter，领域层使用统一能力模型。</li>
+</ul>
+<h2 id="api-与数据">API 与数据</h2>
+<ul>
+<li>JSON camelCase，数据库 snake_case；ID 使用 UUID/ULID；时间使用 UTC
+ISO-8601。</li>
+<li>分页统一 cursor；响应统一 <code>{ data, error, meta }</code>。</li>
+<li>错误使用稳定错误码，不依赖字符串匹配；新增字段可选，破坏性变化升级
+API 版本。</li>
+<li>大对象使用短期签名 URL，不把 base64 作为持久化接口。</li>
+</ul>
+<h2 id="前端代码">前端代码</h2>
+<ul>
+<li>ES modules、<code>const</code> 优先、窄作用域、显式错误处理。</li>
+<li>DOM、网络和 localStorage 访问集中在 adapter 函数。</li>
+<li>禁止把 API Key、上传内容、完整提示词写入 console、URL 或遥测。</li>
+<li>异步操作必须有 busy 状态、取消/超时和 <code>finally</code>
+清理；重复提交由 UI 和幂等键双重防护。</li>
+<li>按 4xx、429、5xx 和网络错误给出可理解提示。</li>
+</ul>
+<h2 id="后端代码">后端代码</h2>
+<ul>
+<li>启用严格类型、格式化、静态检查和锁定依赖。</li>
+<li>输入使用 schema 校验，输出使用显式
+DTO；事务不跨越外部网络调用。</li>
+<li>日志结构化且默认脱敏；数据库迁移可审计、可回滚，破坏性迁移分阶段执行。</li>
+</ul>
+<h2 id="测试门禁">测试门禁</h2>
+<ul>
+<li>单元：编译规则、状态机、策略、校验器。</li>
+<li>集成：数据库、对象存储签名、队列、provider adapter。</li>
+<li>合约：OpenAPI、错误码、分页、幂等语义。</li>
+<li>E2E：模板浏览、提示词查看、单图生成成功/失败/取消/过期。</li>
+<li>安全：越权、重放、上传绕过、日志泄漏、限流、删除策略。</li>
+</ul>
+<h2 id="git-规范">Git 规范</h2>
+<p>小步提交，标题描述实际能力或修复，不混入无关格式化。API
+契约、迁移、前端调用和测试作为同一变更计划联动；提交、推送、部署和切流分别授权和验证。</p>
+<h1 id="onepic-前后端设计模式">OnePic 前后端设计模式</h1>
+<h2 id="推荐模式">推荐模式</h2>
+<h3 id="adapter">Adapter</h3>
+<p>统一
+<code>generate(input)</code>、<code>getCapabilities()</code>、<code>cancel(requestId)</code>，隔离
+OpenAI-compatible、内部网关和其他供应商的字段差异。</p>
+<h3 id="strategy">Strategy</h3>
+<p>按质量、尺寸、成本、延迟和 provider
+能力选择生成策略；策略不能绕过提示词版本、单图校验和安全检查。</p>
+<h3 id="state-machine">State Machine</h3>
+<p>生成任务只允许
+<code>created -&gt; queued -&gt; running -&gt; succeeded/failed/cancelled/expired</code>，非法转换拒绝，重复事件幂等。</p>
+<h3 id="repository">Repository</h3>
+<p>领域服务依赖
+<code>TemplateRepository</code>、<code>GenerationRepository</code>、<code>MediaRepository</code>
+接口；数据库、对象存储和测试替身分别实现。</p>
+<h3 id="hexagonal-architecture">Hexagonal Architecture</h3>
+<p>领域核心不依赖 HTTP、数据库、队列或 SDK。API、队列消费者和 CLI
+是输入适配器；数据库、对象存储和 provider 是输出适配器。</p>
+<h3 id="outbox">Outbox</h3>
+<p>generation 记录与 outbox 事件在同一事务中写入，再由 dispatcher
+投递队列，避免“数据库成功但任务未入队”。</p>
+<h3 id="saga-compensation">Saga / Compensation</h3>
+<p>上传、生成、结果保存和清理不使用长事务；每一步记录状态，失败时删除临时对象、标记失败并释放配额。</p>
+<h3 id="bff">BFF</h3>
+<p>需要组合模板、权限和生成状态时使用 BFF
+做鉴权、聚合、字段裁剪和错误转换，不复制领域逻辑。</p>
+<h3 id="cqrs-lite">CQRS-lite</h3>
+<p>目录读取可继续来自静态 JSON/CDN，生成写入走
+API/队列。当前规模不需要独立读模型或事件溯源。</p>
+<h2 id="不推荐">不推荐</h2>
+<ul>
+<li>页面、API、数据库和 provider 混在一个函数的 Big Ball of Mud。</li>
+<li>业务规则散落在 Controller/SQL 的贫血模型。</li>
+<li>共享数据库、同步强耦合、无法独立发布的分布式单体。</li>
+<li>一个 <code>app.js</code> 或服务类承担所有边界的 God Object。</li>
+<li>未经用户明确触发的隐式上传或隐藏代理。</li>
+</ul>
+<h2 id="选择原则">选择原则</h2>
+<p>当前优先“模块化单体 + 队列 +
+明确端口”，只在扩缩容、故障隔离或团队边界明确时拆服务。不要为了 576
+条模板过早引入微服务、CQRS 或事件溯源。</p>
+</body>
+</html>

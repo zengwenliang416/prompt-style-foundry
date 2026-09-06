@@ -4,7 +4,7 @@
 
 This repository is **OnePic Template Studio / 一图万式**, a standalone single-reference-image prompt template library.
 
-It is not a fork, skin, patch set, or deployment variant of the upstream prompt gallery. Do not add upstream application code, APIs, billing, authentication, databases, analytics, branding, or UI components to this repository.
+It is not a fork, skin, patch set, or deployment variant of the upstream prompt gallery. Do not add upstream-derived application code, APIs, billing, authentication, databases, analytics, branding, or UI components to this repository. First-party server-side work is governed by the approved backend boundary in section 11.
 
 ## 2. Non-negotiable source boundary
 
@@ -120,7 +120,7 @@ Category adapters must never hallucinate facts. In particular:
 - Keep catalog metadata separate from full prompt TXT files so the initial payload remains reasonable.
 - Do not load all prompt bodies at startup.
 - Store favorites and generation credentials only in localStorage.
-- The project has no backend and no telemetry. Uploaded images and prompts may only travel directly to the user-configured BYOK endpoint when the user explicitly triggers generation. Never add a server-side proxy, account system, or implicit upload path.
+- No telemetry or analytics. The approved backend boundary (section 11) permits a controlled server side; outside that scope, uploaded images and prompts may only travel directly to the user-configured BYOK endpoint when the user explicitly triggers generation. Never add an implicit upload path, arbitrary baseUrl forwarding, payment, membership, or team systems.
 
 ## 8. Data and naming
 
@@ -166,3 +166,16 @@ A change is complete only when:
 - Unit tests pass.
 - The static site loads through `scripts/serve.py`.
 - `NOTICE.md` and the third-party license remain present.
+
+## 11. Approved backend boundary (2026-09-06)
+
+The user explicitly approved ("我全部批准", recorded in `docs/adr/0003-backend-boundary-approval.md`) a controlled first-party backend within this scope:
+
+- Modular monolith HTTPS API/BFF plus an independent Worker; no microservices, Redis, external message broker, or Kubernetes.
+- PostgreSQL for metadata and the job table (the PG job table is the phase-one queue).
+- S3-compatible private object storage; no public ACLs; short-lived signed URLs.
+- Trusted OIDC (authorization code + PKCE) with server-side opaque sessions; managed-generation mode must refuse to start without a configured identity source.
+- Object-level authorization, quota/rate/concurrency limits, unified errors and audit events.
+- Managed generation sends images and prompts only to allowlisted providers after an explicit user trigger; provider keys are injected into the Worker from a secret manager or managed key file; arbitrary baseUrl forwarding is forbidden.
+
+Still forbidden without separate per-action authorization: commit, push, deploy, paid provider calls, production migration; payment, membership, team systems; telemetry/analytics; upstream branding or application code; modifying the source archive. Static catalog-only and direct-BYOK modes must remain fully usable, and browser-stored BYOK keys must never be migrated or forwarded to the server.
