@@ -127,10 +127,12 @@ export async function executeClaimedJob(
     return { ok: false, refused: false, errorCode: 'CANCELLED', sentPromptSha256: null };
   }
 
-  // J08: advertise the honest running state (CAS from queued). Zero rows
-  // means a queued-cancel won the race — send nothing and bury the job.
+  // J08: advertise the honest running state (CAS). A retry of the same job
+  // finds the row already running — still ours, the lease guarantees a single
+  // executor. Zero rows means a queued-cancel (or terminal transition) won
+  // the race — send nothing and bury the job.
   const markedRunning = await db.query(
-    `UPDATE generation SET state = 'running', updated_at = now() WHERE id = $1 AND state = 'queued'`,
+    `UPDATE generation SET state = 'running', updated_at = now() WHERE id = $1 AND state IN ('queued', 'running')`,
     [context.generationId],
   );
   if ((markedRunning.rowCount ?? 0) === 0) {
