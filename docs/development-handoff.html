@@ -274,17 +274,15 @@ href="design/ui-2026-09-05-prompts/">docs/design/ui-2026-09-05-prompts/</a>。</
 <ul>
 <li>当前阶段：D/F/U/B/M
 阶段全部完成（D00–D06、F01–F05、U01–U12、B01–B06、M01–M05）；J
-阶段进行中（J01–J06 通过）。超时/断网 outcome_unknown 与 request ID
-对账已实装。</li>
-<li>下一项：J07（有界可重试错误与失败归档），依赖 J06 已满足。</li>
+阶段进行中（J01–J07 通过）。outcome_unknown
+对账与有界重试/失败归档已实装。</li>
+<li>下一项：J08（取消与竞争处理），依赖 J07 已满足。</li>
 <li>已知门禁：无阻塞门禁。commit/push/deploy、付费 provider
 调用、生产迁移仍须逐项单独授权（不阻塞本地实现与测试）。</li>
-<li>最近测试/证据：J06 对账 3 例（已接受后断网不重发、缺 request ID
-保持未知、504 捕获 request ID 对账成功且配额不释放）；全库单测 27 文件
-181（0 失败 0 跳过；较 J05 记录的 186 少 5，源于 J05
-会话中段重构，本轮未动单测文件）+ 集成 14 文件 71 + E2E 42
-全绿；ci-verify.sh 退出码 0。附带修复：test-support initdb 固定
---lc-messages=C（locale 相关测试确定性）。</li>
+<li>最近测试/证据：J07 集成 5 例（429+Retry-After 有界重试后成功、无证据
+429/401 不重试死信、503 三轮超限死信、拒判立即归档）+ 分类器单测 15
+例；全库单测 28 文件 196 + 集成 15 文件 76 + E2E 42 全绿；ci-verify.sh
+退出码 0。</li>
 <li>下一位模型：先核对 Git 和真实文件；工作区命令见
 docs/development-context.md L2（U12 证据目录已入索引）；node/npm 需 nvm
 PATH（~/.nvm/versions/node/v22.19.0/bin），Python 需 venv
@@ -446,7 +444,7 @@ prompt、attempt/参数；验收：捕获测试上游请求字节并比对哈希
 <li><label><input type="checkbox" checked="" />J06 实现超时/网络中断的
 outcome_unknown 与对账；验收：provider 已接受后断网不自动重发，缺
 request ID 仍保持未知，有明确处置入口。</label></li>
-<li><label><input type="checkbox" />J07
+<li><label><input type="checkbox" checked="" />J07
 实现有界可重试错误与失败归档；验收：429/503 按 provider
 证据和幂等能力判断，401/参数错误不重试，超限进入死信。</label></li>
 <li><label><input type="checkbox" />J08
@@ -999,9 +997,21 @@ commit/push/deploy。</label></li>
   - 计数说明：单测总数 181，J04/J05 记录为 186——同一 27 文件、0 失败 0 跳过，差异源自 J05 会话中段重构（本轮未触碰任何单测文件）；全绿无回归，留此备注供后续核对。
 证据路径：本条目；apps/worker/src/execute.ts、apps/worker/src/reconcile.ts、apps/worker/test/reconcile.integration.test.ts、apps/api/src/modules/generation/provider-adapter.ts、packages/test-support/src/{mock-provider,pg-test-cluster}.ts diff。
 风险或阻塞 / 下一项：处置入口当前为服务层函数（resolveUnknown/probeByRequestId），面向运维的 CLI/管理端 API 尚未暴露（架构 §9 未强制首期 HTTP 化）；Worker 主循环 index.ts 仍是 shell，领取→执行→死信的常驻接线属后续联调范围。下一项：J07（有界可重试错误与失败归档）。</code></pre>
+<pre class="text"><code>ID / 日期：J07 / 2026-09-06
+状态：通过
+工作区版本 / 变更文件：main @ 4a7bd6a + dirty。新增 apps/worker/src/retry-policy.ts（classifyProviderFailure：401/403 与 400/404/409/422 永不重试；429/503 仅在持有 Retry-After 证据或幂等安全时重试；其他 5xx 仅 Retry-After 证据可重试；PROVIDER_TIMEOUT_UNKNOWN 恒归 J06 路径不参与重试）、apps/worker/src/retry-policy.test.ts（单测 15 例）、apps/worker/test/retry.integration.test.ts（5 例）。修改 apps/api/src/modules/generation/provider-adapter.ts（429/5xx 捕获并解析 retry-after 头 → NormalizedFailure.retryAfterSeconds，仅接受 delta-seconds 形式；新增显式 429/5xx 分支）、apps/worker/src/execute.ts（非超时失败：attempt 记录 http_status 归档 → 分类 → failJob（retryable 回 pending + run_after 延迟；不可重试或 attempts 耗尽 → 死信 + generation failed）；拒判路径（GENERATION_STATE_ILLEGAL/INTERNAL/PROMPT_REWRITE_BLOCKED）经 refuseExecution 立即死信归档，不再依赖租约过期空转；ExecutionOutcome 增加 retried 标志）。
+验证命令 / 退出码 / 关键断言：
+  - 429+Retry-After 有界重试（验收核心）：首次执行 retried=true、attempt http_status=429 归档、job 回 pending 且 run_after 延迟、generation 保持 queued 不谎报失败；延迟后重新领取（attempts=2）执行成功 → completeJob → succeeded；provider 恰收 2 次请求。
+  - 429 无 Retry-After（验收核心）：非幂等路径无证据不重试——job 死信 PROVIDER_REJECTED、generation failed、恰 1 次 provider 调用、无可领取 job。
+  - 401 永不重试（验收核心）：job 死信、generation failed、attempt http_status=401、恰 1 次调用（分类器单测覆盖 401/403/400/404/409/422 即便幂等安全也不重试）。
+  - 超限死信（验收核心）：连续 503+Retry-After 三轮（max_attempts=3），第 3 轮 retried=false → 死信 + generation failed；attempt 归档 3 行 http_status=503,503,503；无残留可领取 job。
+  - 失败归档（拒判）：篡改快照 → PROMPT_REWRITE_BLOCKED 立即死信 + generation failed，零 provider 调用，不再租约空转。
+  - npm run test:unit：28 文件 196 例全绿（分类器 +15）；npm run test:integration：15 文件 76 例全绿（J07 5 + 既有 71）；lint/typecheck/build:workspaces/test:e2e（42）退出码 0；ci-verify.sh（venv+nvm PATH）退出码 0。
+证据路径：本条目；apps/worker/src/retry-policy.ts、apps/worker/src/execute.ts、apps/worker/test/retry.integration.test.ts、apps/api/src/modules/generation/provider-adapter.ts diff。
+风险或阻塞 / 下一项：重试仅覆盖 provider 层失败分类；Worker 主循环常驻接线仍未做（同 J06 记录）；Retry-After 的 HTTP-date 形式不支持（解析即缺省，按无证据处理——保守方向正确）。下一项：J08（取消与竞争处理）。</code></pre>
 <p>渲染命令（在仓库根运行，更新清单后同步 HTML）：</p>
-<div class="sourceCode" id="cb45"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> GOAL.md docs/development-context.md docs/development-checklist.md <span class="at">--from</span><span class="op">=</span>gfm <span class="at">--standalone</span> <span class="at">--toc</span> <span class="at">--lua-filter</span><span class="op">=</span>docs/render-handoff.lua <span class="at">--metadata</span> title=<span class="st">&#39;OnePic 开发 Goal 与清单&#39;</span> <span class="at">--metadata</span> lang=zh-CN <span class="at">--css</span><span class="op">=</span>engineering-review.css <span class="at">-o</span> docs/development-handoff.html</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pandoc</span> GOAL.md docs/development-context.md docs/development-checklist.md <span class="at">--from</span><span class="op">=</span>gfm <span class="at">--standalone</span> <span class="at">--toc</span> <span class="at">--lua-filter</span><span class="op">=</span>docs/render-handoff.lua <span class="at">--metadata</span> title=<span class="st">&#39;OnePic 开发 Goal 与清单&#39;</span> <span class="at">--metadata</span> lang=zh-CN <span class="at">--css</span><span class="op">=</span>engineering-review.css <span class="at">-o</span> docs/development-handoff.html</span></code></pre></div>
 <p>HTML 是阅读快照，勾选与执行记录必须编辑本 Markdown
 后重新生成，禁止只在浏览器勾选。</p>
 </body>

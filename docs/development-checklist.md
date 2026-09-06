@@ -2,10 +2,10 @@
 
 ## 续接记录
 
-- 当前阶段：D/F/U/B/M 阶段全部完成（D00–D06、F01–F05、U01–U12、B01–B06、M01–M05）；J 阶段进行中（J01–J06 通过）。超时/断网 outcome_unknown 与 request ID 对账已实装。
-- 下一项：J07（有界可重试错误与失败归档），依赖 J06 已满足。
+- 当前阶段：D/F/U/B/M 阶段全部完成（D00–D06、F01–F05、U01–U12、B01–B06、M01–M05）；J 阶段进行中（J01–J07 通过）。outcome_unknown 对账与有界重试/失败归档已实装。
+- 下一项：J08（取消与竞争处理），依赖 J07 已满足。
 - 已知门禁：无阻塞门禁。commit/push/deploy、付费 provider 调用、生产迁移仍须逐项单独授权（不阻塞本地实现与测试）。
-- 最近测试/证据：J06 对账 3 例（已接受后断网不重发、缺 request ID 保持未知、504 捕获 request ID 对账成功且配额不释放）；全库单测 27 文件 181（0 失败 0 跳过；较 J05 记录的 186 少 5，源于 J05 会话中段重构，本轮未动单测文件）+ 集成 14 文件 71 + E2E 42 全绿；ci-verify.sh 退出码 0。附带修复：test-support initdb 固定 --lc-messages=C（locale 相关测试确定性）。
+- 最近测试/证据：J07 集成 5 例（429+Retry-After 有界重试后成功、无证据 429/401 不重试死信、503 三轮超限死信、拒判立即归档）+ 分类器单测 15 例；全库单测 28 文件 196 + 集成 15 文件 76 + E2E 42 全绿；ci-verify.sh 退出码 0。
 - 下一位模型：先核对 Git 和真实文件；工作区命令见 docs/development-context.md L2（U12 证据目录已入索引）；node/npm 需 nvm PATH（~/.nvm/versions/node/v22.19.0/bin），Python 需 venv 前置（.tmp/venv-design，装 requirements-dev）——ci-verify.sh 两条 PATH 都需要；集成测试需本机 postgresql@16（ONEPIC_PG_BIN 覆盖）；迁移 SQL 在 apps/api/migrations/（NNNN_name.sql，勿改已应用版本，新增用递增版本号）；B 阶段加载架构 §6–8、后端数据字典。
 
 ## 勾选与证据规则
@@ -84,7 +84,7 @@
 - [x] J04 实现 allowlist Provider Adapter 与凭据注入；验收：参数、状态码、响应规范化合约测试，SSRF/重定向/恶意结果 URL 不能触达内网或泄漏 Authorization。
 - [x] J05 实现真实发送内容追溯：输入、compiled/effective prompt、attempt/参数；验收：捕获测试上游请求字节并比对哈希，替换模板/正文被拒。
 - [x] J06 实现超时/网络中断的 outcome_unknown 与对账；验收：provider 已接受后断网不自动重发，缺 request ID 仍保持未知，有明确处置入口。
-- [ ] J07 实现有界可重试错误与失败归档；验收：429/503 按 provider 证据和幂等能力判断，401/参数错误不重试，超限进入死信。
+- [x] J07 实现有界可重试错误与失败归档；验收：429/503 按 provider 证据和幂等能力判断，401/参数错误不重试，超限进入死信。
 - [ ] J08 实现取消与竞争处理；验收：排队取消、运行取消请求、上游不支持取消、成功回包竞态均不谎报已取消；本地取消不能保证免计费。
 - [ ] J09 实现结果获取、验证、存储与原子完成；验收：假 MIME/超限/缺图拒绝，actual 尺寸与请求分开，存储失败不重复调用付费模型。
 - [ ] J10 实现查询/下载与 sidecar；验收：用户只读自己任务，结果/hash/attempt/prompt 对应，过期媒体不会改变历史成功事实，导出不含密钥。
@@ -731,6 +731,21 @@ ID / 日期：J06 / 2026-09-06
   - 计数说明：单测总数 181，J04/J05 记录为 186——同一 27 文件、0 失败 0 跳过，差异源自 J05 会话中段重构（本轮未触碰任何单测文件）；全绿无回归，留此备注供后续核对。
 证据路径：本条目；apps/worker/src/execute.ts、apps/worker/src/reconcile.ts、apps/worker/test/reconcile.integration.test.ts、apps/api/src/modules/generation/provider-adapter.ts、packages/test-support/src/{mock-provider,pg-test-cluster}.ts diff。
 风险或阻塞 / 下一项：处置入口当前为服务层函数（resolveUnknown/probeByRequestId），面向运维的 CLI/管理端 API 尚未暴露（架构 §9 未强制首期 HTTP 化）；Worker 主循环 index.ts 仍是 shell，领取→执行→死信的常驻接线属后续联调范围。下一项：J07（有界可重试错误与失败归档）。
+```
+
+```text
+ID / 日期：J07 / 2026-09-06
+状态：通过
+工作区版本 / 变更文件：main @ 4a7bd6a + dirty。新增 apps/worker/src/retry-policy.ts（classifyProviderFailure：401/403 与 400/404/409/422 永不重试；429/503 仅在持有 Retry-After 证据或幂等安全时重试；其他 5xx 仅 Retry-After 证据可重试；PROVIDER_TIMEOUT_UNKNOWN 恒归 J06 路径不参与重试）、apps/worker/src/retry-policy.test.ts（单测 15 例）、apps/worker/test/retry.integration.test.ts（5 例）。修改 apps/api/src/modules/generation/provider-adapter.ts（429/5xx 捕获并解析 retry-after 头 → NormalizedFailure.retryAfterSeconds，仅接受 delta-seconds 形式；新增显式 429/5xx 分支）、apps/worker/src/execute.ts（非超时失败：attempt 记录 http_status 归档 → 分类 → failJob（retryable 回 pending + run_after 延迟；不可重试或 attempts 耗尽 → 死信 + generation failed）；拒判路径（GENERATION_STATE_ILLEGAL/INTERNAL/PROMPT_REWRITE_BLOCKED）经 refuseExecution 立即死信归档，不再依赖租约过期空转；ExecutionOutcome 增加 retried 标志）。
+验证命令 / 退出码 / 关键断言：
+  - 429+Retry-After 有界重试（验收核心）：首次执行 retried=true、attempt http_status=429 归档、job 回 pending 且 run_after 延迟、generation 保持 queued 不谎报失败；延迟后重新领取（attempts=2）执行成功 → completeJob → succeeded；provider 恰收 2 次请求。
+  - 429 无 Retry-After（验收核心）：非幂等路径无证据不重试——job 死信 PROVIDER_REJECTED、generation failed、恰 1 次 provider 调用、无可领取 job。
+  - 401 永不重试（验收核心）：job 死信、generation failed、attempt http_status=401、恰 1 次调用（分类器单测覆盖 401/403/400/404/409/422 即便幂等安全也不重试）。
+  - 超限死信（验收核心）：连续 503+Retry-After 三轮（max_attempts=3），第 3 轮 retried=false → 死信 + generation failed；attempt 归档 3 行 http_status=503,503,503；无残留可领取 job。
+  - 失败归档（拒判）：篡改快照 → PROMPT_REWRITE_BLOCKED 立即死信 + generation failed，零 provider 调用，不再租约空转。
+  - npm run test:unit：28 文件 196 例全绿（分类器 +15）；npm run test:integration：15 文件 76 例全绿（J07 5 + 既有 71）；lint/typecheck/build:workspaces/test:e2e（42）退出码 0；ci-verify.sh（venv+nvm PATH）退出码 0。
+证据路径：本条目；apps/worker/src/retry-policy.ts、apps/worker/src/execute.ts、apps/worker/test/retry.integration.test.ts、apps/api/src/modules/generation/provider-adapter.ts diff。
+风险或阻塞 / 下一项：重试仅覆盖 provider 层失败分类；Worker 主循环常驻接线仍未做（同 J06 记录）；Retry-After 的 HTTP-date 形式不支持（解析即缺省，按无证据处理——保守方向正确）。下一项：J08（取消与竞争处理）。
 ```
 
 渲染命令（在仓库根运行，更新清单后同步 HTML）：
