@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-034
+Template family: Characters & People
+Template mode: portrait
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+设计成年植物学探险家角色设定图。
+外观：35岁、短发、长袖夹克、长裤、植物标本包，性格：耐心、好奇。
+姿态：站姿，表情：平静微笑。
+世界观：当代虚构自然研究者，标志性元素：植物手账与放大镜。
+输出：角色主视图 + 风格统一的人设图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

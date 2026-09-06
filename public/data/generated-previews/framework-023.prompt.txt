@@ -1,0 +1,38 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-023
+Template family: Brand & Logos
+Template mode: single-scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+为虚构品牌「苔原纸品」生成一张高端品牌触点系统视觉板，不是单张海报，而是一套完整品牌应用展示。
+
+品牌定位：自然系文具
+核心气质：安静、细腻、朴素
+主视觉场景：笔记本与信封，放在浅木桌面中，使用窗边柔光和俯视与近景呈现。
+
+触点系统必须包含：
+- 主产品 hero shot
+- 包装盒 / 手提袋 / 杯子 / 标签 / 贴纸 / 封签等品牌物料
+- 菜单卡 / 价目表 / 小型排版样张
+- 生活方式场景或用户使用片段
+- 配色、字体、图形语言在不同触点上的统一应用
+
+设计语言：
+日式留白，主色苔绿与米白，辅助色苔绿与米白，大量留白，细腻材质，真实阴影，微小文字清晰可读。
+
+构图要求：
+像顶级设计机构提案页，所有触点整齐但不死板，主视觉最突出，辅助物料层级清楚，整体有品牌系统感和可落地感。
+
+约束：
+不要只生成一个 logo；不要把所有物料挤成杂乱拼贴；不要使用随机乱码文字；不要让包装、菜单、贴纸彼此风格割裂。
+--- END VISUAL BLUEPRINT ---
+
+
+All brands, UI statistics, case studies and dimensions are fictional design examples, not verified commercial claims. Render a small DESIGN STUDY label where applicable.
+
+Return only the finished image.

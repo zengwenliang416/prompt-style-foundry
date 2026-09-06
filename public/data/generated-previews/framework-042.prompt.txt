@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-042
+Template family: Documents & Publishing
+Template mode: document
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+制作虚构植物杂志双页。
+版面结构：三栏、大页边距、主标题和短副标题。
+内容模块：植物照片区、短正文、叶形图示、页码。
+字体风格：衬线，配色：米白、墨绿、深灰。
+输出：可读性强、版式规范的出版物视觉稿。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

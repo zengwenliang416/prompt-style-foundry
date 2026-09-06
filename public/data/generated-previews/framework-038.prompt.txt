@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-038
+Template family: Scenes & Storytelling
+Template mode: scene
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成雨夜归家场景图，发生在秋日傍晚的小镇车站。
+主事件：成年旅人找到前来接站的家人，主角：35岁旅人及其成年家人，冲突点：雨幕与灯光之间寻找熟悉身影。
+镜头语言：中景叙事。
+氛围：温暖，色调：冷雨与暖灯。
+输出：具备叙事张力的场景概念图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

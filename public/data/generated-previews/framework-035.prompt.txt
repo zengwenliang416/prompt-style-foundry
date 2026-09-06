@@ -1,0 +1,28 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-035
+Template family: Characters & People
+Template mode: multi-panel
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成一张穿长袖运动衫和长裤的30岁成年舞者动作分解参考表。
+风格：黑白线稿，背景纯净，技术参考图气质。
+版式：4×4 网格，共 16 个等尺寸面板，细线分隔，每格左上角编号 1-16。
+角色一致性：所有面板使用同一角色，保持脸型、服装、比例和发型一致。
+每格结构：
+- 顶部：动作标题
+- 中央：完整身体动作姿态
+- 底部：3-4 行动作说明
+- 叠加：方向箭头、旋转箭头或运动轨迹线
+动作序列：站立、抬臂、侧步、收步、转身预备、半转、停稳、前步、后步、重心左移、重心右移、伸臂、屈膝、起身、收臂、结束站姿；每格说明不超过两行
+约束：不要复杂背景，不要新增角色，不要彩色干扰，不要改变角色身份。
+输出：清晰可读、可用于动画/舞蹈/游戏动作参考的角色动作表。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

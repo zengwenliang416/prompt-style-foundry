@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-018
+Template family: Products & E-commerce
+Template mode: product
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成虚构无品牌陶瓷杯电商主图，卖点为哑光釉面、圆润杯柄。
+场景：纯色棚拍，镜头：特写。
+材质细节：细腻陶瓷与浅色釉面，灯光：柔光。
+附加元素：简短材质标签，不写价格或性能承诺。
+输出：电商平台可直接使用的商品展示图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

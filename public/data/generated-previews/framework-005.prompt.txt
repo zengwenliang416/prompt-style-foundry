@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-005
+Template family: Charts & Infographics
+Template mode: infographic
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成从纸张到手工笔记本的装订流程信息图，目标读者为喜欢纸艺的成年初学者。
+结构：标题区 + 4个模块（每模块含图标、短标题、1-2句说明,模块间逻辑：可用箭头、颜色区分或连接线提示信息流或关系等适当的方式）。
+图表类型：流程图。
+风格：科普插画，主色靛蓝与米白，背景浅色。
+输出：信息层级清晰、可读性高的中文信息图。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

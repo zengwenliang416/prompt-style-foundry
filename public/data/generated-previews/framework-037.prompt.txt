@@ -1,0 +1,27 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-037
+Template family: Characters & People
+Template mode: portrait
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+{
+  "type": "Character Concept Art",
+  "character": {
+    "identity": "Fictional 35-year-old Cybernetic Bounty Hunter",
+    "appearance": "Short silver hair, glowing red synthetic left eye, athletic build",
+    "attire": "Tactical trench coat with neon piping, holding a plasma rifle"
+  },
+  "pose": "Dynamic action stance, looking over shoulder with a smirk",
+  "environment": "Rainy neon-lit alleyway background (blurred)",
+  "style": "Concept art, sharp linework, vibrant cyberpunk palette"
+}
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

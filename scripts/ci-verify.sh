@@ -19,12 +19,24 @@ fi
 
 python3 scripts/build_library.py
 python3 scripts/validate_library.py
+python3 scripts/validate_design_schemas.py
 python3 -m unittest discover -s tests -p 'test_*.py'
 while IFS= read -r python_file; do
   python3 -m py_compile "$python_file"
 done < <(git ls-files '*.py')
 node --check public/assets/app.js
 node --check public/assets/fx.js
+
+# Workspace gates (F01/F02): clean environment must run `npm ci` first.
+if [[ ! -d node_modules ]]; then
+  echo "node_modules is missing; run npm ci before verification." >&2
+  exit 1
+fi
+npm run lint
+npm run lint:contract
+npm run gen:api:check
+npm run typecheck
+npm run build:workspaces
 
 required_files=(
   NOTICE.md

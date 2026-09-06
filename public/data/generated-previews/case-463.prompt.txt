@@ -1,0 +1,17 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: case-463
+Template family: Charts & Infographics
+Template mode: multi-panel
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+生成一张竖版「黑色织物纹理图鉴」产品平铺设计板。保留原模板的奶白背景、精致时尚图鉴排版、标题区、手绘箭头标注、底部 Style Notes 和八种纹理分类。标题 BLACK TEXTILE GUIDE / 黑色织物纹理图鉴。中部用2列4行展示八块黑色织物方形样布：经典蕾丝、细网眼、波点、后缝线、竖条纹、交叉织带、极简薄纱、花纹蕾丝。每块样布平铺在纸面，真实纤维纹理，柔和侧光与细微阴影；每格短标题和两条材质标注。底部短句「从纹理到结构」。这是纯织物设计参考：无人物、无人台、无身体部位、无穿戴展示。只生成一张完整图鉴总览。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

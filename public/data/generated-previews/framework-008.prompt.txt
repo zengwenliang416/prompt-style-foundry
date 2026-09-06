@@ -1,0 +1,21 @@
+[System / Prompt]
+
+OnePic template example rendering.
+Template ID: framework-008
+Template family: Posters & Typography
+Template mode: poster
+Source blueprint input mode: text-to-image
+
+Render this resolved example of the system template. No input image is required for this sample. Do not ask follow-up questions. Return only one finished image. Preserve the blueprint composition and visual treatment, including JSON instructions when present. Do not display prompt instructions. The production single-upload template is a separate usage mode.
+
+--- BEGIN VISUAL BLUEPRINT ---
+设计一张虚构爵士音乐活动海报，主题为夜航。
+主视觉：月亮与萨克斯风的几何剪影，标题文案：夜航爵士，副标题：让旋律照亮夜色。
+版式：左对齐，风格：复古。
+色彩：深海蓝 + 黄铜金，氛围：安静而有节奏。
+输出：可用于社媒传播的高分辨率海报。
+--- END VISUAL BLUEPRINT ---
+
+
+
+Return only the finished image.

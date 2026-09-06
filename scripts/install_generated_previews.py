@@ -14,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_DIR = ROOT / "data" / "generated-previews"
 MANIFEST_PATH = SOURCE_DIR / "manifest.json"
 PUBLIC_PREVIEWS = ROOT / "public" / "previews"
+CATALOG_PATH = ROOT / "public" / "data" / "catalog.json"
+PUBLIC_GENERATED_PROMPTS = ROOT / "public" / "data" / "generated-previews"
 
 
 def sha256_file(path: Path) -> str:
@@ -87,6 +89,45 @@ def validated_entries(manifest: dict[str, Any]) -> list[tuple[dict[str, Any], Pa
     return validated
 
 
+def referenced_prompt_sidecars() -> list[Path]:
+    """Prompt sidecar paths the public catalog references via generatedPromptPath.
+
+    The catalog promises `data/generated-previews/{id}.prompt.txt` (the actual
+    prompt behind each reviewed sample preview); those files must ship with the
+    public payload or the reference dangles. Runs after build_library.py in the
+    build pipeline, so the catalog is fresh.
+    """
+    catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
+    paths: list[Path] = []
+    for template in catalog.get("templates", []):
+        relative = template.get("generatedPromptPath")
+        if not relative:
+            continue
+        if not relative.startswith("data/generated-previews/") or ".." in relative:
+            raise ValueError(f"{template.get('id')}: unexpected generatedPromptPath {relative!r}")
+        paths.append(ROOT / relative)
+    return paths
+
+
+def install_prompt_sidecars(check: bool) -> int:
+    sidecars = referenced_prompt_sidecars()
+    if check:
+        for path in sidecars:
+            public_path = PUBLIC_GENERATED_PROMPTS / path.name
+            if not public_path.is_file() or public_path.read_bytes() != path.read_bytes():
+                raise SystemExit(f"{path.name}: public prompt sidecar is missing or differs")
+    else:
+        PUBLIC_GENERATED_PROMPTS.mkdir(parents=True, exist_ok=True)
+        for path in sidecars:
+            if not path.is_file():
+                raise SystemExit(f"{path.name}: referenced prompt sidecar is missing")
+            destination = PUBLIC_GENERATED_PROMPTS / path.name
+            temporary = destination.with_suffix(".txt.tmp")
+            shutil.copyfile(path, temporary)
+            temporary.replace(destination)
+    return len(sidecars)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Install reviewed generated previews into the public catalog."
@@ -115,7 +156,9 @@ def main() -> int:
         temporary.replace(destination)
 
     action = "Verified" if args.check else "Installed"
+    sidecar_count = install_prompt_sidecars(args.check)
     print(f"{action} {len(entries)} reviewed generated previews.")
+    print(f"{action} {sidecar_count} generated prompt sidecars.")
     return 0
 
 
