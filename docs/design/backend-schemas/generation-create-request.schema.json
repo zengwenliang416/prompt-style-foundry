@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://onepic.local/schemas/generation-create-request.json",
+  "title": "GenerationCreateRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["templateId", "templateVersion", "promptSha256", "sourceObjectId", "settings"],
+  "properties": {
+    "templateId": { "type": "string", "pattern": "^(case-[0-9]+|framework-[0-9]{3})$" },
+    "templateVersion": { "type": "integer", "minimum": 1 },
+    "promptSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "sourceObjectId": { "type": "string", "format": "uuid" },
+    "precheckId": { "type": "string", "format": "uuid" },
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model"],
+      "properties": {
+        "model": { "type": "string", "minLength": 1 },
+        "quality": { "type": "string", "enum": ["standard", "high"] },
+        "aspectRatio": { "type": "string", "pattern": "^[0-9]+:[0-9]+$" }
+      }
+    }
+  }
+}

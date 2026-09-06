@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://onepic.local/schemas/workspace-export.json",
+  "title": "WorkspaceExport",
+  "description": "私人收藏/集合/历史导出。不得包含任何密钥。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "exportedAt", "favorites", "collections", "history"],
+  "properties": {
+    "schemaVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "exportedAt": { "type": "string", "format": "date-time" },
+    "favorites": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^(case-[0-9]+|framework-[0-9]{3})$" }
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "items"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["itemType", "itemKey"],
+              "properties": {
+                "itemType": { "type": "string", "enum": ["template", "generation"] },
+                "itemKey": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["generationId", "templateId", "state", "createdAt"],
+        "properties": {
+          "generationId": { "type": "string", "format": "uuid" },
+          "templateId": { "type": "string", "pattern": "^(case-[0-9]+|framework-[0-9]{3})$" },
+          "state": {
+            "type": "string",
+            "enum": ["created", "queued", "running", "succeeded", "failed", "cancelled", "expired", "outcome_unknown"]
+          },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}

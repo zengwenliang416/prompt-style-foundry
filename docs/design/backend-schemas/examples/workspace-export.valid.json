@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "exportedAt": "2026-09-06T02:45:48Z",
+  "favorites": ["case-532", "framework-001"],
+  "collections": [
+    {
+      "name": "海报灵感",
+      "items": [
+        { "itemType": "template", "itemKey": "case-532" },
+        { "itemType": "generation", "itemKey": "b5c4d3e2-1f0a-4b9c-8d7e-6f5a4b3c2d1e" }
+      ]
+    }
+  ],
+  "history": [
+    {
+      "generationId": "b5c4d3e2-1f0a-4b9c-8d7e-6f5a4b3c2d1e",
+      "templateId": "case-532",
+      "state": "succeeded",
+      "createdAt": "2026-09-05T11:00:00Z"
+    }
+  ]
+}

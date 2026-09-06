@@ -1,0 +1,8 @@
+{
+  "templateId": "case-532",
+  "templateVersion": 1,
+  "promptSha256": "c3557002e42498b285eac3f5f24bb75f082240b9186a84d38f3ae8c90ba1352a",
+  "sourceObjectId": "3f6b2c10-7b8f-4a1d-9c2e-5d4a6b7c8d9e",
+  "precheckId": "8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+  "settings": { "model": "nano-banana-pro", "quality": "high", "aspectRatio": "3:4" }
+}

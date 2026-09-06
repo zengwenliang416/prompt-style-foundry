@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "skill": "image-api-workbench",
+  "skill_version": "2.1.0",
+  "mode": "generation",
+  "endpoint": "https://new-api.motion-cover.com/v1/images/generations",
+  "model": "gpt-image-2",
+  "model_profile": {
+    "family": "gpt-image-2",
+    "status": "current",
+    "supports_transparency": true,
+    "supports_streaming": true,
+    "supports_flexible_size": true,
+    "input_fidelity": "always-high"
+  },
+  "configuration": {
+    "config_file": "/Users/wenliang_zeng/.config/image-api-workbench/config.json",
+    "config_file_exists": true,
+    "config_file_source": "built-in-default",
+    "profile": "default",
+    "profile_source": "config:/Users/wenliang_zeng/.config/image-api-workbench/config.json#default_profile",
+    "profile_exists": true,
+    "sources": {
+      "base_url": "env:IMAGE_API_BASE_URL@process-environment",
+      "model": "cli:--model",
+      "timeout_seconds": "config:/Users/wenliang_zeng/.config/image-api-workbench/config.json#profiles.default.timeout_seconds",
+      "token_file": "built-in-default"
+    }
+  },
+  "requested_size": "3840x2160",
+  "quality": "high",
+  "n": 1,
+  "background": "auto",
+  "output_format": "png",
+  "output_compression": null,
+  "moderation": "auto",
+  "input_fidelity": null,
+  "stream": false,
+  "partial_images_requested": 0,
+  "response_kind": "b64_json",
+  "outputs": [
+    {
+      "path": "docs/design/ui-rebuilt-2026-09-06/05-protocol.png",
+      "bytes": 2031636,
+      "sha256": "b09385f893db5fca357ea0f97af9e5c93f5cc22e93e980b2a84f8001db2c534e",
+      "image": {
+        "format": "png",
+        "width": 1672,
+        "height": 941,
+        "alpha": false
+      }
+    }
+  ],
+  "partial_outputs": [],
+  "actual_size_matches_request": [
+    false
+  ],
+  "elapsed_ms": 56229,
+  "created": 1788667634,
+  "usage": {
+    "input_tokens": 650,
+    "input_tokens_details": {
+      "image_tokens": 0,
+      "text_tokens": 650
+    },
+    "output_tokens": 1158,
+    "output_tokens_details": {
+      "image_tokens": 1158,
+      "text_tokens": 0
+    },
+    "total_tokens": 1808
+  },
+  "input_images": [],
+  "mask": null,
+  "warnings": [],
+  "prompt_sha256": "d3449fdbd85ac5e4a4f13beb6491879ad887f4968864059d3f9a3b402f9b3fe5"
+}

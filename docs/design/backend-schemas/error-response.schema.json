@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://onepic.local/schemas/error-response.json",
+  "title": "ErrorResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error", "correlationId"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "VALIDATION_FAILED", "UNSUPPORTED_MEDIA_TYPE", "PAYLOAD_TOO_LARGE",
+            "PIXEL_LIMIT_EXCEEDED", "QUARANTINE_NOT_READY", "FORGED_OBJECT_PATH",
+            "TEMPLATE_VERSION_MISMATCH", "PROMPT_REWRITE_BLOCKED", "PRECHECK_FAILED",
+            "PRECHECK_EXPIRED", "QUOTA_EXCEEDED", "RATE_LIMITED",
+            "IDEMPOTENCY_CONFLICT", "GENERATION_STATE_ILLEGAL", "CANCEL_NOT_GUARANTEED",
+            "MEDIA_EXPIRED", "FORBIDDEN", "UNAUTHENTICATED", "PROVIDER_REJECTED",
+            "PROVIDER_TIMEOUT_UNKNOWN", "INTERNAL"
+          ]
+        },
+        "message": { "type": "string", "minLength": 1 },
+        "details": { "type": "object" }
+      }
+    },
+    "correlationId": { "type": "string", "minLength": 8 }
+  }
+}

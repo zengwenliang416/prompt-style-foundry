@@ -1,0 +1,11 @@
+{
+  "data": {
+    "id": "b5c4d3e2-1f0a-4b9c-8d7e-6f5a4b3c2d1e",
+    "state": "outcome_unknown",
+    "templateId": "case-532",
+    "templateVersion": 1,
+    "errorCode": "PROVIDER_TIMEOUT_UNKNOWN",
+    "createdAt": "2026-09-06T02:45:48Z"
+  },
+  "meta": { "pollAfterMs": 5000 }
+}

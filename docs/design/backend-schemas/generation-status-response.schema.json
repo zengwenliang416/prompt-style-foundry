@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://onepic.local/schemas/generation-status-response.json",
+  "title": "GenerationStatusResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["data"],
+  "properties": {
+    "data": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "state", "templateId", "templateVersion", "createdAt"],
+      "properties": {
+        "id": { "type": "string", "format": "uuid" },
+        "state": {
+          "type": "string",
+          "enum": ["created", "queued", "running", "succeeded", "failed", "cancelled", "expired", "outcome_unknown"]
+        },
+        "templateId": { "type": "string", "pattern": "^(case-[0-9]+|framework-[0-9]{3})$" },
+        "templateVersion": { "type": "integer", "minimum": 1 },
+        "errorCode": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["objectId", "actualMime", "actualBytes", "actualWidth", "actualHeight", "sha256"],
+          "properties": {
+            "objectId": { "type": "string", "format": "uuid" },
+            "actualMime": { "type": "string", "enum": ["image/jpeg", "image/png", "image/webp"] },
+            "actualBytes": { "type": "integer", "minimum": 1 },
+            "actualWidth": { "type": "integer", "minimum": 1 },
+            "actualHeight": { "type": "integer", "minimum": 1 },
+            "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          }
+        }
+      }
+    },
+    "meta": { "type": "object" }
+  }
+}

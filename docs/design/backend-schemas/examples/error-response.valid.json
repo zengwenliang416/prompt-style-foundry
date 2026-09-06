@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": "IDEMPOTENCY_CONFLICT",
+    "message": "Idempotency-Key was already used with a different request body.",
+    "details": { "generationId": "b5c4d3e2-1f0a-4b9c-8d7e-6f5a4b3c2d1e" }
+  },
+  "correlationId": "01J8Z3K4M5N6P7Q8"
+}

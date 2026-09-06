@@ -38,6 +38,19 @@ The current product requirement is browsing and copying prompt templates. A back
 - deterministic generated artifacts;
 - deployment to any static host.
 
+## Evolution target
+
+The repository currently has no business backend. The recommended evolution is
+an optional API service introduced only when requirements need server-owned
+credentials, accounts, durable generation history, quotas, or asynchronous
+jobs. The target boundary is documented in
+[`full-stack-architecture.md`](full-stack-architecture.md); it does not change
+the current static deployment until that service is implemented and adopted.
+
+The frontend must continue to work in catalog-only mode. A future API is an
+adapter for generation and persistence, not a replacement for the deterministic
+prompt compiler or the read-only source archive.
+
 ## Optional generation adapter
 
 Image generation exists as an optional BYOK adapter behind a clear boundary; it is not coupled to the prompt catalog.
