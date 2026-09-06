@@ -1,0 +1,50 @@
+/*
+ * OnePic design tokens — values from docs/design/DESIGN.md §2 (user-approved
+ * baseline 2026-09-06). No external fonts, no runtime CDN (AGENTS §7).
+ * Contrast constraint: body text ≥ 4.5:1 (WCAG AA); the amber accent always
+ * pairs with ink text because white-on-amber fails AA.
+ */
+
+:root {
+  --color-bg: #f7f3ea;
+  --color-surface: #fffdf8;
+  --color-ink: #1f2430;
+  --color-ink-secondary: #5a6070;
+  --color-line: #d8d2c4;
+  --color-accent-teal: #0f6b6b;
+  --color-on-teal: #ffffff;
+  --color-accent-amber: #c98a2b;
+  --color-on-amber: #1f2430;
+  --color-danger: #b3402e;
+  --color-on-danger: #ffffff;
+
+  --radius-card: 12px;
+  --radius-control: 8px;
+
+  --font-heading: 'Songti SC', 'Noto Serif CJK SC', serif;
+  --font-body: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  --text-base: 16px;
+  --line-height-base: 1.6;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --focus-ring: 2px solid var(--color-accent-teal);
+  --focus-ring-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
