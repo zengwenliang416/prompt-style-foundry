@@ -1,9 +1,9 @@
 # 后端数据字典与接口设计（首期）
 
-- 状态：设计稿，D06 产物；实施依赖 D00 门禁。
-- 依据：目标架构 §6–9、ADR 0001（D-1～D-4）、ADR 0002、提示词协议与来源说明。
+- 状态：首期实现对照文档；后端边界已由 ADR 0003 批准，实际 schema 以 `apps/api/migrations/0001..0005` 为准，实际 HTTP 契约以 `packages/contracts/openapi/api-v1.yaml` 为准。
+- 依据：全栈架构 §6–9、ADR 0001（D-1～D-4）、ADR 0002、ADR 0003、提示词协议与来源说明。
 - 命名：数据库 snake_case，API camelCase；ID 用 UUID/ULID；时间 UTC ISO-8601；分页 cursor。
-- Schema 与示例：`docs/design/backend-schemas/`，由 `scripts/validate_design_schemas.py` 校验。
+- 设计期 Schema 与示例：`docs/design/backend-schemas/`，由 `scripts/validate_design_schemas.py` 校验；它们不覆盖 OpenAPI 全表面。
 
 ## 1. 实体与字段
 
@@ -236,4 +236,4 @@ Schema 与示例见 `docs/design/backend-schemas/`。
 
 ## 5. 稳定错误码（首版）
 
-`VALIDATION_FAILED`、`UNSUPPORTED_MEDIA_TYPE`、`PAYLOAD_TOO_LARGE`、`PIXEL_LIMIT_EXCEEDED`、`QUARANTINE_NOT_READY`、`FORGED_OBJECT_PATH`、`TEMPLATE_VERSION_MISMATCH`、`PROMPT_REWRITE_BLOCKED`、`PRECHECK_FAILED`、`PRECHECK_EXPIRED`、`QUOTA_EXCEEDED`、`RATE_LIMITED`、`IDEMPOTENCY_CONFLICT`、`GENERATION_STATE_ILLEGAL`、`CANCEL_NOT_GUARANTEED`、`MEDIA_EXPIRED`、`FORBIDDEN`、`UNAUTHENTICATED`、`PROVIDER_REJECTED`、`PROVIDER_TIMEOUT_UNKNOWN`、`INTERNAL`。错误码稳定，前端不得字符串匹配 message。
+`VALIDATION_FAILED`、`UNSUPPORTED_MEDIA_TYPE`、`PAYLOAD_TOO_LARGE`、`PIXEL_LIMIT_EXCEEDED`、`QUARANTINE_NOT_READY`、`FORGED_OBJECT_PATH`、`TEMPLATE_VERSION_MISMATCH`、`PROMPT_REWRITE_BLOCKED`、`PRECHECK_FAILED`、`PRECHECK_EXPIRED`、`QUOTA_EXCEEDED`、`RATE_LIMITED`、`IDEMPOTENCY_CONFLICT`、`GENERATION_STATE_ILLEGAL`、`CANCEL_NOT_GUARANTEED`、`MEDIA_EXPIRED`、`FORBIDDEN`、`UNAUTHENTICATED`、`PROVIDER_REJECTED`、`PROVIDER_TIMEOUT_UNKNOWN`、`INTERNAL`、`COLLECTION_NAME_CONFLICT`（W03：集合重名 409）。错误码稳定，前端不得字符串匹配 message。

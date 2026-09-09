@@ -19,7 +19,7 @@
 ## API 与数据
 
 - JSON camelCase，数据库 snake_case；ID 使用 UUID/ULID；时间使用 UTC ISO-8601。
-- 分页统一 cursor；响应统一 `{ data, error, meta }`。
+- 分页统一 cursor；成功响应统一 `{ data, meta }`，错误响应统一 `{ error: { code, message, details?, correlationId } }`。
 - 错误使用稳定错误码，不依赖字符串匹配；新增字段可选，破坏性变化升级 API 版本。
 - 大对象使用短期签名 URL，不把 base64 作为持久化接口。
 
@@ -35,7 +35,7 @@
 
 - 启用严格类型、格式化、静态检查和锁定依赖。
 - 输入使用 schema 校验，输出使用显式 DTO；事务不跨越外部网络调用。
-- 日志结构化且默认脱敏；数据库迁移可审计、可回滚，破坏性迁移分阶段执行。
+- 日志结构化且默认脱敏；数据库 migration 可审计并采用 expand/contract。应用回滚保留最新 schema，不自动执行 down migration；破坏性 contract 只在旧版本退出且单独授权后执行。
 
 ## 测试门禁
 

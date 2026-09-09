@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "2.0.0",
+  "date": "2026-09-08",
+  "workspace": {
+    "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+    "dirty": true
+  },
+  "status": "PASS",
+  "firstPostW06Review": {
+    "result": "FAIL",
+    "blocker": 0,
+    "high": 0,
+    "medium": 2,
+    "findings": [
+      "Authoritative Markdown/JSON/derived HTML still described W06 as unauthorized and referenced v5; Z04 record was missing.",
+      "Unignored .vitest/json/output.json polluted the Git-visible worktree fingerprint."
+    ]
+  },
+  "closure": {
+    "w06AndV7DocumentationSynchronized": true,
+    "z04FinalDeliveryRecordCreated": true,
+    "vitestCacheIgnored": true,
+    "finalArtifactsRebuilt": true,
+    "finalArtifactDirectory": ".tmp/z04-final-artifacts-v7",
+    "finalArtifactBuildTimeWorktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+    "derivedHtmlRegenerated": true,
+    "consistencyChecksPassed": true
+  },
+  "technicalEvidence": {
+    "providerMultipart": true,
+    "promptLfAndHashPreserved": true,
+    "realProviderRequestLimit": 1,
+    "realProviderActualRequests": 1,
+    "realProviderPassed": true,
+    "sidecarHashesMatched": true,
+    "gitleaksFindings": 0,
+    "productionDependenciesClean": true,
+    "sessionSecretSeparatedFromOidcClientSecret": true,
+    "ciPassed": true,
+    "unitTests": 292,
+    "integrationTests": 133,
+    "chromiumE2e": 44,
+    "capacityChecksPassed": 14,
+    "sourceDirectoryChanges": 0
+  },
+  "finalReview": {
+    "result": "PASS",
+    "blocker": 0,
+    "high": 0,
+    "medium": 0,
+    "findings": [],
+    "z03MayBeChecked": true
+  }
+}

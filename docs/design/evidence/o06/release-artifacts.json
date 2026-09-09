@@ -1,0 +1,125 @@
+{
+  "schemaVersion": "1.7.0",
+  "measuredAt": "2026-09-08T05:10:02.232791+00:00",
+  "artifactBuild": {
+    "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+    "dirty": true,
+    "worktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+    "scope": "Exact Git-visible source snapshot after ignoring test caches and syncing current operational docs; later evidence/checklist/HTML regeneration intentionally changes the live worktree fingerprint."
+  },
+  "artifacts": [
+    {
+      "target": "api",
+      "imageId": "sha256:3b9a19a4c214f89df00bcf6b25317bbe86165461179741485a6c9ca9f2305aef",
+      "artifact": {
+        "file": "onepic-api-image.tar.gz",
+        "sha256": "5878fedef5a6c0b1279f8a8859ed8903951177f4519972b71ee699384c192e99",
+        "bytes": 100211368,
+        "format": "docker-save+gzip"
+      },
+      "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+      "dirty": true,
+      "worktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+      "embeddedProjectCredentialsDetected": false,
+      "verified": true
+    },
+    {
+      "target": "worker",
+      "imageId": "sha256:d0cdd47b9d6d6f0ac0412b17be66b1bfbda19f72470ca5cb9f9c1180495920ea",
+      "artifact": {
+        "file": "onepic-worker-image.tar.gz",
+        "sha256": "e0a93acb27867043fd5247ed1e353e87a3dab218d568ab8aa56e85ac1ab0ca3b",
+        "bytes": 97102029,
+        "format": "docker-save+gzip"
+      },
+      "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+      "dirty": true,
+      "worktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+      "embeddedProjectCredentialsDetected": false,
+      "verified": true
+    },
+    {
+      "target": "web",
+      "imageId": "sha256:a187162c25e292ef957cf66ad25a2e6dc6b21d19f35669decf473e55293d86c7",
+      "artifact": {
+        "file": "onepic-web-image.tar.gz",
+        "sha256": "ee7183c430c781b032a2f18c7a6b6800b90762cf1fa069e0308c71f41e70db62",
+        "bytes": 80158393,
+        "format": "docker-save+gzip"
+      },
+      "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+      "dirty": true,
+      "worktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+      "embeddedProjectCredentialsDetected": false,
+      "verified": true
+    },
+    {
+      "target": "static",
+      "imageId": "sha256:1660d5410257fe836db8e1d94bc0950e0c5f87e5e0c033c1bdeee5e5479f27e2",
+      "artifact": {
+        "file": "onepic-static-image.tar.gz",
+        "sha256": "251e3aefd5899636778aa93b6f17d32ff266b864de5354b02a98fc50f5b448d8",
+        "bytes": 80095429,
+        "format": "docker-save+gzip"
+      },
+      "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+      "dirty": true,
+      "worktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+      "embeddedProjectCredentialsDetected": false,
+      "verified": true
+    },
+    {
+      "target": "standalone-static-site",
+      "artifact": {
+        "file": "onepic-static-site.tar.gz",
+        "sha256": "145f3555b08252be147b5223e6faed82b9b065c84410a4b6e5cf25dca21ce3a1",
+        "bytes": 29154700,
+        "members": 1203,
+        "format": "deterministic-tar+gzip",
+        "sourceDateEpoch": 0
+      },
+      "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+      "dirty": true,
+      "worktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+      "containsCredentials": false,
+      "verified": true
+    }
+  ],
+  "assertions": {
+    "allChecksumsVerified": true,
+    "allArchivesReadable": true,
+    "allContainerArchivesDockerLoaded": true,
+    "standaloneStaticByteDeterministic": true,
+    "standaloneStaticMembers": 1203,
+    "apiProductionNodeModulesBytes": 43303236,
+    "workerProductionNodeModulesBytes": 39475923,
+    "apiWorkerTestsSpecsSourceMapsMarkdown": 0,
+    "apiWorkerTestDirectories": 0,
+    "apiWorkerDanglingSymlinks": 0,
+    "apiWorkerNpmLsProductionProblems": 0,
+    "apiWorkerBuildToolingAbsent": [
+      "typescript",
+      "vite",
+      "rollup",
+      "esbuild",
+      "vue",
+      "@onepic/test-support"
+    ],
+    "apiConcurrentManagedStartupSmoke": true,
+    "apiManagedReadinessDegradedHttp503": true,
+    "apiStartupFailureFailClosed": true,
+    "applicationSigningUsesSessionSecret": true,
+    "providerAdapterUsesOpenAiCompatibleMultipart": true,
+    "providerAdapterPreservesPromptLfBytes": true,
+    "w06RealProviderVerified": true,
+    "w06ChargeableProviderRequests": 1,
+    "vitestCacheIgnored": true,
+    "registryPushes": 0,
+    "deployments": 0
+  },
+  "limitations": [
+    "Artifacts were built locally from a dirty Git-visible snapshot; no registry push or deployment was performed.",
+    "The fingerprint identifies the exact build-time source snapshot but this evidence file and later checklist/HTML regeneration are written after the build, so the live worktree fingerprint is expected to differ.",
+    "W06 proves one provider/model/quality/PNG/template only; its measured output aspect ratio differed from input by 1.7294%."
+  ]
+}

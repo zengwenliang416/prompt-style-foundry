@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "verifiedAt": "2026-09-08T03:37:47.211Z",
+  "startedAt": "2026-09-08T03:37:12.666Z",
+  "result": "PASS",
+  "authorization": {
+    "maximumChargeableRequests": 1,
+    "providerRequests": 1
+  },
+  "provider": {
+    "providerId": "motion-cover",
+    "baseOrigin": "https://new-api.motion-cover.com",
+    "model": "gpt-image-2",
+    "quality": "high"
+  },
+  "template": {
+    "id": "case-409",
+    "version": 1,
+    "promptSha256": "5dfd7e728ea3d1b6cc73912a70e761d69ba2e1253e536c06f87d7878a6789c17"
+  },
+  "input": {
+    "mime": "image/png",
+    "bytes": 5030,
+    "width": 512,
+    "height": 320,
+    "sha256": "d3756d7e30daf0586b69c2b7ff62ea2669cece458fb76c320b9b43912be55231"
+  },
+  "output": {
+    "mime": "image/png",
+    "bytes": 881388,
+    "width": 1600,
+    "height": 983,
+    "orientation": 1,
+    "sha256": "fdbb25ca07f530444dd8fa10091162a72f0609a51ba12746e799c1dba0593961",
+    "decoded": true,
+    "sourceAspectRatio": 1.6,
+    "outputAspectRatio": 1.6276703967446593,
+    "aspectRatioRelativeDelta": 0.017293997965412006,
+    "orientationPreserved": true
+  },
+  "traceability": {
+    "generationId": "3bc5559d-e302-4d7e-843f-7ae6a4c9d607",
+    "sidecarSchemaVersion": "1.0.0",
+    "sidecarKind": "onepic-generation-sidecar",
+    "inputHashMatches": true,
+    "promptHashMatches": true,
+    "resultHashMatches": true,
+    "downloadedBytesMatch": true
+  },
+  "boundaries": {
+    "providerApiKeyStoredOnlyInIgnoredLocalEnv": true,
+    "providerApiKeyIncludedInReport": false,
+    "providerApiKeyLogged": false,
+    "productionMigration": false,
+    "deployment": false
+  }
+}

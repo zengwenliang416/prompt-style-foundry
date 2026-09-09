@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "1.0.0",
+  "measuredAt": "2026-09-07T12:43:38.684142+00:00",
+  "workspace": {
+    "commit": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+    "dirty": true
+  },
+  "library": {
+    "total": 576,
+    "kinds": {
+      "framework": 47,
+      "case": 529
+    },
+    "uniqueIds": true,
+    "categories": 13,
+    "catalogOrderAndIdsMatch": true,
+    "promptFiles": 576,
+    "allPromptBodiesAndHashesMatch": true,
+    "longestPrompt": {
+      "id": "case-532",
+      "bytes": 15702,
+      "sha256": "a574599a388b88f013cba7a08d9fc5505e3c6155f3625b498e92faa6e25b2a30"
+    },
+    "frameworkProbe": "framework-001"
+  },
+  "previews": {
+    "publicTotal": 570,
+    "publicCases": 529,
+    "publicFrameworks": 41,
+    "reviewedGenerated": 493,
+    "reviewedPreviewCheckPassed": true
+  },
+  "categorySamples": [
+    {
+      "category": "Architecture & Spaces",
+      "id": "framework-027",
+      "title": "建筑与空间 · 常规模板",
+      "kind": "framework",
+      "mode": "single-scene",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7016,
+      "promptSha256": "fbc9f059aca89c369ed6d3f67218cd1628a93430e55e5135024aed86cf700b7b",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Brand & Logos",
+      "id": "framework-021",
+      "title": "品牌与标志 · 常规模板",
+      "kind": "framework",
+      "mode": "single-scene",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7602,
+      "promptSha256": "9b05b1c805bcdb19de772a5bc36186880d95ffec7d95b9c98ae7674c9e79a66e",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Characters & People",
+      "id": "framework-034",
+      "title": "人物与角色 · 常规模板",
+      "kind": "framework",
+      "mode": "portrait",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7618,
+      "promptSha256": "03b513da01a1c97879b5c166d8e3bbfff462fc9a00dd44001aa70b93a69e01f0",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Charts & Infographics",
+      "id": "framework-005",
+      "title": "图表与信息可视化 · 常规模板",
+      "kind": "framework",
+      "mode": "infographic",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7987,
+      "promptSha256": "09f392e2a9f3a7f9badb923cb71f66d1c6f57c13ffe29ba9a7050b387098c592",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Documents & Publishing",
+      "id": "framework-042",
+      "title": "文档与出版物 · 常规模板",
+      "kind": "framework",
+      "mode": "document",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7568,
+      "promptSha256": "f4b83ca9b28b549f6dbc23967cce33c0140a3267139807bb704d89d0af50cf32",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "History & Classical Themes",
+      "id": "framework-040",
+      "title": "历史与古风题材 · 常规模板",
+      "kind": "framework",
+      "mode": "scene",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7027,
+      "promptSha256": "7d9db22e42c14af638d95fa8c58abab4490dd57e91476435de9de989036e14f7",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Illustration & Art",
+      "id": "framework-032",
+      "title": "插画与艺术 · 常规模板",
+      "kind": "framework",
+      "mode": "single-scene",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7577,
+      "promptSha256": "344a921a316cf5dbd9e6b09a87305e7fcf9b1942a94700fb5cfd7f307545e969",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Other Use Cases",
+      "id": "framework-045",
+      "title": "其他应用场景 · 常规模板",
+      "kind": "framework",
+      "mode": "single-scene",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 6924,
+      "promptSha256": "2e600a6124d0aaf0403221e3d525fb4fdcdc284ef367a67a58a6713f81600115",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Photography & Realism",
+      "id": "framework-029",
+      "title": "摄影与写实 · 常规模板",
+      "kind": "framework",
+      "mode": "single-scene",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 6970,
+      "promptSha256": "c1f6d7858e9ddc9d64cba11adbad685b6563e81eb10ceadaee112f4d9e998d9a",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Posters & Typography",
+      "id": "framework-008",
+      "title": "海报与排版 · 常规模板",
+      "kind": "framework",
+      "mode": "poster",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7661,
+      "promptSha256": "ebad37fa5ebb42dea5f5da1ae1104111cb96f9e91cca6b0e04ea5f772fd1e05a",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Products & E-commerce",
+      "id": "case-532",
+      "title": "六宫格柠檬饮料微缩广告",
+      "kind": "case",
+      "mode": "multi-panel",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 15702,
+      "promptSha256": "a574599a388b88f013cba7a08d9fc5505e3c6155f3625b498e92faa6e25b2a30",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "Scenes & Storytelling",
+      "id": "framework-038",
+      "title": "场景与叙事 · 常规模板",
+      "kind": "framework",
+      "mode": "scene",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 6957,
+      "promptSha256": "29fd0fbd91b2207b78b25dcc56573f8ff06dd64f51eeb7a84bba0022a99516f4",
+      "requiredProtocolMarkers": true
+    },
+    {
+      "category": "UI & Interfaces",
+      "id": "framework-001",
+      "title": "UI与界面 · 常规模板",
+      "kind": "framework",
+      "mode": "interface",
+      "blueprintInputMode": "text-to-image",
+      "promptBytes": 7848,
+      "promptSha256": "959148716036a98be43e87875a0882ea08684c7e4c5d46b1b6facd25bbef5318",
+      "requiredProtocolMarkers": true
+    }
+  ],
+  "sourceBoundary": {
+    "trackedDataSourceUnchanged": true,
+    "untrackedDataSourceEntries": 0,
+    "sourceManifestArchiveSha256": "ca672924e47630ac8d30c1155544fa60b052b4af74b2074fef158490a92b4d8d",
+    "sourceArchivePresentInRepository": false
+  },
+  "licenses": {
+    "NOTICE.md": 1406,
+    "LICENSE": 1092,
+    "third_party/animejs-LICENSE": 1075,
+    "third_party/awesome-gpt-image-2-LICENSE": 1069
+  },
+  "regression": {
+    "ciVerify": true,
+    "pythonTests": 22,
+    "unit": {
+      "files": 40,
+      "tests": 286
+    },
+    "integration": {
+      "files": 26,
+      "tests": 131
+    },
+    "recoveryRehearsal": true,
+    "e2e": 44,
+    "localStack": true,
+    "capacityBudgets": 14,
+    "releaseArtifacts": 5,
+    "externalProviderCalls": 0
+  },
+  "passed": true,
+  "limitations": [
+    "The original upstream ZIP is not stored in this repository, so Z01 verifies the recorded archive hash and unchanged canonical data/source tree rather than re-hashing the absent ZIP.",
+    "No real or paid provider was called; W06 remains unauthorized."
+  ]
+}

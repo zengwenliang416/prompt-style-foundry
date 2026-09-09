@@ -6,12 +6,13 @@
 
 ## 当前内容
 
-- 529 条案例视觉蓝图
-- 47 条框架提示词
-- 合计 576 条单图模板
+- 529 条案例视觉蓝图 + 47 条框架提示词，共 576 条单图模板
 - 576 个独立 TXT 提示词文件
-- 529 张压缩后的 WebP 预览图
-- 完整来源、作者、链接和校验信息
+- `public/previews/` 中 529 个 case 预览和 41 个已评审 framework 预览；`data/generated-previews/` 保留 493 个已评审生成预览及 45 个 sidecar
+- 可独立部署的原 `public/` 静态目录
+- Vue 3 / TypeScript 五页前端：总览、发现、工作台、工作区、指南
+- Fastify API、PostgreSQL job queue、独立 Worker 和受控 Provider adapter
+- 完整来源、作者、链接、内容哈希、生成 attempt 与输入/结果对象追踪
 
 所有模板都遵循同一套核心原则：
 
@@ -39,54 +40,70 @@
 - 多面板单图一致性规则
 - 独立数据模型与静态检索界面
 - 来源追踪与校验脚本
+- Vue 五页应用与三种运行模式（catalog-only / direct-BYOK / managed-generation）
+- OpenAPI 3.1 契约、生成客户端、Fastify API、PostgreSQL migrations
+- opaque session、对象级授权、配额/并发限制、审计与删除清单
+- PG job lease/heartbeat/CAS/dead-letter Worker、受控 Provider allowlist
+- 私有对象存储端口与 phase-one `LocalDiskStorage` 实现
 
 ## 目录结构
 
 ```text
 onepic-template-studio/
-├── public/                         # 可直接部署的静态网站
-│   ├── index.html
-│   ├── assets/
-│   ├── data/
-│   │   ├── catalog.json            # 轻量模板索引
-│   │   └── prompts/                # 576 个可直接复制的 TXT
-│   └── previews/                   # 529 张 WebP 预览图
+├── apps/
+│   ├── web/                         # Vue 五页前端
+│   ├── api/                         # Fastify API/BFF 与 SQL migrations
+│   └── worker/                      # PG job consumer、清理与删除清单重放
+├── packages/
+│   ├── contracts/                   # OpenAPI 3.1、错误码与状态机
+│   ├── client/                      # 由契约生成/校验的浏览器客户端
+│   ├── managed-runtime/             # Provider、图片校验和存储适配器
+│   └── test-support/                # 隔离 PG / provider 测试工具
+├── public/                          # 可独立部署的原静态目录
+│   ├── data/catalog.json
+│   ├── data/prompts/                # 576 个最终 prompt
+│   └── previews/
 ├── data/
-│   ├── source/                     # 从上游 ZIP 只读抽离的原始数据
-│   └── library/templates.json      # 完整规范化模板库
-├── scripts/
-│   ├── import_source.py            # 只读导入与预览压缩
-│   ├── prompt_protocol.py          # 我们自己的单图模板协议
-│   ├── build_library.py            # 编译 576 条最终提示词
-│   ├── validate_library.py         # 完整性与来源验证
-│   └── serve.py                    # 零依赖本地静态服务
-├── tests/
+│   ├── source/                      # 从上游 ZIP 只读抽离的 canonical 数据
+│   ├── library/templates.json       # 完整规范化模板库（生成）
+│   └── generated-previews/          # 已评审生成预览与 sidecar
+├── scripts/                         # import/build/validate/CI/capacity/recovery
+├── ops/nginx/
 ├── docs/
 ├── third_party/
-├── AGENTS.md
-├── NOTICE.md
+├── Dockerfile / compose.yaml
+├── NOTICE.md / LICENSE / AGENTS.md
 └── package.json
 ```
 
-## 直接运行
+## 本地运行
 
-项目已经包含生成后的数据，不需要重新导入上游 ZIP。
+### 原静态目录（不需要后端）
+
+项目已包含生成数据，不需要重新导入 ZIP：
 
 ```bash
 npm run dev
+# 或 python3 scripts/serve.py
 ```
 
-然后打开：
+打开 `http://127.0.0.1:4173`。这是原 `public/` 目录，API 关闭时仍可浏览、筛选和复制 prompt。
 
-```text
-http://127.0.0.1:4173
-```
-
-也可以不使用 npm：
+### 五页应用与本地受控栈
 
 ```bash
-python3 scripts/serve.py
+npm run verify:local-stack
 ```
+
+该命令构建并启动临时 PostgreSQL 16、API、Worker、Vue Web 和独立 static target，验证五页深链接、health、静态独立运行与 Worker 优雅停机，完成后自动清理。默认是 `catalog-only`，不会调用 Provider。手工启动和环境变量见 [本地栈操作说明](docs/operations/local-stack.md)。
+
+直接启动 Vue 开发服务器：
+
+```bash
+npm run dev -w @onepic/web
+```
+
+需要受管 API 时必须先按 `apps/api/.env.example`、`apps/worker/.env.example` 配置可信 OIDC、session secret、数据库、私有存储和 allowlisted Provider；未配置身份源时 `managed-generation` 会拒绝启动。
 
 ## 使用模板
 
@@ -110,15 +127,17 @@ public/data/prompts/case-532.txt
 public/data/prompts/framework-001.txt
 ```
 
-## 站内生图（可选 BYOK）
+## 三种运行模式
 
-模板浏览功能完全离线可用。若想在站内直接出图，可配置自己的生图服务：
+五页应用的生图设置提供：
 
-1. 点击右上角「生图设置」，填入任意 NewAPI / OpenAI 兼容接口地址与 API Key；
-2. 打开任意模板，上传一张参考图，点击「生成图片」；
-3. 浏览器把参考图和编译后的提示词直接发往 `{Base URL}/v1/images/edits`，返回结果可预览、下载。
+1. **catalog-only**：只浏览目录和复制 prompt，不上传图片。
+2. **direct-BYOK**：用户明确点击生成后，浏览器把单图和编译 prompt 直发到用户配置的 OpenAI-compatible endpoint；Key 只存 localStorage，不进入导出、不转发到 OnePic API。
+3. **managed-generation**：用户明确点击后，第一方 API 使用 opaque session、对象级授权、配额/并发限制、私有对象存储和 PostgreSQL job；Worker 只向 allowlist Provider 发送，Provider key 由服务端 secret 注入，禁止任意 baseUrl 转发。
 
-隐私边界：密钥只存在本浏览器 localStorage；请求由浏览器直连你填写的服务，本项目没有服务器，不做任何中转或遥测。未开启 CORS 的接口会得到明确的错误提示。
+模式切换会重新说明数据去向，不会自动迁移 BYOK Key。`catalog-only` 与 `direct-BYOK` 不依赖账号；`managed-generation` 未配置可信 OIDC 时拒绝运行。
+
+当前自动化继续使用本地 mock/simulator 做常规回归；另在用户明确授权最多 1 次付费请求后，已用 `motion-cover` 的 `gpt-image-2/high` 完成一次真实单图 managed 全链路验证，真实请求恰好 1 次，像素、下载 bytes、哈希和 sidecar 均匹配。该结果只证明一个 Provider/模型/质量/PNG/模板的最小兼容性，不能外推为并发、全格式、S3 或生产部署证明；详见 [W06 证据](docs/design/evidence/w06/real-provider-report.md)。
 
 ## 从上游 ZIP 重新导入
 
@@ -172,55 +191,54 @@ make check
 
 ## 验证
 
+模板编译器/静态包：
+
 ```bash
 npm run check
 ```
 
-该命令会验证：
+完整仓库门禁（需要 PostgreSQL 16 与 Playwright Chromium）：
 
-- 576 条模板数量和唯一 ID
-- 529 条案例与 47 条框架模板
-- 576 个最终提示词文件
-- 529 张预览图
-- 必备 Prompt 区段
-- 原比例与不追问规则
-- 蓝图和最终提示词 SHA-256
-- 上游缺失 Markdown fence 的确定性恢复
-- 上游 ZIP 的只读来源声明
-- 文生图 / 图生图蓝图分类、统计与筛选数据一致性
-
-## 部署
-
-`public/` 是完整静态站点，可部署到任意静态托管服务。发布目录设置为：
-
-```text
-public
+```bash
+CI=true ONEPIC_PG_BIN=/path/to/postgresql-16/bin bash scripts/ci-verify.sh
 ```
 
-不需要服务器、数据库或运行时密钥。
+完整门禁覆盖：
 
-当前生产链路分为两层：
+- 576 模板数量、唯一 ID、来源、单图协议和 576 个 prompt 正文/hash
+- 529 case preview、493 reviewed generated preview 与 45 个 sidecar
+- Python compile/tests、JS syntax、npm audit、lint、契约/OpenAPI drift、typecheck、format、workspace build
+- unit、真实临时 PostgreSQL integration、backup/restore/deletion replay、Chromium E2E
+- 生成路径 fingerprint，阻断手改 generated 文件或构建漂移
+- `NOTICE.md`、`LICENSE` 与 third-party licenses
 
-- GitHub Actions（`.github/workflows/ci.yml`）在 pull request 和 `main` 推送时运行完整校验，并上传排除 macOS 元数据的静态产物。
-- Woodpecker（`.woodpecker/deploy.yml`）在 `main` 推送或手动触发时重新校验同一提交，再将站点原子发布到 `/var/www/onepic-template-studio/current`。
+容量、本地栈、发布制品和恢复演练分别见：
 
-Woodpecker 生产发布需要配置以下仓库 Secrets：
+- [容量压测](docs/operations/capacity-testing.md)
+- [容器与本地栈](docs/operations/local-stack.md)
+- [发布制品](docs/operations/release-artifacts.md)
+- [迁移、备份、恢复与回滚](docs/operations/recovery-runbook.md)
 
-```text
-deploy_host
-deploy_port
-deploy_user
-deploy_root
-deploy_domain
-deploy_ssh_private_key
-deploy_ssh_known_hosts
+## 发布边界
+
+可分别生成五种独立制品：
+
+```bash
+mkdir -p dist/release
+bash scripts/package-container-image.sh api dist/release/onepic-api.tar.gz
+bash scripts/package-container-image.sh worker dist/release/onepic-worker.tar.gz
+bash scripts/package-container-image.sh web dist/release/onepic-web.tar.gz
+bash scripts/package-container-image.sh static dist/release/onepic-static-image.tar.gz
+bash scripts/package-site.sh dist/release/onepic-static-site.tar.gz
 ```
 
-服务器 Nginx 模板位于：
+- `api`、`worker`、Vue `web`、原 `public/` static image 彼此独立；API 只额外携带启动时幂等导入所需的不可变 catalog/prompt bundle，不包含 Web 页面。
+- standalone static tar 使用严格 allowlist、规范化 metadata 和无时间戳 gzip，可逐字节复现；所有 manifest 记录 revision、实测 dirty 状态和 Git-visible worktree SHA256，dirty 构建不会只靠 HEAD 冒充可追溯来源。
+- GitHub Actions 在 pull request / `main` push 时先运行完整 verify，再构建四镜像制品；本地已用 actionlint 和等价命令验证，但当前工作未获 push 授权，未声称远端 CI 已运行。
+- Woodpecker 只接受 `manual` 事件，部署前再次执行完整验证；生成/下载制品不等于获准部署。
+- commit、push、registry push、deploy、生产 migration、付费 Provider 调用均需逐项单独授权。
 
-```text
-ops/nginx/onepic.motion-cover.com.conf
-```
+具体命令、manifest/checksum 校验和不应进入制品的路径见 [发布制品操作说明](docs/operations/release-artifacts.md)。原 `public/` 目录仍可直接发布到任意静态托管，不需要 API、数据库或运行时密钥；这不代表 managed-generation 后端已部署。
 
 ## 许可与来源
 

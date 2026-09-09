@@ -1,0 +1,203 @@
+{
+  "schemaVersion": "1.0.0",
+  "measuredAt": "2026-09-08T04:14:22.461Z",
+  "workspaceVersion": "41254dd + dirty",
+  "environment": {
+    "node": "v22.19.0",
+    "sharp": "0.35.4",
+    "libvips": "8.18.6",
+    "platform": "darwin",
+    "arch": "arm64",
+    "cpuCount": 8,
+    "cpuModel": "Apple M1 Pro",
+    "totalMemoryGiB": 16,
+    "postgresql": "postgres (PostgreSQL) 16.11 (Homebrew)"
+  },
+  "isolation": {
+    "network": "127.0.0.1 only",
+    "database": "ephemeral PostgreSQL cluster in OS temp directory",
+    "storage": "ephemeral local directory removed after run",
+    "provider": "disabled; zero provider calls"
+  },
+  "http": {
+    "live": {
+      "route": "/api/v1/health/live",
+      "method": "GET",
+      "concurrency": 20,
+      "count": 400,
+      "minMs": 0.94,
+      "medianMs": 4.32,
+      "p95Ms": 11.43,
+      "p99Ms": 26.14,
+      "maxMs": 29.64,
+      "elapsedMs": 108.72,
+      "requestsPerSecond": 3679.23,
+      "statuses": {
+        "200": 400
+      }
+    },
+    "workspaceWrite": {
+      "route": "/api/v1/collections",
+      "method": "POST",
+      "concurrency": 8,
+      "count": 160,
+      "minMs": 1.97,
+      "medianMs": 4.24,
+      "p95Ms": 8.1,
+      "p99Ms": 15.89,
+      "maxMs": 16.31,
+      "elapsedMs": 99.17,
+      "requestsPerSecond": 1613.47,
+      "statuses": {
+        "201": 160
+      }
+    },
+    "workspaceRead": {
+      "route": "/api/v1/collections?limit=50",
+      "method": "GET",
+      "concurrency": 20,
+      "count": 400,
+      "minMs": 6.52,
+      "medianMs": 9.7,
+      "p95Ms": 12.39,
+      "p99Ms": 13.39,
+      "maxMs": 15.56,
+      "elapsedMs": 199.73,
+      "requestsPerSecond": 2002.73,
+      "statuses": {
+        "200": 400
+      }
+    },
+    "ready": {
+      "route": "/api/v1/health/ready",
+      "method": "GET",
+      "concurrency": 8,
+      "count": 120,
+      "minMs": 5.14,
+      "medianMs": 8.85,
+      "p95Ms": 12.86,
+      "p99Ms": 13.65,
+      "maxMs": 15.24,
+      "elapsedMs": 139.97,
+      "requestsPerSecond": 857.33,
+      "statuses": {
+        "200": 120
+      }
+    },
+    "pgConnectionsDuringWorkload": {
+      "peak": 11
+    },
+    "pgConnectionsDuringReady": {
+      "peak": 16
+    }
+  },
+  "queue": {
+    "jobs": 320,
+    "configuredWorkers": 8,
+    "workerProcess": {
+      "probeDurationMs": 136.99,
+      "queuedJobsBefore": 1,
+      "pendingJobsAfter": 0,
+      "leasedJobsAfter": 0,
+      "measuredClaims": 1,
+      "measuredGenerationConcurrency": "at-least-one",
+      "claimLoopWired": true,
+      "loopbackProviderRequests": 1,
+      "terminal": {
+        "generation_state": "succeeded",
+        "job_state": "done"
+      },
+      "note": "可部署 Worker 进程经真实 PG claim/execute/complete、真实本地存储和隔离 loopback Provider simulator 完成 1 个任务；这不是 W06 真实 Provider 验证。"
+    },
+    "measuredMaxActiveWorkers": 8,
+    "duplicateClaims": 0,
+    "elapsedMs": 205.24,
+    "jobsPerSecond": 1559.13,
+    "p95QueueWaitMs": 208.11,
+    "claim": {
+      "count": 320,
+      "minMs": 0.22,
+      "medianMs": 0.39,
+      "p95Ms": 0.71,
+      "p99Ms": 2.03,
+      "maxMs": 2.29
+    },
+    "completion": {
+      "count": 320,
+      "minMs": 0.79,
+      "medianMs": 1.18,
+      "p95Ms": 1.68,
+      "p99Ms": 1.89,
+      "maxMs": 2.19
+    },
+    "pgConnections": {
+      "poolMax": 8,
+      "measuredPeakIncludingObserver": 9
+    },
+    "terminalVerification": {
+      "doneJobs": 320,
+      "succeededGenerations": 320
+    },
+    "providerCalls": 0
+  },
+  "pg": {
+    "baselineConnections": 1,
+    "measuredPeakConnections": 16,
+    "maxConnections": 100,
+    "sharedBuffers": "128MB"
+  },
+  "decode": {
+    "inputCompressedBytes": 98572,
+    "dimensions": {
+      "width": 4096,
+      "height": 4096,
+      "pixels": 16777216
+    },
+    "iterations": 8,
+    "concurrency": 2,
+    "validation": {
+      "count": 8,
+      "minMs": 0.36,
+      "medianMs": 2.21,
+      "p95Ms": 5.29,
+      "p99Ms": 5.29,
+      "maxMs": 5.29
+    },
+    "fullPixelDecode": {
+      "count": 8,
+      "minMs": 29.15,
+      "medianMs": 34.18,
+      "p95Ms": 67.63,
+      "p99Ms": 67.63,
+      "maxMs": 67.63
+    },
+    "baselineRssBytes": 91373568,
+    "peakRssBytes": 339820544,
+    "measuredPeakRssDeltaBytes": 248446976,
+    "scratchDisk": {
+      "tmpDir": "isolated child TMPDIR",
+      "measuredPeakBytes": 0,
+      "finalBytes": 0
+    }
+  },
+  "acceptance": {
+    "checks": {
+      "liveApiP95Under100Ms": true,
+      "workspaceReadP95Under500Ms": true,
+      "workspaceWriteP95Under500Ms": true,
+      "readyApiP95Under500Ms": true,
+      "queueClaimP95Under100Ms": true,
+      "queueCompletionP95Under100Ms": true,
+      "queueWaitP95Under2000Ms": true,
+      "queueThroughputAtLeast50PerSecond": true,
+      "workerConcurrencyReachedConfiguredLevel": true,
+      "pgConnectionsWithin20": true,
+      "decodeP95Under2000Ms": true,
+      "decodePeakRssDeltaUnder512MiB": true,
+      "decodeScratchPeakUnder16MiB": true,
+      "noExternalProviderCalls": true
+    },
+    "passed": true,
+    "failed": []
+  }
+}

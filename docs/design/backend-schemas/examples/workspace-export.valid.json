@@ -7,13 +7,13 @@
       "name": "海报灵感",
       "items": [
         { "itemType": "template", "itemKey": "case-532" },
-        { "itemType": "generation", "itemKey": "b5c4d3e2-1f0a-4b9c-8d7e-6f5a4b3c2d1e" }
+        { "itemType": "generation", "itemKey": "00000000-0000-4000-8000-000000000001" }
       ]
     }
   ],
   "history": [
     {
-      "generationId": "b5c4d3e2-1f0a-4b9c-8d7e-6f5a4b3c2d1e",
+      "generationId": "00000000-0000-4000-8000-000000000001",
       "templateId": "case-532",
       "state": "succeeded",
       "createdAt": "2026-09-05T11:00:00Z"

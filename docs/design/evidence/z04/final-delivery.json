@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1.0.0",
+  "date": "2026-09-08",
+  "workspace": {
+    "revision": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+    "dirty": true
+  },
+  "status": "PASS",
+  "deliverables": {
+    "fivePageVueFrontend": true,
+    "staticCatalogIndependent": true,
+    "singleImageProtocol": true,
+    "promptAndImageTraceability": true,
+    "controlledApiAndWorker": true,
+    "openApiAndTypedClient": true,
+    "containersAndDeterministicStaticArtifact": true,
+    "testsAndOperationsDocumentation": true
+  },
+  "verification": {
+    "ci": {
+      "passed": true,
+      "pythonTests": 23,
+      "unitFiles": 41,
+      "unitTests": 292,
+      "integrationFiles": 26,
+      "integrationTests": 133,
+      "recoveryPassed": true,
+      "chromiumE2e": 44,
+      "log": "/tmp/onepic-z04-ci-final.log"
+    },
+    "localStackPassed": true,
+    "capacityChecksPassed": 14,
+    "capacityChecksTotal": 14,
+    "gitleaksFindings": 0,
+    "sourceArchiveSha256": "ca672924e47630ac8d30c1155544fa60b052b4af74b2074fef158490a92b4d8d",
+    "sourceDirectoryChanges": 0,
+    "templates": 576,
+    "casePreviews": 529,
+    "reviewedGeneratedPreviews": 493,
+    "sidecars": 45
+  },
+  "realProvider": {
+    "userAuthorizedMaximumRequests": 1,
+    "actualRequests": 1,
+    "passed": true,
+    "providerId": "motion-cover",
+    "model": "gpt-image-2",
+    "quality": "high",
+    "input": {
+      "mime": "image/png",
+      "width": 512,
+      "height": 320,
+      "bytes": 5030
+    },
+    "output": {
+      "mime": "image/png",
+      "width": 1600,
+      "height": 983,
+      "bytes": 881388,
+      "decoded": true,
+      "aspectRatioRelativeDeltaPercent": 1.7294
+    },
+    "hashesAndSidecarMatched": true,
+    "secondRequestBlockedBeforeSend": true
+  },
+  "artifacts": {
+    "directory": ".tmp/z04-final-artifacts-v7",
+    "buildTimeWorktreeSha256": "6ce80a41291f3b483eba147f951099bbc40c37c539b3aa07ff1608b84005c9d3",
+    "allChecksumsVerified": true,
+    "allGzipReadable": true,
+    "allContainerArchivesLoaded": true,
+    "standaloneStaticByteDeterministic": true,
+    "items": [
+      {
+        "target": "api",
+        "imageId": "sha256:3b9a19a4c214f89df00bcf6b25317bbe86165461179741485a6c9ca9f2305aef",
+        "bytes": 100211368,
+        "sha256": "5878fedef5a6c0b1279f8a8859ed8903951177f4519972b71ee699384c192e99"
+      },
+      {
+        "target": "worker",
+        "imageId": "sha256:d0cdd47b9d6d6f0ac0412b17be66b1bfbda19f72470ca5cb9f9c1180495920ea",
+        "bytes": 97102029,
+        "sha256": "e0a93acb27867043fd5247ed1e353e87a3dab218d568ab8aa56e85ac1ab0ca3b"
+      },
+      {
+        "target": "web",
+        "imageId": "sha256:a187162c25e292ef957cf66ad25a2e6dc6b21d19f35669decf473e55293d86c7",
+        "bytes": 80158393,
+        "sha256": "ee7183c430c781b032a2f18c7a6b6800b90762cf1fa069e0308c71f41e70db62"
+      },
+      {
+        "target": "static-image",
+        "imageId": "sha256:1660d5410257fe836db8e1d94bc0950e0c5f87e5e0c033c1bdeee5e5479f27e2",
+        "bytes": 80095429,
+        "sha256": "251e3aefd5899636778aa93b6f17d32ff266b864de5354b02a98fc50f5b448d8"
+      },
+      {
+        "target": "standalone-static",
+        "members": 1203,
+        "bytes": 29154700,
+        "sha256": "145f3555b08252be147b5223e6faed82b9b065c84410a4b6e5cf25dca21ce3a1"
+      }
+    ]
+  },
+  "finalAcceptance": {
+    "allRequiredChecklistItemsChecked": true,
+    "uncheckedRequiredItems": 0,
+    "independentReview": {
+      "result": "PASS",
+      "blocker": 0,
+      "high": 0,
+      "medium": 0,
+      "findings": []
+    },
+    "goalDeliverablesComplete": true
+  },
+  "residualRisks": [
+    "Phase-one storage remains LocalDiskStorage; real S3-compatible private bucket and restore integration are unverified.",
+    "W06 covers one provider/model/quality/PNG/template and observed 1.7294% aspect-ratio delta; it is not capacity or all-format proof.",
+    "Remote CI, production TLS, multi-instance operation and production PostgreSQL settings are unverified.",
+    "The 2026-09-05 original design images are unavailable; visual acceptance uses the approved 2026-09-06 reconstructed baseline."
+  ],
+  "notExecutedWithoutSeparateAuthorization": [
+    "commit",
+    "push",
+    "registry-push",
+    "deploy",
+    "production-migration",
+    "additional-paid-provider-call"
+  ]
+}

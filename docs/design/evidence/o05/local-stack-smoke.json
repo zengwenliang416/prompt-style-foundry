@@ -1,0 +1,39 @@
+{
+  "measuredAt": "2026-09-08T04:07:15.052614+00:00",
+  "workspace": {
+    "commit": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+    "dirty": true
+  },
+  "environment": {
+    "platform": "macOS-26.5.2-x86_64-i386-64bit-Mach-O",
+    "docker": "29.5.3",
+    "compose": "5.1.4"
+  },
+  "isolation": {
+    "project": "onepic-o05-smoke-18438",
+    "webPort": 4183,
+    "staticPort": 4184,
+    "containersAndVolumesRemoved": true
+  },
+  "assertions": {
+    "dockerfileCheck": true,
+    "cleanComposeStart": true,
+    "apiLiveness": true,
+    "apiReadinessWithPostgres": true,
+    "workerInternalReadinessWithPostgres": true,
+    "catalogOnlyProductionStartupSkippedDatabaseWrites": true,
+    "managedProductionImagePrecheckCreateAndSidecar": true,
+    "fiveSpaDeepLinksRefresh": true,
+    "catalogAndCase532Assets": true,
+    "standaloneStaticImageWithoutApi": true,
+    "workerSigtermLoggedCleanStop": true,
+    "publicTemporaryMetadataAbsent": true,
+    "externalProviderCalls": 0
+  },
+  "passed": true,
+  "limitations": [
+    "The primary Compose stack stayed catalog-only; a separate clean production-image smoke enabled managed API routes through queued generation and sidecar, without starting a Worker.",
+    "In-flight provider shutdown is verified separately by runtime-shutdown.integration.test.ts with real PostgreSQL and a loopback provider double.",
+    "No real or paid provider was called; W06 remains unauthorized."
+  ]
+}

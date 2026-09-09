@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0.0",
+  "measuredAt": "2026-09-07T14:51:56.637Z",
+  "durationMs": 5112,
+  "workspace": {
+    "commit": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+    "dirty": true
+  },
+  "isolation": {
+    "postgres": "ephemeral PostgreSQL 16 on 127.0.0.1:55863",
+    "storage": "ephemeral LocalDiskStorage under OS temp directory",
+    "previousFrontend": "git archive b6a293943ca73abb06fc3994e2f6fd971d617eaa:public (requested HEAD^ from default:HEAD^) served on an ephemeral loopback port",
+    "cleanupOnExitConfigured": true,
+    "externalProviderCalls": 0
+  },
+  "backupRestore": {
+    "version3": {
+      "backup": {
+        "bytes": 42435,
+        "sha256": "d0f074174ff36a1c87a14d47df87634fe5af0fd4bd9eb597b084eeabc2687640"
+      },
+      "sourceEqualsRestore": true,
+      "versions": [
+        1,
+        2,
+        3
+      ]
+    },
+    "latest": {
+      "backup": {
+        "bytes": 42664,
+        "sha256": "5d44f6f20414aec09a88bece39fe1b2ac2b8a9cea4ca493b9b9e9f0c3a00ffd6"
+      },
+      "sourceEqualsRestore": true,
+      "versions": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    }
+  },
+  "migration": {
+    "before": [
+      1,
+      2,
+      3
+    ],
+    "after": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "files": [
+      "0001_identity_and_catalog.sql",
+      "0002_generation.sql",
+      "0003_workspace_and_audit.sql",
+      "0004_prompt_snapshot.sql",
+      "0005_cancel.sql"
+    ],
+    "destructiveSqlFiles": [],
+    "expandOnly": true
+  },
+  "deletionManifestReplay": {
+    "dryRun": {
+      "event": "deletion_manifest_replay",
+      "mode": "dry-run",
+      "scanned": 1,
+      "removalAttempts": 0,
+      "batches": 1,
+      "failures": 0
+    },
+    "bytesBeforeApply": 5,
+    "apply": {
+      "event": "deletion_manifest_replay",
+      "mode": "apply",
+      "scanned": 1,
+      "removalAttempts": 1,
+      "batches": 1,
+      "failures": 0
+    },
+    "absentAfterApply": true,
+    "repeat": {
+      "event": "deletion_manifest_replay",
+      "mode": "apply",
+      "scanned": 1,
+      "removalAttempts": 1,
+      "batches": 1,
+      "failures": 0
+    }
+  },
+  "compatibility": {
+    "previousApplicationContract": {
+      "oldProjectionReadable": true,
+      "oldInsertWithoutNewColumns": true,
+      "generationCountBefore": 1,
+      "generationCountAfter": 2
+    },
+    "previousStaticFrontend": {
+      "requestedRef": "HEAD^",
+      "refSource": "default:HEAD^",
+      "revision": "b6a293943ca73abb06fc3994e2f6fd971d617eaa",
+      "archive": {
+        "format": "git-archive-tar",
+        "path": "public",
+        "revision": "b6a293943ca73abb06fc3994e2f6fd971d617eaa",
+        "requestedRef": "HEAD^",
+        "refSource": "default:HEAD^"
+      },
+      "indexLoaded": true,
+      "catalogTemplates": 576,
+      "promptLoaded": true
+    },
+    "restoredApiHealth": {
+      "liveStatus": 200,
+      "readyStatus": 200
+    }
+  },
+  "rollback": {
+    "applicationContractRanAgainstLatestSchema": true,
+    "schemaVersionsPreserved": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "destructiveSqlRollbackAttempted": false,
+    "databaseRestoreUsedForApplicationRollback": false
+  },
+  "passed": true,
+  "limitations": [
+    "The object-store replay used the phase-one LocalDiskStorage adapter; production S3 rehearsal requires separately authorized infrastructure.",
+    "The previous frontend was archived from default:HEAD^, resolved to b6a293943ca73abb06fc3994e2f6fd971d617eaa; no production deployment was contacted.",
+    "No real or paid provider was called."
+  ]
+}

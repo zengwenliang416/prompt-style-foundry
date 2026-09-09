@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "measuredAt": "2026-09-08T04:07:05.339918+00:00",
+  "workspace": {
+    "commit": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+    "dirty": true,
+    "worktreeSha256": "35595173d2eb31cf6030c8063c6ee740b7fa7da0e5aa4e773a308102959b93a2"
+  },
+  "containerTarget": "api",
+  "assertions": {
+    "cleanPostgresMigrationsAndCatalogImport": true,
+    "concurrentReplicaStartupSerialized": true,
+    "migrationOrImportFailureStopsReplica": true,
+    "managedReadinessRequiresSchemaAndCatalog": true,
+    "managedReadinessDegradedHttp503": true,
+    "templateVersions": 576,
+    "case532Version": 1,
+    "managedAuthRoute": true,
+    "singleImageUploadConfirm": true,
+    "case532Precheck": true,
+    "generationCreateHttp202": true,
+    "generationState": "queued",
+    "sidecarHttp": true,
+    "promptSha256": "a574599a388b88f013cba7a08d9fc5505e3c6155f3625b498e92faa6e25b2a30",
+    "inputSha256": "192c3d96acd5975feec63e35c785a998099149f1a908a75e7002a7a91a34f2c1",
+    "externalProviderCalls": 0
+  },
+  "generationId": "83df3242-d7d1-4987-811e-6c91cb94baba",
+  "passed": true,
+  "limitations": [
+    "No Worker was started, so the queued task could not call a Provider.",
+    "This O05 smoke made zero Provider calls; W06 was completed later under a separate one-request authorization."
+  ]
+}

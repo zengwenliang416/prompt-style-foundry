@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "workspaceCommit": "41254dd87282277b34c2c3bf9f29b1c2038e1211",
+  "syncedSources": [
+    "README.md",
+    "docs/architecture.md",
+    "docs/full-stack-architecture.md",
+    "docs/frontend-backend-standards.md",
+    "docs/design/DESIGN.md",
+    "docs/design/backend-data-dictionary.md",
+    "packages/contracts/openapi/api-v1.yaml",
+    "packages/contracts/openapi/api-v1.json",
+    "packages/contracts/src/generated/api-v1.d.ts",
+    "docs/development-context.md",
+    "docs/engineering-review.html",
+    "docs/development-handoff.html"
+  ],
+  "productWording": {
+    "files": [
+      "apps/web/src/features/home/HomePage.vue",
+      "apps/web/src/features/guide/GuidePage.vue",
+      "apps/web/src/features/studio/SettingsDialog.vue"
+    ],
+    "catalogOnlyDoesNotUpload": true,
+    "explicitGenerationTrigger": true,
+    "selectedModeRouting": true,
+    "managedRelayDisclosed": true,
+    "byokKeyNotMigrated": true
+  },
+  "checks": {
+    "localMarkdownLinks": { "files": 27, "links": 70, "missing": 0 },
+    "openapiGenerateDrift": false,
+    "openapiValid": true,
+    "openapiWarnings": 5,
+    "warningScope": "2 health operations without 4XX plus 3 advisory warnings for 302-only auth redirects",
+    "staleAssertionScanMatches": 0,
+    "engineeringReviewRegenerated": true,
+    "handoffRegenerated": true,
+    "pythonTests": 23,
+    "unit": { "files": 41, "tests": 290 },
+    "integration": { "files": 26, "tests": 131 },
+    "recoveryRehearsal": true,
+    "e2e": 44,
+    "localStack": true,
+    "releaseArtifactsRebuiltAndLoaded": 5,
+    "staticArtifactSha256": "145f3555b08252be147b5223e6faed82b9b065c84410a4b6e5cf25dca21ce3a1"
+  },
+  "externalProviderCalls": 0,
+  "deployed": false,
+  "passed": true
+}
