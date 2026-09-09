@@ -10,7 +10,8 @@ labels:
 
 when:
   - event: manual
-
+  - event: push
+    branch: main
 concurrency:
   limit: 1
   group: onepic-template-studio-production-80
@@ -43,3 +44,5 @@ steps:
     commands:
       - apk add --no-cache bash curl openssh-client
       - bash ops/woodpecker/deploy.sh .tmp/onepic-template-studio.tar.gz
+    when:
+      - event: manual

@@ -92,7 +92,7 @@ docker load -i .tmp/release/onepic-api-image.tar.gz
 
 ## 部署门禁
 
-`.woodpecker/deploy.yml` 仅响应人工事件，并在部署步骤前再次执行完整验证和静态归档检查。触发该 workflow 或实际运行 `ops/woodpecker/deploy.sh` 都属于生产部署，必须先取得该次部署的明确授权。CI/GitHub artifact 生成不应自动调用 Woodpecker，也不应自动执行生产 migration。
+`.woodpecker/deploy.yml` 在 `main` push 时只执行 `verify-and-package`，`deploy-production` 步骤通过 `event: manual` 单独门禁；人工触发时会先重复完整验证和静态归档检查，再进入部署。触发人工 workflow 或实际运行 `ops/woodpecker/deploy.sh` 都属于生产部署，必须先取得该次部署的明确授权。普通 push CI 不部署、不执行生产 migration。
 
 ## 证据
 

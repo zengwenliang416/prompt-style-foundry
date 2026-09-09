@@ -1224,6 +1224,7 @@ commit/push/deploy。</label></li>
 状态：完成并勾选（完整 CI 门禁、五种独立制品、负例阻断、checksum/manifest/load 和回归均通过）。
 工作区版本 / 变更文件：main @ 41254dd + dirty。
 - CI：扩展 scripts/ci-verify.sh，纳入 compiler/library/design/preview、Python、npm audit、lint/contract/type/format/build、unit、真实 PG integration、Chromium E2E 和生成路径 fingerprint；.github/workflows/ci.yml 使用 npm ci、PG16、Playwright 并让四镜像 matrix needs verify；.woodpecker/deploy.yml 仅 manual。
+- 后续 CI 维护（2026-09-09）：Woodpecker 恢复 `main` push 验证，但 `deploy-production` 仍由步骤级 `event: manual` 门禁；push 只运行 verify/package，绝不自动部署。
 - 确定性/安全：build_library generatedAt 绑定 source manifest importedAt；新增 fingerprint_paths.py、create_static_artifact.py 及 tests/test_static_artifact.py；package-site 采用严格 allowlist、确定性 tar+gzip、便携 checksum 和 manifest。
 - 独立镜像：新增 API/Worker/Contracts production tsconfig 排除测试并清空 dist；Docker 生产依赖层、非 root node、许可证和运行时权限修复；package-container-image.sh 检查服务边界、测试/文档/临时/凭据、preview 命名、image config/history，导出独立 tar/checksum/manifest。
 - 依赖：pg 与 Worker contracts 调整为实际 runtime dependency；Sharp 升至 0.35.4/libvips 8.18.6，npm audit 由 high 1 降为 0。
