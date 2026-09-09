@@ -10,8 +10,6 @@ labels:
 
 when:
   - event: manual
-  - event: push
-    branch: main
 
 concurrency:
   limit: 1
@@ -19,13 +17,12 @@ concurrency:
 
 steps:
   - name: verify-and-package
-    image: python:3.12-alpine
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
     commands:
-      - apk add --no-cache bash curl git nodejs npm
-      - python3 -m pip install --no-cache-dir -r requirements-dev.txt
-      - bash scripts/ci-verify.sh
-      - bash scripts/package-site.sh .tmp/onepic-template-studio.tar.gz
-
+      - apt-get update
+      - DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends python3 python3-venv postgresql-16 postgresql-client-16
+      - chown -R pwuser:pwuser "$CI_WORKSPACE"
+      - runuser -u pwuser -- bash -lc 'cd "$CI_WORKSPACE" && python3 -m venv .tmp/ci-venv && . .tmp/ci-venv/bin/activate && python3 -m pip install --no-cache-dir -r requirements-dev.txt && npm ci && CI=true ONEPIC_PG_BIN=/usr/lib/postgresql/16/bin bash scripts/ci-verify.sh && bash scripts/package-site.sh .tmp/onepic-template-studio.tar.gz'
   - name: deploy-production
     image: alpine:3.22
     environment:

@@ -16,37 +16,96 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - name: Check out source
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '22.23.0'
+          cache: npm
 
-      - name: Install Python dependencies
-        run: python -m pip install --disable-pip-version-check --no-cache-dir -r requirements-dev.txt
+      - name: Install PostgreSQL 16 tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends postgresql-16 postgresql-client-16
 
-      - name: Verify repository
+      - name: Install Python and Node dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --no-cache-dir -r requirements-dev.txt
+          npm ci
+
+      - name: Install Chromium runtime
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify compiler, contracts, code, tests, and static runtime
+        env:
+          CI: 'true'
+          ONEPIC_PG_BIN: /usr/lib/postgresql/16/bin
         run: bash scripts/ci-verify.sh
 
-      - name: Package static site
+      - name: Package and inspect standalone static site
         run: bash scripts/package-site.sh "$RUNNER_TEMP/onepic-template-studio.tar.gz"
 
-      - name: Upload static site artifact
-        uses: actions/upload-artifact@v7
+      - name: Upload standalone static site artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: onepic-template-studio-${{ github.sha }}
+          name: onepic-static-site-${{ github.sha }}
           path: |
             ${{ runner.temp }}/onepic-template-studio.tar.gz
             ${{ runner.temp }}/onepic-template-studio.tar.gz.sha256
+            ${{ runner.temp }}/onepic-template-studio.tar.gz.manifest.json
+          if-no-files-found: error
+          retention-days: 14
+
+  service-image:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [api, worker, web, static]
+
+    steps:
+      - name: Check out verified source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Build, inspect, and package ${{ matrix.target }} image
+        env:
+          ONEPIC_ARTIFACT_VERSION: ${{ github.sha }}
+        run: |
+          bash scripts/package-container-image.sh \
+            "${{ matrix.target }}" \
+            "$RUNNER_TEMP/onepic-${{ matrix.target }}-image.tar.gz"
+
+      - name: Verify clean managed API startup and catalog binding
+        if: matrix.target == 'api'
+        env:
+          ONEPIC_MANAGED_SMOKE_IMAGE: onepic-api:${{ github.sha }}
+          ONEPIC_MANAGED_SMOKE_REPORT: ${{ runner.temp }}/managed-image-smoke.json
+        run: bash scripts/verify-managed-image.sh
+
+      - name: Upload independent ${{ matrix.target }} image
+        uses: actions/upload-artifact@v4
+        with:
+          name: onepic-${{ matrix.target }}-image-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/onepic-${{ matrix.target }}-image.tar.gz
+            ${{ runner.temp }}/onepic-${{ matrix.target }}-image.tar.gz.sha256
+            ${{ runner.temp }}/onepic-${{ matrix.target }}-image.tar.gz.manifest.json
+            ${{ runner.temp }}/managed-image-smoke.json
           if-no-files-found: error
           retention-days: 14

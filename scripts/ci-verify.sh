@@ -17,8 +17,25 @@ if git ls-files | grep -Eq '(^|/)(\._|\.DS_Store)'; then
   exit 1
 fi
 
+generated_paths=(
+  data/library/templates.json
+  public/data
+  public/previews
+  packages/contracts/src/generated
+  packages/contracts/openapi/api-v1.json
+  packages/contracts/openapi/api-v1.yaml
+)
+generated_fingerprint() {
+  python3 scripts/fingerprint_paths.py "$@"
+}
+generated_before=""
+if [[ "${CI:-}" == "true" ]]; then
+  generated_before=$(generated_fingerprint "${generated_paths[@]}")
+fi
+
 python3 scripts/build_library.py
 python3 scripts/validate_library.py
+python3 scripts/install_generated_previews.py --check
 python3 scripts/validate_design_schemas.py
 python3 -m unittest discover -s tests -p 'test_*.py'
 while IFS= read -r python_file; do
@@ -32,11 +49,30 @@ if [[ ! -d node_modules ]]; then
   echo "node_modules is missing; run npm ci before verification." >&2
   exit 1
 fi
+npm audit --audit-level=high
 npm run lint
 npm run lint:contract
 npm run gen:api:check
 npm run typecheck
+npm run format:check
+npx prettier --check .github/workflows/ci.yml .woodpecker/deploy.yml
 npm run build:workspaces
+npm run test:unit
+npm run test:integration
+(
+  recovery_report="${RUNNER_TEMP:-${TMPDIR:-/tmp}}/onepic-o07-recovery-$$.json"
+  trap 'rm -f "$recovery_report"' EXIT
+  ONEPIC_RECOVERY_REPORT="$recovery_report" npm run rehearse:recovery:built
+)
+npm run test:e2e
+
+if [[ "${CI:-}" == "true" ]]; then
+  generated_after=$(generated_fingerprint "${generated_paths[@]}")
+  if [[ "$generated_before" != "$generated_after" ]]; then
+    echo "Generated assets or API types drifted during CI verification." >&2
+    exit 1
+  fi
+fi
 
 required_files=(
   NOTICE.md

@@ -1,0 +1,126 @@
+name: onepic
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: onepic
+      POSTGRES_USER: onepic
+      POSTGRES_PASSWORD: onepic-local-only
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U onepic -d onepic"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - onepic-pg:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      target: api
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8080
+      LOG_LEVEL: ${ONEPIC_LOG_LEVEL:-info}
+      RUN_MODE: ${ONEPIC_RUN_MODE:-catalog-only}
+      DATABASE_URL: postgresql://onepic:onepic-local-only@postgres:5432/onepic
+      MEDIA_STORAGE_ROOT: /var/lib/onepic/media
+      OIDC_ISSUER: ${ONEPIC_OIDC_ISSUER:-}
+      OIDC_CLIENT_ID: ${ONEPIC_OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${ONEPIC_OIDC_CLIENT_SECRET:-}
+      OIDC_REDIRECT_URI: ${ONEPIC_OIDC_REDIRECT_URI:-}
+      SESSION_SECRET: ${ONEPIC_SESSION_SECRET:-}
+      MANAGED_PROVIDER_ID: ${ONEPIC_PROVIDER_ID:-}
+      GENERATION_QUOTA_LIMIT: ${ONEPIC_GENERATION_QUOTA_LIMIT:-20}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8080/api/v1/health/ready').then(r=>{if(!r.ok)process.exit(1)})",
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - onepic-media:/var/lib/onepic/media
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      target: worker
+    environment:
+      DATABASE_URL: postgresql://onepic:onepic-local-only@postgres:5432/onepic
+      MEDIA_STORAGE_ROOT: /var/lib/onepic/media
+      CLEANUP_INTERVAL_SECONDS: ${ONEPIC_CLEANUP_INTERVAL_SECONDS:-300}
+      METRICS_HOST: 127.0.0.1
+      METRICS_PORT: 9090
+      WORKER_GENERATION_ENABLED: ${ONEPIC_WORKER_GENERATION_ENABLED:-false}
+      WORKER_CONCURRENCY: ${ONEPIC_WORKER_CONCURRENCY:-2}
+      WORKER_POLL_INTERVAL_MS: ${ONEPIC_WORKER_POLL_INTERVAL_MS:-500}
+      WORKER_LEASE_SECONDS: ${ONEPIC_WORKER_LEASE_SECONDS:-60}
+      WORKER_HEARTBEAT_SECONDS: ${ONEPIC_WORKER_HEARTBEAT_SECONDS:-15}
+      WORKER_SHUTDOWN_GRACE_SECONDS: ${ONEPIC_WORKER_SHUTDOWN_GRACE_SECONDS:-30}
+      WORKER_PROVIDER_ID: ${ONEPIC_PROVIDER_ID:-}
+      WORKER_PROVIDER_LABEL: ${ONEPIC_PROVIDER_LABEL:-Managed provider}
+      WORKER_PROVIDER_BASE_URL: ${ONEPIC_PROVIDER_BASE_URL:-}
+      WORKER_PROVIDER_API_KEY: ${ONEPIC_PROVIDER_API_KEY:-}
+      WORKER_PROVIDER_MODELS: ${ONEPIC_PROVIDER_MODELS:-}
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:9090/internal/health/ready').then(r=>{if(!r.ok)process.exit(1)})",
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - onepic-media:/var/lib/onepic/media
+    restart: unless-stopped
+    stop_grace_period: ${ONEPIC_CONTAINER_STOP_GRACE:-35s}
+
+  web:
+    build:
+      context: .
+      target: web
+    ports:
+      - "${ONEPIC_WEB_PORT:-4173}:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/internal/health/live"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  static:
+    profiles: ["static-only"]
+    build:
+      context: .
+      target: static
+    ports:
+      - "${ONEPIC_STATIC_PORT:-4174}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/internal/health/live"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  onepic-pg:
+  onepic-media:

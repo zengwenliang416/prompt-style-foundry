@@ -5,6 +5,7 @@ __pycache__/
 .venv/
 node_modules/
 coverage/
+.vitest/
 *.log
 .tmp/
 dist/

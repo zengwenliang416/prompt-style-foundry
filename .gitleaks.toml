@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignored local W06 Provider credential file; never packaged or committed"
+paths = ['''^\.tmp/w06-provider\.env$''']
