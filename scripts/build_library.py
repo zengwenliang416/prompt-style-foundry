@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sys
 from collections import Counter
@@ -33,6 +34,15 @@ from prompt_protocol import (  # noqa: E402
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+def deterministic_generated_at(source_manifest: dict[str, Any]) -> str:
+    source_epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    if source_epoch is not None:
+        return datetime.fromtimestamp(int(source_epoch), timezone.utc).isoformat()
+    imported_at = source_manifest.get("importedAt")
+    if not isinstance(imported_at, str):
+        raise ValueError("source manifest importedAt is required for deterministic output")
+    return datetime.fromisoformat(imported_at).isoformat()
 
 
 def clean_list(value: Any) -> list[str]:
@@ -165,7 +175,6 @@ def build_catalog_item(template: NormalizedTemplate) -> dict[str, Any]:
         "generatedPreview": f"previews/{template.id}.webp" if generated_asset.is_file() else None,
         "generatedPromptPath": f"data/generated-previews/{template.id}.prompt.txt" if generated_prompt.is_file() else None,
         "promptPath": f"data/prompts/{template.id}.txt",
-        "source": template.source,
         "promptSha256": template.as_dict(include_blueprint=False, include_prompt=False)["promptSha256"],
     }
 
@@ -203,7 +212,7 @@ def main() -> int:
 
     full_library = {
         "schemaVersion": SCHEMA_VERSION,
-        "generatedAt": datetime.now(timezone.utc).isoformat(),
+        "generatedAt": deterministic_generated_at(source_manifest),
         "project": {
             "name": PROJECT_NAME,
             "nameZh": PROJECT_NAME_ZH,
@@ -234,11 +243,8 @@ def main() -> int:
         "schemaVersion": SCHEMA_VERSION,
         "generatedAt": full_library["generatedAt"],
         "project": full_library["project"],
-        "source": {
-            "project": SOURCE_PROJECT,
-            "repository": SOURCE_REPOSITORY,
+        "release": {
             "archiveSha256": source_manifest.get("sourceArchiveSha256"),
-            "license": "MIT",
         },
         "stats": {
             "total": len(templates),

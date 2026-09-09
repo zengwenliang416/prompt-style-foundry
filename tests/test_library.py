@@ -31,6 +31,13 @@ class GeneratedLibraryTests(unittest.TestCase):
         self.assertEqual(counts["case"], 529)
         self.assertEqual(counts["framework"], 47)
 
+
+    def test_generated_timestamp_is_deterministic_source_provenance(self) -> None:
+        source_manifest = json.loads(
+            (ROOT / "data/source/source-manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(self.library["generatedAt"], source_manifest["importedAt"])
+        self.assertEqual(self.catalog["generatedAt"], source_manifest["importedAt"])
     def test_unique_ids(self) -> None:
         ids = [item["id"] for item in self.library["templates"]]
         self.assertEqual(len(ids), len(set(ids)))
@@ -40,6 +47,15 @@ class GeneratedLibraryTests(unittest.TestCase):
         catalog_ids = [item["id"] for item in self.catalog["templates"]]
         self.assertEqual(catalog_ids, library_ids)
 
+
+    def test_public_catalog_omits_source_attribution(self) -> None:
+        self.assertNotIn("source", self.catalog)
+        self.assertIn("release", self.catalog)
+        self.assertIsInstance(self.catalog["release"].get("archiveSha256"), str)
+        for item in self.catalog["templates"]:
+            self.assertNotIn("source", item)
+        for item in self.library["templates"]:
+            self.assertIn("source", item)
     def test_blueprint_input_modes_are_complete(self) -> None:
         templates = self.library["templates"]
         counts = Counter(item["blueprintInputMode"] for item in templates)

@@ -11,6 +11,16 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public"
 
 
+class StaticRequestHandler(http.server.SimpleHTTPRequestHandler):
+    """Serve static files without traceback noise when browsers cancel lazy images."""
+
+    def copyfile(self, source, outputfile) -> None:  # type: ignore[no-untyped-def]
+        try:
+            super().copyfile(source, outputfile)
+        except (BrokenPipeError, ConnectionResetError):
+            return
+
+
 class ReusableTCPServer(socketserver.TCPServer):
     allow_reuse_address = True
 
@@ -21,7 +31,7 @@ def main() -> int:
     parser.add_argument("--port", type=int, default=4173)
     args = parser.parse_args()
 
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(PUBLIC))
+    handler = functools.partial(StaticRequestHandler, directory=str(PUBLIC))
     with ReusableTCPServer((args.host, args.port), handler) as server:
         print(f"OnePic Template Studio: http://{args.host}:{args.port}")
         try:

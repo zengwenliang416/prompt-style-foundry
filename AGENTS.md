@@ -15,7 +15,7 @@ Allowed:
 - Read canonical prompt data from `data/cases.json` inside the ZIP.
 - Read framework prompt blocks from `docs/templates.md` inside the ZIP.
 - Read source images only to create reduced preview thumbnails.
-- Preserve source author, URL, repository, and MIT notice.
+- Preserve the upstream archive, internal import provenance, and all legally required MIT notices; public product surfaces may omit per-template attribution.
 
 Forbidden:
 
@@ -131,7 +131,7 @@ Template IDs:
 
 Do not renumber existing IDs. New source prompts must receive stable IDs.
 
-Source fields must remain traceable. Do not remove upstream author or source URL merely to make the project look more original; project independence comes from architecture and compilation, not from deleting attribution.
+Internal source provenance must remain traceable in `data/source/`, the import manifest, and other non-public build inputs. Public UI, public catalog payloads, compiled prompt files, and downloadable prompt outputs may omit per-template author names, source URLs, repository links, and provenance copy after OnePic compilation. `NOTICE.md` and applicable third-party license notices must remain present, the upstream archive must remain unchanged, and attribution must never be fabricated or reassigned.
 
 ## 9. Commands
 

@@ -13,14 +13,14 @@
       (function () {
         var stored = null;
         try {
-          stored = localStorage.getItem("onepic-theme-v1");
+          stored = localStorage.getItem('onepic-theme-v1');
         } catch (error) {}
         var theme =
-          stored === "light" || stored === "dark"
+          stored === 'light' || stored === 'dark'
             ? stored
-            : window.matchMedia("(prefers-color-scheme: light)").matches
-              ? "light"
-              : "dark";
+            : window.matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
         document.documentElement.dataset.theme = theme;
       })();
     </script>
@@ -42,14 +42,21 @@
       <nav class="header-nav" aria-label="主导航">
         <a href="#how-it-works">使用方式</a>
         <a href="#template-library">模板库</a>
-        <a href="#provenance">来源说明</a>
         <button id="gen-settings-button" class="header-nav-button" type="button">
           生图设置<span id="gen-config-dot" class="gen-config-dot" hidden></span>
         </button>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换深浅主题" aria-pressed="false">
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="切换深浅主题"
+          aria-pressed="false"
+        >
           <svg class="icon-sun" aria-hidden="true" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="4.2" />
-            <path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19" />
+            <path
+              d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5 5l1.7 1.7M17.3 17.3 19 19M19 5l-1.7 1.7M6.7 17.3 5 19"
+            />
           </svg>
           <svg class="icon-moon" aria-hidden="true" viewBox="0 0 24 24">
             <path d="M20.4 14.2A8.4 8.4 0 0 1 9.8 3.6a8.4 8.4 0 1 0 10.6 10.6Z" />
@@ -61,24 +68,69 @@
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <svg class="hero-blueprint" aria-hidden="true" viewBox="0 0 1200 560" fill="none" preserveAspectRatio="xMidYMid slice">
+        <svg
+          class="hero-blueprint"
+          aria-hidden="true"
+          viewBox="0 0 1200 560"
+          fill="none"
+          preserveAspectRatio="xMidYMid slice"
+        >
           <path class="bp-line" d="M0 90 H1200" stroke="currentColor" stroke-width="1" />
           <path class="bp-line" d="M0 470 H1200" stroke="currentColor" stroke-width="1" />
           <path class="bp-line" d="M140 0 V560" stroke="currentColor" stroke-width="1" />
           <path class="bp-line" d="M1060 0 V560" stroke="currentColor" stroke-width="1" />
-          <path class="bp-line" d="M140 90 L1060 470" stroke="currentColor" stroke-width="1" stroke-dasharray="6 8" />
-          <circle class="bp-circle" cx="1060" cy="90" r="46" stroke="currentColor" stroke-width="1" />
-          <circle class="bp-circle" cx="1060" cy="90" r="80" stroke="currentColor" stroke-width="1" stroke-dasharray="4 10" />
-          <circle class="bp-circle" cx="140" cy="470" r="34" stroke="currentColor" stroke-width="1" />
-          <path class="bp-line" d="M1030 90 h60 M1060 60 v60" stroke="currentColor" stroke-width="1" />
-          <path class="bp-line" d="M110 470 h60 M140 440 v60" stroke="currentColor" stroke-width="1" />
+          <path
+            class="bp-line"
+            d="M140 90 L1060 470"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-dasharray="6 8"
+          />
+          <circle
+            class="bp-circle"
+            cx="1060"
+            cy="90"
+            r="46"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+          <circle
+            class="bp-circle"
+            cx="1060"
+            cy="90"
+            r="80"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-dasharray="4 10"
+          />
+          <circle
+            class="bp-circle"
+            cx="140"
+            cy="470"
+            r="34"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+          <path
+            class="bp-line"
+            d="M1030 90 h60 M1060 60 v60"
+            stroke="currentColor"
+            stroke-width="1"
+          />
+          <path
+            class="bp-line"
+            d="M110 470 h60 M140 440 v60"
+            stroke="currentColor"
+            stroke-width="1"
+          />
         </svg>
         <div class="hero-copy">
           <p class="eyebrow">SINGLE IMAGE · STANDALONE LIBRARY</p>
           <h1 id="hero-title">只上传一张图，<br />切换整套视觉语言。</h1>
           <p class="hero-description">
             这是一个全新、独立的提示词项目。原项目只作为只读素材源；每条视觉蓝图都已被编译成统一的
-            <strong>[System / Prompt]</strong> 单图模板，并标记原始蓝图属于文生图还是图生图，不需要再填写标题、品牌、地点或比例。
+            <strong>[System / Prompt]</strong>
+            单图模板，并标记原始蓝图属于文生图还是图生图，不需要再填写标题、品牌、地点或比例。
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="#template-library">浏览全部模板</a>
@@ -149,7 +201,12 @@
             <svg aria-hidden="true" viewBox="0 0 24 24">
               <path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" />
             </svg>
-            <input id="search-input" type="search" placeholder="搜索标题、风格、场景或编号…" autocomplete="off" />
+            <input
+              id="search-input"
+              type="search"
+              placeholder="搜索标题、风格、场景或编号…"
+              autocomplete="off"
+            />
             <kbd aria-hidden="true">/</kbd>
           </label>
 
@@ -175,17 +232,25 @@
           </label>
 
           <label class="kind-filter-wrap">
-            <span class="sr-only">模板来源类型</span>
+            <span class="sr-only">模板类型</span>
             <select id="kind-filter">
-              <option value="">全部来源</option>
+              <option value="">全部类型</option>
               <option value="framework">框架模板</option>
               <option value="case">案例蓝图</option>
             </select>
           </label>
 
-          <button id="favorites-filter" class="icon-button" type="button" aria-pressed="false" title="仅显示收藏">
+          <button
+            id="favorites-filter"
+            class="icon-button"
+            type="button"
+            aria-pressed="false"
+            title="仅显示收藏"
+          >
             <svg aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M12 20.5s-8-4.35-8-10.25A4.75 4.75 0 0 1 12 6.8a4.75 4.75 0 0 1 8 3.45c0 5.9-8 10.25-8 10.25Z" />
+              <path
+                d="M12 20.5s-8-4.35-8-10.25A4.75 4.75 0 0 1 12 6.8a4.75 4.75 0 0 1 8 3.45c0 5.9-8 10.25-8 10.25Z"
+              />
             </svg>
             <span>收藏</span>
           </button>
@@ -197,57 +262,52 @@
         <div id="template-grid" class="template-grid" aria-busy="true"></div>
 
         <div class="load-more-wrap">
-          <button id="load-more" class="button button-secondary" type="button" hidden>加载更多</button>
+          <button id="load-more" class="button button-secondary" type="button" hidden>
+            加载更多
+          </button>
         </div>
 
         <div id="empty-state" class="empty-state" hidden>
           <strong>没有找到匹配模板</strong>
           <p>尝试减少筛选条件或换一个关键词。</p>
-          <button class="button button-secondary" type="button" data-action="clear">清除全部筛选</button>
-        </div>
-      </section>
-
-      <section class="provenance" id="provenance" aria-labelledby="provenance-title">
-        <div class="section-heading" data-reveal>
-          <p class="eyebrow">SOURCE & OWNERSHIP</p>
-          <h2 id="provenance-title">新项目，不改原项目</h2>
-        </div>
-        <div class="provenance-grid" data-reveal>
-          <article>
-            <h3>只读抽离</h3>
-            <p>导入脚本直接读取原 ZIP，提取规范化的案例提示词与框架提示词，不写回、不覆盖原仓库。</p>
-          </article>
-          <article>
-            <h3>独立编译</h3>
-            <p>新项目拥有自己的协议、数据模型、搜索界面、构建脚本、验证规则和品牌命名。</p>
-          </article>
-          <article>
-            <h3>来源可追溯</h3>
-            <p>每条模板保留来源作者、案例链接、原项目链接和 MIT 许可信息，方便审计与维护。</p>
-          </article>
+          <button class="button button-secondary" type="button" data-action="clear">
+            清除全部筛选
+          </button>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p><strong>一图万式</strong> · 独立单图提示词模板项目</p>
-      <p>提示词与预览素材的上游来源信息见项目 NOTICE 与模板详情。</p>
     </footer>
 
     <dialog id="template-dialog" class="template-dialog">
       <div class="dialog-shell">
-        <button class="dialog-close" type="button" aria-label="关闭详情" data-action="close-dialog">×</button>
+        <button class="dialog-close" type="button" aria-label="关闭详情" data-action="close-dialog">
+          ×
+        </button>
         <div id="dialog-preview" class="dialog-preview"></div>
         <div class="dialog-content">
           <p id="dialog-eyebrow" class="eyebrow"></p>
           <h2 id="dialog-title"></h2>
           <div id="dialog-tags" class="tag-row"></div>
           <dl class="detail-meta">
-            <div><dt>模板编号</dt><dd id="dialog-id"></dd></div>
-            <div><dt>输出模式</dt><dd id="dialog-mode"></dd></div>
-            <div><dt>原始蓝图</dt><dd id="dialog-blueprint-input-mode"></dd></div>
-            <div><dt>默认文字</dt><dd id="dialog-language"></dd></div>
-            <div><dt>来源</dt><dd id="dialog-source"></dd></div>
+            <div>
+              <dt>模板编号</dt>
+              <dd id="dialog-id"></dd>
+            </div>
+            <div>
+              <dt>输出模式</dt>
+              <dd id="dialog-mode"></dd>
+            </div>
+            <div>
+              <dt>原始蓝图</dt>
+              <dd id="dialog-blueprint-input-mode"></dd>
+            </div>
+            <div>
+              <dt>默认文字</dt>
+              <dd id="dialog-language"></dd>
+            </div>
           </dl>
           <div class="prompt-toolbar">
             <div>
@@ -255,9 +315,23 @@
               <small>上传一张图片后直接粘贴</small>
             </div>
             <div class="prompt-actions">
-              <button id="dialog-favorite" class="button button-secondary button-small" type="button">收藏</button>
-              <button id="download-prompt" class="button button-secondary button-small" type="button">下载 TXT</button>
-              <button id="copy-prompt" class="button button-primary button-small" type="button">复制提示词</button>
+              <button
+                id="dialog-favorite"
+                class="button button-secondary button-small"
+                type="button"
+              >
+                收藏
+              </button>
+              <button
+                id="download-prompt"
+                class="button button-secondary button-small"
+                type="button"
+              >
+                下载 TXT
+              </button>
+              <button id="copy-prompt" class="button button-primary button-small" type="button">
+                复制提示词
+              </button>
             </div>
           </div>
           <pre id="dialog-prompt" tabindex="0">正在载入提示词…</pre>
@@ -277,7 +351,13 @@
                 <small>上传一张图片，请求只发往你配置的生图服务</small>
               </div>
               <div class="prompt-actions">
-                <button id="gen-settings-inline" class="button button-secondary button-small" type="button">生图设置</button>
+                <button
+                  id="gen-settings-inline"
+                  class="button button-secondary button-small"
+                  type="button"
+                >
+                  生图设置
+                </button>
               </div>
             </div>
             <div class="gen-controls">
@@ -285,16 +365,26 @@
                 <input id="gen-file" type="file" accept="image/*" />
                 <span id="gen-file-label">选择参考图…</span>
               </label>
-              <button id="gen-run" class="button button-primary button-small" type="button" disabled>生成图片</button>
+              <button
+                id="gen-run"
+                class="button button-primary button-small"
+                type="button"
+                disabled
+              >
+                生成图片
+              </button>
             </div>
             <p id="gen-status" role="status" aria-live="polite"></p>
             <div id="gen-result" class="gen-result" hidden>
               <img id="gen-result-image" alt="生成结果预览" />
-              <a id="gen-result-download" class="button button-secondary button-small" download>下载结果</a>
+              <a id="gen-result-download" class="button button-secondary button-small" download
+                >下载结果</a
+              >
             </div>
           </div>
-          <p class="source-note">
-            “文生图蓝图 / 图生图蓝图”描述上游蓝图的原始输入方式。公开模板均已编译为单图图生图协议；原始视觉蓝图位于
+          <p class="protocol-note">
+            “文生图蓝图 /
+            图生图蓝图”描述模板蓝图的原始输入方式。公开模板均已编译为单图图生图协议；视觉蓝图位于
             <code>TEMPLATE-SPECIFIC VISUAL BLUEPRINT</code> 区段，上层单图规则拥有更高优先级。
           </p>
         </div>
@@ -303,7 +393,14 @@
 
     <dialog id="gen-settings-dialog" class="settings-dialog">
       <form id="gen-settings-form" method="dialog">
-        <button class="dialog-close" type="button" aria-label="关闭生图设置" data-action="close-settings">×</button>
+        <button
+          class="dialog-close"
+          type="button"
+          aria-label="关闭生图设置"
+          data-action="close-settings"
+        >
+          ×
+        </button>
         <p class="eyebrow">BYOK · BRING YOUR OWN KEY</p>
         <h2>生图服务设置</h2>
         <p class="settings-note">
@@ -312,11 +409,24 @@
         </p>
         <label>
           <span>接口地址（Base URL）</span>
-          <input id="gen-base-url" name="base-url" type="url" required placeholder="http://127.0.0.1:3000" />
+          <input
+            id="gen-base-url"
+            name="base-url"
+            type="url"
+            required
+            placeholder="http://127.0.0.1:3000"
+          />
         </label>
         <label>
           <span>API Key</span>
-          <input id="gen-api-key" name="api-key" type="password" required autocomplete="off" placeholder="sk-…" />
+          <input
+            id="gen-api-key"
+            name="api-key"
+            type="password"
+            required
+            autocomplete="off"
+            placeholder="sk-…"
+          />
         </label>
         <div class="settings-row">
           <label>
@@ -343,7 +453,9 @@
           </label>
         </div>
         <div class="settings-actions">
-          <button id="gen-clear-config" class="button button-secondary button-small" type="button">清除配置</button>
+          <button id="gen-clear-config" class="button button-secondary button-small" type="button">
+            清除配置
+          </button>
           <button class="button button-primary button-small" type="submit">保存配置</button>
         </div>
       </form>
