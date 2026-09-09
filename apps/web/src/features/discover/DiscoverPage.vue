@@ -169,7 +169,7 @@ function previewSrc(id: string): string | undefined {
                 <div class="discover__card-body">
                   <h2 class="discover__card-title">{{ template.title }}</h2>
                   <p class="discover__card-meta-line">
-                    <span>案例编号　</span><span class="discover__card-id">{{ template.id }}</span>
+                    <span>案例编号 </span><span class="discover__card-id">{{ template.id }}</span>
                   </p>
                   <span
                     class="discover__card-badge"

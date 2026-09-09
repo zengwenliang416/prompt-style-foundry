@@ -34,6 +34,11 @@
     "rehearse:recovery": "npm run build:workspaces && npm run rehearse:recovery:built",
     "rehearse:recovery:built": "node scripts/rehearse-recovery.mjs"
   },
+  "overrides": {
+    "@redocly/openapi-core": {
+      "js-yaml": "4.3.2"
+    }
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",

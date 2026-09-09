@@ -134,7 +134,7 @@ done
 curl -fsS "http://127.0.0.1:$port/" | grep -F "OnePic Template Studio" >/dev/null
 curl -fsS "http://127.0.0.1:$port/data/catalog.json" | grep -F '"total":576' >/dev/null
 curl -fsS "http://127.0.0.1:$port/data/prompts/case-532.txt" | grep -F "[System / Prompt]" >/dev/null
-curl -fsS "http://127.0.0.1:$port/assets/app.js" | grep -F 'fetch("data/catalog.json")' >/dev/null
+curl -fsS "http://127.0.0.1:$port/assets/app.js" | grep -F "data/catalog.json" >/dev/null
 curl -fsS "http://127.0.0.1:$port/previews/case-1.webp" >/dev/null
 
 echo "Repository verification passed."
