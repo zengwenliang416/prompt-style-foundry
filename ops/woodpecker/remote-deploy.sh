@@ -214,8 +214,10 @@ if ! nginx -s reload; then
   echo "Nginx reload failed; restoring the previous release and configuration." >&2
   exit 1
 fi
+# The origin certificate can be self-signed behind the public TLS edge; this bypass is loopback-only.
 if ! curl --fail --silent --show-error \
   --noproxy '*' \
+  --insecure \
   --resolve "$domain:443:127.0.0.1" \
   "https://$domain/guide" \
   | grep -Eq 'src="/assets/index-[A-Za-z0-9_-]+\.js"'; then
