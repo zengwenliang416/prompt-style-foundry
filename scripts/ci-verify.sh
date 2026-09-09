@@ -53,10 +53,10 @@ npm audit --audit-level=high
 npm run lint
 npm run lint:contract
 npm run gen:api:check
+npm run build:workspaces
 npm run typecheck
 npm run format:check
 npx prettier --check .github/workflows/ci.yml .woodpecker/deploy.yml
-npm run build:workspaces
 npm run test:unit
 npm run test:integration
 (
