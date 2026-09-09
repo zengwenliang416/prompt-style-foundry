@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-if [[ $# -ne 7 ]]; then
-  echo "Usage: remote-deploy.sh ARTIFACT SHA256 DEPLOY_ROOT DOMAIN RELEASE_ID COMMIT_SHA KEEP_RELEASES" >&2
+if [[ $# -ne 8 ]]; then
+  echo "Usage: remote-deploy.sh ARTIFACT SHA256 DEPLOY_ROOT DOMAIN RELEASE_ID COMMIT_SHA KEEP_RELEASES NGINX_CONFIG" >&2
   exit 2
 fi
 
@@ -13,6 +13,7 @@ domain="$4"
 release_id="$5"
 commit_sha="$6"
 keep_releases="$7"
+nginx_config="$8"
 
 if [[ "$deploy_root" != /var/www/* ]]; then
   echo "DEPLOY_ROOT must be under /var/www." >&2
@@ -36,6 +37,18 @@ if [[ ! "$expected_sha" =~ ^[0-9a-f]{64}$ ]]; then
 fi
 if [[ ! "$keep_releases" =~ ^[1-9][0-9]*$ ]]; then
   echo "KEEP_RELEASES must be a positive integer." >&2
+  exit 1
+fi
+if [[ ! -s "$nginx_config" ]]; then
+  echo "Nginx configuration is missing or empty." >&2
+  exit 1
+fi
+if ! grep -F "server_name $domain;" "$nginx_config" >/dev/null; then
+  echo "Nginx configuration does not match the deployment domain." >&2
+  exit 1
+fi
+if ! grep -F "root $deploy_root/current;" "$nginx_config" >/dev/null; then
+  echo "Nginx configuration does not match the deployment root." >&2
   exit 1
 fi
 
@@ -66,6 +79,44 @@ state_dir="$deploy_root/state"
 release_dir="$releases_dir/$release_id"
 temporary_release="${release_dir}.tmp"
 previous_release="$(readlink -f "$deploy_root/current" 2>/dev/null || true)"
+nginx_target=""
+for candidate in \
+  "/etc/nginx/conf.d/$domain.conf" \
+  "/etc/nginx/sites-available/$domain" \
+  "/etc/nginx/sites-available/$domain.conf" \
+  "/etc/nginx/sites-enabled/$domain" \
+  "/etc/nginx/sites-enabled/$domain.conf"; do
+  if [[ -e "$candidate" ]] && grep -F "server_name $domain;" "$candidate" >/dev/null; then
+    nginx_target="$(readlink -f "$candidate")"
+    break
+  fi
+done
+if [[ -z "$nginx_target" ]]; then
+  nginx_dump="$(nginx -T 2>&1)"
+  nginx_target="$(
+    printf '%s\n' "$nginx_dump" \
+      | awk -v domain="$domain" '
+          /^# configuration file / {
+            current = $0
+            sub(/^# configuration file /, "", current)
+            sub(/:$/, "", current)
+          }
+          !found && index($0, "server_name " domain ";") {
+            print current
+            found = 1
+          }
+        '
+  )"
+fi
+if [[ -n "$nginx_target" ]]; then
+  nginx_target="$(readlink -f "$nginx_target")"
+fi
+if [[ -z "$nginx_target" || ! -f "$nginx_target" ]]; then
+  echo "Unable to locate the active Nginx configuration for $domain." >&2
+  exit 1
+fi
+nginx_backup="${nginx_target}.onepic-backup-${release_id}"
+config_installed=false
 
 install -d -m 0755 "$deploy_root" "$releases_dir"
 install -d -m 0750 "$state_dir"
@@ -74,6 +125,11 @@ install -d -m 0755 "$temporary_release"
 
 cleanup() {
   rm -rf "$temporary_release"
+  if [[ "$config_installed" == true && -f "$nginx_backup" ]]; then
+    cp -p "$nginx_backup" "$nginx_target"
+    nginx -t >/dev/null 2>&1 && nginx -s reload >/dev/null 2>&1 || true
+  fi
+  rm -f "$nginx_backup"
 }
 trap cleanup EXIT
 
@@ -85,10 +141,6 @@ required_files=(
   data/stats.json
   data/prompts/case-532.txt
   data/prompts/framework-001.txt
-  assets/app.js
-  assets/fx.js
-  assets/styles.css
-  assets/vendor/anime.esm.min.js
 )
 for required_file in "${required_files[@]}"; do
   if [[ ! -s "$temporary_release/$required_file" ]]; then
@@ -96,6 +148,18 @@ for required_file in "${required_files[@]}"; do
     exit 1
   fi
 done
+if ! find "$temporary_release/assets" -maxdepth 1 -type f -name '*.js' -size +0c -print -quit | grep -q .; then
+  echo "Release is missing a Vue JavaScript bundle." >&2
+  exit 1
+fi
+if ! find "$temporary_release/assets" -maxdepth 1 -type f -name '*.css' -size +0c -print -quit | grep -q .; then
+  echo "Release is missing a Vue CSS bundle." >&2
+  exit 1
+fi
+if ! grep -Eq 'src="/assets/index-[A-Za-z0-9_-]+\.js"' "$temporary_release/index.html"; then
+  echo "Release index.html does not reference the expected Vue bundle." >&2
+  exit 1
+fi
 
 prompt_count="$(find "$temporary_release/data/prompts" -maxdepth 1 -type f -name '*.txt' | wc -l)"
 preview_count="$(find "$temporary_release/previews" -maxdepth 1 -type f -name '*.webp' | wc -l)"
@@ -115,6 +179,10 @@ if [[ "$preview_count" -ne "$expected_preview_count" ]]; then
     "$expected_preview_count" "$preview_count" >&2
   exit 1
 fi
+if find "$temporary_release" -type f \( -name '*.map' -o -name '.env*' -o -name '*.pem' -o -name '*.key' \) -print -quit | grep -q .; then
+  echo "Release contains source maps or credential-like files." >&2
+  exit 1
+fi
 if find "$temporary_release" -type f \( -name '._*' -o -name '.DS_Store' \) -print -quit | grep -q .; then
   echo "Release contains macOS metadata." >&2
   exit 1
@@ -124,34 +192,43 @@ find "$temporary_release" -type d -exec chmod 0755 {} +
 find "$temporary_release" -type f -exec chmod 0644 {} +
 chown -R root:www-data "$temporary_release"
 
-nginx -t
+cp -p "$nginx_target" "$nginx_backup"
+install -m 0644 "$nginx_config" "$nginx_target"
+config_installed=true
+if ! nginx -t; then
+  echo "Nginx configuration validation failed; restoring the previous configuration." >&2
+  exit 1
+fi
+
 rm -rf "$release_dir"
 mv "$temporary_release" "$release_dir"
-trap - EXIT
 
 ln -sfn "$release_dir" "$deploy_root/current.next"
 mv -Tf "$deploy_root/current.next" "$deploy_root/current"
 chown -h root:www-data "$deploy_root/current"
-
-status_code="$(
-  curl --silent --show-error \
-    --output /dev/null \
-    --write-out '%{http_code}' \
-    --header "Host: $domain" \
-    http://127.0.0.1/
-)"
-case "$status_code" in
-  200|301|302|307|308)
-    ;;
-  *)
-    if [[ -n "$previous_release" && -d "$previous_release" ]]; then
-      ln -sfn "$previous_release" "$deploy_root/current.next"
-      mv -Tf "$deploy_root/current.next" "$deploy_root/current"
-    fi
-    printf 'Local Nginx health check failed with HTTP %s.\n' "$status_code" >&2
-    exit 1
-    ;;
-esac
+if ! nginx -s reload; then
+  if [[ -n "$previous_release" && -d "$previous_release" ]]; then
+    ln -sfn "$previous_release" "$deploy_root/current.next"
+    mv -Tf "$deploy_root/current.next" "$deploy_root/current"
+  fi
+  echo "Nginx reload failed; restoring the previous release and configuration." >&2
+  exit 1
+fi
+if ! curl --fail --silent --show-error \
+  --noproxy '*' \
+  --resolve "$domain:443:127.0.0.1" \
+  "https://$domain/guide" \
+  | grep -Eq 'src="/assets/index-[A-Za-z0-9_-]+\.js"'; then
+  if [[ -n "$previous_release" && -d "$previous_release" ]]; then
+    ln -sfn "$previous_release" "$deploy_root/current.next"
+    mv -Tf "$deploy_root/current.next" "$deploy_root/current"
+  fi
+  echo "Local Nginx Vue route health check failed." >&2
+  exit 1
+fi
+config_installed=false
+rm -f "$nginx_backup"
+trap - EXIT
 
 deployed_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 cat >"$state_dir/current-release.json" <<EOF

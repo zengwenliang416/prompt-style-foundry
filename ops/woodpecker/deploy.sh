@@ -4,7 +4,7 @@ set -Eeuo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
-artifact="${1:-.tmp/onepic-template-studio.tar.gz}"
+artifact="${1:-.tmp/onepic-web-site.tar.gz}"
 if [[ "$artifact" != /* ]]; then
   artifact="$ROOT/$artifact"
 fi
@@ -34,7 +34,7 @@ for variable_name in "${required_variables[@]}"; do
 done
 
 if [[ ! -s "$artifact" ]]; then
-  bash scripts/package-site.sh "$artifact"
+  bash scripts/package-web-site.sh "$artifact"
 fi
 
 commit_sha="${CI_COMMIT_SHA:-$(git rev-parse HEAD)}"
@@ -92,6 +92,7 @@ fi
 ssh "${ssh_options[@]}" "$ssh_target" "install -d -m 0700 '$remote_stage'"
 scp "${scp_options[@]}" \
   "$artifact" \
+  ops/nginx/onepic.motion-cover.com.conf \
   ops/woodpecker/remote-deploy.sh \
   "$ssh_target:$remote_stage/"
 
@@ -103,7 +104,8 @@ ssh "${ssh_options[@]}" "$ssh_target" \
     '$DEPLOY_DOMAIN' \
     '$release_id' \
     '$commit_sha' \
-    '5'"
+    '5' \
+    '$remote_stage/onepic.motion-cover.com.conf'"
 
 curl --fail --silent --show-error --location \
   --retry 6 \
@@ -111,6 +113,13 @@ curl --fail --silent --show-error --location \
   --retry-delay 3 \
   "https://$DEPLOY_DOMAIN/" \
   | grep -F "OnePic Template Studio" >/dev/null
+
+curl --fail --silent --show-error --location \
+  --retry 6 \
+  --retry-all-errors \
+  --retry-delay 3 \
+  "https://$DEPLOY_DOMAIN/guide" \
+  | grep -Eq 'src="/assets/index-[A-Za-z0-9_-]+\.js"'
 
 curl --fail --silent --show-error \
   --retry 6 \

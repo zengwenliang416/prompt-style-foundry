@@ -55,6 +55,14 @@ tar -tzf .tmp/release/onepic-static-site.tar.gz | less
 
 归档 manifest 同样记录 Git revision、实测 dirty 状态和 Git-visible worktree SHA256。它证明该本地制品对应哪一份实际源树；`revision` 单独不足以标识 dirty 构建。
 
+## 构建 Vue 生产站点归档
+
+```bash
+bash scripts/package-web-site.sh .tmp/release/onepic-web-site.tar.gz
+```
+
+该归档以 `apps/web/dist/` 的五页 Vue 应用作为入口，只合并 `public/data/` 与 `public/previews/` 目录资产，并保留法定许可文件。`public/index.html` 旧静态界面不会进入生产 Vue 归档；`scripts/package-site.sh` 继续只负责可独立运行的 legacy catalog-only 制品。
+
 ## 构建并校验独立镜像
 
 ```bash
@@ -87,12 +95,13 @@ docker load -i .tmp/release/onepic-api-image.tar.gz
 
 - `scripts/ci-verify.sh` 任一命令非零，workflow `verify` 失败，后续 image jobs 不运行。
 - `package-site.sh` 先扫描 public 源，再由 Python allowlist 二次校验；失败时不移动临时归档到目标路径。
+- `package-web-site.sh` 只接受 Vite JS/CSS、公共 catalog/prompt/preview 与许可文件；source map、源码、文档、临时文件或凭据特征会阻断生产 Web 归档。
 - `package-container-image.sh` 任一镜像内容检查失败时，不执行 `docker save`，不会生成可发布归档或成功 manifest。
 - checksum 必须在归档所在目录校验，因为 checksum 文件有意只记录 basename，避免 runner 绝对路径污染制品。
 
 ## 部署门禁
 
-`.woodpecker/deploy.yml` 在 `main` push 时只执行 `verify-and-package`，`deploy-production` 步骤通过 `event: manual` 单独门禁；人工触发时会先重复完整验证和静态归档检查，再进入部署。触发人工 workflow 或实际运行 `ops/woodpecker/deploy.sh` 都属于生产部署，必须先取得该次部署的明确授权。普通 push CI 不部署、不执行生产 migration。
+`.woodpecker/deploy.yml` 在 `main` push 时只执行完整验证并构建 Vue Web 归档，`deploy-production` 步骤通过 `event: manual` 单独门禁；人工触发时会重复验证、构建 `apps/web/dist + public/data + public/previews` 归档、校验并原子切换 Nginx release。触发人工 workflow 或实际运行 `ops/woodpecker/deploy.sh` 都属于生产部署，必须先取得该次部署的明确授权。普通 push CI 不部署、不执行生产 migration。
 
 ## 证据
 
