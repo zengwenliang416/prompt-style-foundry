@@ -10,8 +10,8 @@ import type { RunMode } from '@onepic/contracts';
  *   never part of the persisted settings record, never exported, and never
  *   sent anywhere — switching modes performs no network calls and leaves the
  *   key untouched;
- * - managed-generation is surfaced honestly as unavailable until the
- *   server-side identity/allowlist exists (ADR 0001 D-4);
+ * - managed-generation submits through the first-party API (W01); the BYOK
+ *   key never leaves its slot and never enters a managed request;
  * - quality/size choices derive from the capability registry in
  *   @onepic/contracts, never from hardcoded guesses.
  */
@@ -81,6 +81,17 @@ function writeJson(key: string, value: unknown): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Reads the BYOK key from its dedicated slot for the explicit direct-BYOK
+ * generation request (W05) — the ONLY reader outside settings tests. The
+ * value is never copied into Pinia state, never exported, and never sent to
+ * any endpoint other than the user-configured byokEndpoint.
+ */
+export function readByokApiKey(): string | null {
+  const value = readJson(BYOK_KEY_STORAGE);
+  return typeof value === 'string' && value !== '' ? value : null;
 }
 
 export const useSettingsStore = defineStore('settings', {

@@ -3,21 +3,26 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 /**
- * U05 acceptance against real data: detail + source display, hash
+ * U05 acceptance against real data: detail without public attribution, hash
  * consistency between displayed body and catalog, sample prompt tab
  * (installed sidecars), copy/download paths.
  */
 
-test('shows template detail, source attribution, and a passing hash badge', async ({ page }) => {
+test('shows template detail without public source attribution and with a passing hash badge', async ({
+  page,
+}) => {
   await page.goto('/studio/case-1');
 
   await expect(page.locator('.studio__title')).toHaveText(/.+/);
   await expect(page.locator('.studio__id')).toHaveText('case-1');
-  await expect(page.locator('.studio__source')).toContainText('作者署名');
-  await expect(page.locator('.studio__source')).toContainText('MIT');
+  await expect(page.locator('.studio__source')).toHaveCount(0);
+  await expect(page.getByText('作者署名')).toHaveCount(0);
+  await expect(page.getByText('MIT', { exact: true })).toHaveCount(0);
 
   await expect(page.locator('.studio__prompt-body')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('.studio__hash')).toHaveText('SHA-256 与目录一致 ✓', { timeout: 15_000 });
+  await expect(page.locator('.studio__hash')).toHaveText('SHA-256 与目录一致 ✓', {
+    timeout: 15_000,
+  });
 });
 
 test('compiled prompt body matches the shipped TXT file', async ({ page }) => {
@@ -34,7 +39,9 @@ test('sample prompt tab: honest empty state for case-1, real sidecar for framewo
 }) => {
   await page.goto('/studio/case-1');
   await page.getByRole('tab', { name: '示例实际提示词' }).click();
-  await expect(page.locator('.studio__prompt-state')).toContainText('该模板没有已审阅的示例生成提示词');
+  await expect(page.locator('.studio__prompt-state')).toContainText(
+    '该模板没有已审阅的示例生成提示词',
+  );
 
   await page.goto('/studio/framework-001');
   await page.getByRole('tab', { name: '示例实际提示词' }).click();
@@ -74,9 +81,7 @@ test('single-image input: preview, remove, and multi-file rejection', async ({ p
     '89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000a49444154789c6360000002000148afa4710000000049454e44ae426082',
     'hex',
   );
-  await input.setInputFiles([
-    { name: 'input.png', mimeType: 'image/png', buffer: png },
-  ]);
+  await input.setInputFiles([{ name: 'input.png', mimeType: 'image/png', buffer: png }]);
   await expect(page.locator('.studio__input-img')).toBeVisible();
   await expect(page.locator('.studio__input-name')).toHaveText('input.png');
 
@@ -87,9 +92,7 @@ test('single-image input: preview, remove, and multi-file rejection', async ({ p
   // multi-file path is the drag-drop one, simulated via DataTransfer.
   const pngBase64 = png.toString('base64');
   await page.evaluate((b64) => {
-    const target = document.querySelector<HTMLInputElement>(
-      '.studio__dropzone input[type="file"]',
-    );
+    const target = document.querySelector<HTMLInputElement>('.studio__dropzone input[type="file"]');
     if (target === null) {
       throw new Error('input not found');
     }
@@ -174,7 +177,7 @@ test('settings: mode switch persists, key stays local, no migration notice', asy
   const dialog = page.locator('dialog');
   await expect(dialog).toBeVisible();
   await expect(dialog.locator('input[name="run-mode"]')).toHaveCount(3);
-  await expect(dialog).toContainText('暂未开放');
+  await expect(dialog).toContainText('不使用本机 BYOK 密钥');
 
   await dialog.locator('input[value="direct-byok"]').check();
   await expect(dialog).toContainText('切换模式不会上传本机密钥或图片');
@@ -185,22 +188,16 @@ test('settings: mode switch persists, key stays local, no migration notice', asy
   await expect(dialog).toContainText('设置已保存到本机浏览器。');
 
   // The settings record never contains the key; the dedicated slot does.
-  const settingsRecord = await page.evaluate(() =>
-    localStorage.getItem('onepic.settings.v1'),
-  );
+  const settingsRecord = await page.evaluate(() => localStorage.getItem('onepic.settings.v1'));
   expect(settingsRecord).not.toContain('sk-e2e-test-key');
-  const keyRecord = await page.evaluate(() =>
-    localStorage.getItem('onepic.byok.key.v1'),
-  );
+  const keyRecord = await page.evaluate(() => localStorage.getItem('onepic.byok.key.v1'));
   expect(keyRecord).toContain('sk-e2e-test-key');
 
   // Reload: settings restored, mode switch still performs no migration.
   await page.reload();
   await page.getByRole('button', { name: '配置接口与隐私' }).click();
   await expect(dialog.locator('input[value="direct-byok"]')).toBeChecked();
-  const keyAfterReload = await page.evaluate(() =>
-    localStorage.getItem('onepic.byok.key.v1'),
-  );
+  const keyAfterReload = await page.evaluate(() => localStorage.getItem('onepic.byok.key.v1'));
   expect(keyAfterReload).toContain('sk-e2e-test-key');
   await expect(dialog).toContainText('它不会随模式切换上传、迁移或同步');
 

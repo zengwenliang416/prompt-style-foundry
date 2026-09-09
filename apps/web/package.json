@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@onepic/client": "0.0.0",
+    "@onepic/contracts": "0.0.0",
     "pinia": "^3.0.4",
     "vue": "^3.5.42",
     "vue-router": "^5.3.1"

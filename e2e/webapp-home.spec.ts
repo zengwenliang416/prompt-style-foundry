@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 /**
  * U06 acceptance on real data: the overview shows the catalog's true
- * statistics, an honest local-mode service line (no fabricated online or
+ * statistics, an honest selected-mode service line (no fabricated online or
  * task counters), and an empty recent state on first visit.
  */
 
@@ -15,7 +15,7 @@ test('overview shows real catalog statistics and honest service line', async ({ 
   await expect(values.nth(2)).toHaveText('83');
   await expect(values.nth(3)).toHaveText('0');
 
-  await expect(page.locator('.home__service-line')).toContainText('本地模式：未连接生成服务');
+  await expect(page.locator('.home__service-line')).toContainText('目录浏览：生成已停用');
   const body = await page.locator('#main-content').textContent();
   expect(body).not.toContain('在线');
   expect(body).not.toContain('任务数');

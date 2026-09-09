@@ -26,12 +26,26 @@ withDefaults(
 <style scoped>
 .btn {
   display: inline-flex;
+  min-height: 40px;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  border-radius: var(--radius-control);
+  padding: 7px 15px;
   border: 1px solid transparent;
-  padding: var(--space-2) var(--space-4);
+  border-radius: 7px;
   cursor: pointer;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.btn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgb(42 37 26 / 10%);
 }
 
 .btn:disabled {
@@ -40,8 +54,9 @@ withDefaults(
 }
 
 .btn--primary {
-  background: var(--color-accent-teal);
   color: var(--color-on-teal);
+  border-color: #0b555a;
+  background: linear-gradient(135deg, var(--color-teal-deep), #08646a);
 }
 
 .btn--secondary {

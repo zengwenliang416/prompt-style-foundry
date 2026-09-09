@@ -35,6 +35,11 @@ export function emptyRecord(): LocalRecord {
   return { schemaVersion: 1, favorites: [], recent: [], collections: [] };
 }
 
+/** Same validation readLocal/mergeImport apply, exported for the W04 server-import path. */
+export function validateLocalRecord(value: unknown): LocalRecord | null {
+  return sanitizeRecord(value);
+}
+
 function sanitizeCollection(value: unknown): LocalCollection | null {
   const raw = value as Partial<LocalCollection> | null;
   if (

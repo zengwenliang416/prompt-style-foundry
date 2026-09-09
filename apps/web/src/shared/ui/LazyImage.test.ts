@@ -26,6 +26,26 @@ describe('LazyImage (U03 lazy previews)', () => {
     expect(wrapper.emitted('load')).toHaveLength(1);
   });
 
+  it('can adapt the frame to the loaded image ratio without cropping', async () => {
+    const wrapper = mount(LazyImage, {
+      props: {
+        src: '/previews/portrait.webp',
+        alt: '竖版预览',
+        aspectRatio: '1 / 1',
+        fit: 'contain',
+        adaptAspect: true,
+      },
+    });
+    const element = wrapper.find('img').element;
+    Object.defineProperty(element, 'naturalWidth', { value: 360 });
+    Object.defineProperty(element, 'naturalHeight', { value: 640 });
+
+    await wrapper.find('img').trigger('load');
+
+    expect(wrapper.find('.lazy-image').attributes('style')).toContain('aspect-ratio: 360 / 640');
+    expect(wrapper.find('.lazy-image').classes()).toContain('lazy-image--contain');
+  });
+
   it('shows a status fallback when the preview fails and emits error', async () => {
     const wrapper = mount(LazyImage, { props: { src: '/previews/missing.webp', alt: 'x' } });
 

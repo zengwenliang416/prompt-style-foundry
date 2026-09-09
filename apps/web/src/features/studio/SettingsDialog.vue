@@ -4,7 +4,7 @@ import { computed, ref, useTemplateRef, watch } from 'vue';
 import { DIRECT_BYOK_CAPABILITIES, modelCapabilities, type RunMode } from '@onepic/contracts';
 
 import { useSettingsStore } from '../../entities/settings/store.js';
-import { Button, Input } from '../../shared/ui/index.js';
+import { Button, Input, pushToast } from '../../shared/ui/index.js';
 
 /**
  * Run-mode / model / privacy settings dialog (U08). All parameter options
@@ -58,8 +58,7 @@ const modes: Array<{ id: RunMode; label: string; hint: string; disabled?: boolea
   {
     id: 'managed-generation',
     label: '受管生成',
-    hint: '暂未开放：需要服务端身份与授权配置（未配置时拒绝开启）。',
-    disabled: true,
+    hint: '图片与提示词经服务器转发到受管 provider；需要登录。不使用本机 BYOK 密钥。',
   },
 ];
 
@@ -73,6 +72,26 @@ const capabilitiesUnknown = computed(() => selectedModel.value === undefined);
 
 const apiKeyDraft = ref('');
 const savedNotice = ref('');
+
+/**
+ * W05 去向提示:切换运行模式时明确告知数据去向。切换本身仍是纯本地
+ * 操作——无网络请求、无密钥迁移(见 settings store 注释)。
+ */
+const MODE_SWITCH_NOTICES: Record<RunMode, string> = {
+  'catalog-only': '已切换到目录浏览:生成已停用,目录与复制不依赖任何服务。',
+  'direct-byok':
+    '已切换到 BYOK 直连:生成请求只发往你配置的接口,不再经过服务器;服务端任务历史不可见。',
+  'managed-generation':
+    '已切换到受管生成:需要登录会话,任务与历史在服务端可见;本机 BYOK 密钥不会被使用或上传。',
+};
+
+function onModeChange(mode: RunMode): void {
+  if (mode === settings.runMode) {
+    return;
+  }
+  settings.setRunMode(mode);
+  pushToast(MODE_SWITCH_NOTICES[mode], 'info');
+}
 
 function saveSettings(): void {
   settings.setByokConfig(
@@ -108,7 +127,7 @@ function saveSettings(): void {
           :value="mode.id"
           :checked="settings.runMode === mode.id"
           :disabled="mode.disabled"
-          @change="settings.setRunMode(mode.id)"
+          @change="onModeChange(mode.id)"
         />
         <span>
           <strong>{{ mode.label }}</strong>
@@ -169,9 +188,11 @@ function saveSettings(): void {
     <section class="settings__privacy" aria-label="隐私说明">
       <h3 class="settings__panel-title">隐私</h3>
       <ul class="settings__privacy-list">
-        <li>图片仅在点击生成后发送至你配置的接口；本页无遥测、无统计上报。</li>
+        <li>图片与提示词只在明确点击生成后按所选模式发送；本页无遥测、无统计上报。</li>
         <li>BYOK 密钥只保存在本机浏览器，不进入任何导出文件。</li>
-        <li>受管生成开放后，密钥由服务端注入 Worker，浏览器密钥不会被迁移。</li>
+        <li>
+          受管生成经服务端转发到受管 provider，密钥由服务端注入 Worker，浏览器密钥不会被迁移。
+        </li>
       </ul>
     </section>
 

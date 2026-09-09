@@ -3,6 +3,9 @@ import { computed, ref, watch } from 'vue';
 import { RouterLink } from 'vue-router';
 
 import { useCatalogStore } from '../../entities/catalog/store.js';
+import { useSettingsStore } from '../../entities/settings/store.js';
+import { createOnePicClient } from '@onepic/client';
+import { importRecordToServer, type ServerImportReport } from './import-to-server.js';
 import {
   deleteCollection,
   createCollection,
@@ -26,6 +29,51 @@ import { pushToast, Button, Card, LazyImage, Input } from '../../shared/ui/index
 
 const store = useCatalogStore();
 void store.load();
+
+const settings = useSettingsStore();
+const serverImportBusy = ref(false);
+const serverImportReport = ref<ServerImportReport | null>(null);
+
+/**
+ * W04: explicit local→server import. Managed mode only, user-triggered,
+ * whitelist bodies (template ids / collection names) — never the BYOK key
+ * or any settings field.
+ */
+async function importToServer(): Promise<void> {
+  if (settings.runMode !== 'managed-generation') {
+    pushToast('仅托管模式支持导入到服务器；请在设置中切换运行模式', 'error');
+    return;
+  }
+  if (serverImportBusy.value) {
+    return;
+  }
+  serverImportBusy.value = true;
+  serverImportReport.value = null;
+  try {
+    const client = createOnePicClient({
+      baseUrl: typeof window === 'undefined' ? 'http://localhost' : window.location.origin,
+    });
+    const result = await importRecordToServer(client, local.value.record);
+    if (!result.ok) {
+      if (result.error === 'unauthenticated') {
+        pushToast('导入到服务器需要有效登录会话，请先登录', 'error');
+      } else if (result.error === 'invalid-record') {
+        pushToast('导入失败：本地记录格式或 schema 版本不符', 'error');
+      } else {
+        pushToast('导入到服务器暂时不可用，请稍后重试', 'error');
+      }
+      return;
+    }
+    serverImportReport.value = result.report;
+    const r = result.report;
+    pushToast(
+      `已导入服务器：集合 新 ${r.collectionsNew}/复用 ${r.collectionsExisting}，条目 新 ${r.itemsNew}/跳过 ${r.itemsSkipped}/失败 ${r.itemsFailed}`,
+      r.itemsFailed > 0 || r.failures.length > 0 ? 'error' : 'success',
+    );
+  } finally {
+    serverImportBusy.value = false;
+  }
+}
 
 const local = ref<{ record: LocalRecord; status: LocalStoreStatus }>({
   record: { schemaVersion: 1, favorites: [], recent: [], collections: [] },
@@ -156,6 +204,19 @@ function pickImport(): void {
       <div class="workspace__toolbar">
         <Button variant="secondary" @click="exportRecord">导出本地记录</Button>
         <Button variant="secondary" @click="pickImport">导入记录</Button>
+        <Button
+          variant="secondary"
+          class="workspace__server-import"
+          :disabled="serverImportBusy || settings.runMode !== 'managed-generation'"
+          :title="
+            settings.runMode === 'managed-generation'
+              ? '把本地收藏与集合显式导入服务器（不含密钥）'
+              : '仅托管模式支持导入到服务器'
+          "
+          @click="importToServer"
+        >
+          {{ serverImportBusy ? '正在导入…' : '导入到服务器' }}
+        </Button>
         <input
           ref="importInput"
           type="file"
@@ -177,6 +238,25 @@ function pickImport(): void {
     <p class="workspace__privacy" role="status">
       清理浏览器数据可能移除这里的记录；导出文件是唯一的本机备份方式。
     </p>
+
+    <div
+      v-if="serverImportReport !== null"
+      role="status"
+      class="workspace__server-report"
+      aria-label="导入到服务器结果"
+    >
+      <p>
+        服务器导入明细：集合新增 {{ serverImportReport.collectionsNew }}、复用
+        {{ serverImportReport.collectionsExisting }}；条目新增
+        {{ serverImportReport.itemsNew }}、跳过 {{ serverImportReport.itemsSkipped }}、失败
+        {{ serverImportReport.itemsFailed }}。
+      </p>
+      <ul v-if="serverImportReport.failures.length > 0">
+        <li v-for="failure in serverImportReport.failures" :key="failure.label">
+          {{ failure.label }}：{{ failure.reason }}
+        </li>
+      </ul>
+    </div>
 
     <section aria-label="本地收藏">
       <h2 class="workspace__title">本地收藏（{{ favoriteTemplates.length }}）</h2>
@@ -239,147 +319,237 @@ function pickImport(): void {
 
 <style scoped>
 .workspace {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
 }
-
+.workspace::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: 28px;
+  top: 116px;
+  width: 156px;
+  height: 100px;
+  opacity: 0.18;
+  border: 2px solid #87968f;
+  border-radius: 5px;
+  transform: rotate(-6deg);
+}
 .workspace__header {
+  grid-column: 1 / -1;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: 20px;
   flex-wrap: wrap;
+  padding: 4px 4px 20px;
+  border-bottom: 1px solid var(--color-line);
 }
-
 .workspace__header h1 {
   margin: 0;
+  color: #11171b;
+  font-size: clamp(2.35rem, 4vw, 4rem);
+  letter-spacing: 0.05em;
 }
-
+.workspace__header h1::after {
+  content: '';
+  display: block;
+  width: 88px;
+  height: 2px;
+  margin-top: 7px;
+  background: var(--color-accent-amber);
+}
 .workspace__sub {
-  margin: var(--space-1) 0 0;
+  margin: 8px 0 0;
   color: var(--color-ink-secondary);
+  font-family: var(--font-heading);
 }
-
 .workspace__toolbar {
   display: flex;
-  gap: var(--space-2);
   align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 10px;
 }
-
 .workspace__import-input {
   position: absolute;
   width: 1px;
   height: 1px;
   opacity: 0;
 }
-
+.workspace__warning,
+.workspace__privacy,
+.workspace__server-report {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 7px;
+  font-size: 0.82rem;
+}
 .workspace__warning {
-  margin: 0;
   border: 1px solid var(--color-accent-amber);
-  border-radius: var(--radius-control);
   background: color-mix(in srgb, var(--color-accent-amber) 10%, var(--color-surface));
-  padding: var(--space-3) var(--space-4);
-  font-size: 0.875rem;
 }
-
 .workspace__privacy {
-  margin: 0;
   color: var(--color-ink-secondary);
-  font-size: 0.8125rem;
+  border-left: 3px solid var(--color-accent-teal);
+  background: color-mix(in srgb, var(--color-surface) 62%, transparent);
 }
-
+.workspace__server-report {
+  border: 1px solid var(--color-accent-amber);
+}
+.workspace__server-report p {
+  margin: 0;
+}
+.workspace__server-report ul {
+  margin: 8px 0 0;
+  padding-left: 24px;
+}
+.workspace > section {
+  min-width: 0;
+  min-height: 180px;
+  padding: 18px;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-surface) 66%, transparent);
+  box-shadow: 0 5px 14px rgb(69 52 28 / 7%);
+}
+.workspace > section:first-of-type,
+.workspace > section:last-of-type {
+  grid-column: 1 / -1;
+}
 .workspace__title {
-  margin: 0 0 var(--space-3);
-  font-size: 1.125rem;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 1.08rem;
+  letter-spacing: 0.05em;
 }
-
+.workspace__title::before {
+  content: '✦';
+  margin-right: 7px;
+  color: var(--color-accent-amber);
+}
 .workspace__empty {
+  display: grid;
+  min-height: 90px;
+  place-items: center;
   margin: 0;
   color: var(--color-ink-secondary);
+  border: 1px dashed color-mix(in srgb, var(--color-line) 75%, transparent);
+  border-radius: 7px;
+  font-size: 0.84rem;
+  text-align: center;
 }
-
 .workspace__grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-3);
+  gap: 12px;
 }
-
-@media (max-width: 1024px) {
+.workspace__grid :deep(.card) {
+  overflow: hidden;
+  padding: 0 0 10px;
+  border-radius: 7px;
+}
+.workspace__link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.workspace__link :deep(.lazy-image) {
+  border-radius: 0;
+}
+.workspace__item-title {
+  display: block;
+  padding: 8px 10px 0;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+}
+.workspace__item-id {
+  display: block;
+  padding: 2px 10px 0;
+  color: var(--color-ink-secondary);
+  font-size: 0.68rem;
+}
+.workspace__remove {
+  margin: 8px 10px 0;
+}
+.workspace__recent,
+.workspace__collection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.workspace__recent li,
+.workspace__collection-list li {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--color-line) 74%, transparent);
+  border-radius: 6px;
+  background: var(--color-surface);
+}
+.workspace__recent-time {
+  margin-left: auto;
+  color: var(--color-ink-secondary);
+  font-size: 0.7rem;
+}
+.workspace__collection-form {
+  display: flex;
+  max-width: 32rem;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.workspace__collection-count {
+  margin-left: auto;
+  color: var(--color-ink-secondary);
+  font-size: 0.78rem;
+}
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+  .workspace > section,
+  .workspace > section:first-of-type,
+  .workspace > section:last-of-type {
+    grid-column: 1;
+  }
   .workspace__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-
-@media (max-width: 640px) {
+@media (max-width: 560px) {
+  .workspace__header h1 {
+    font-size: 2rem;
+  }
+  .workspace__toolbar {
+    width: 100%;
+  }
+  .workspace__toolbar :deep(button) {
+    flex: 1;
+  }
   .workspace__grid {
     grid-template-columns: 1fr;
   }
-}
-
-.workspace__link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-.workspace__item-title {
-  display: block;
-  margin-block-start: var(--space-2);
-  font-size: 0.9375rem;
-}
-
-.workspace__item-id {
-  display: block;
-  color: var(--color-ink-secondary);
-  font-size: 0.75rem;
-}
-
-.workspace__remove {
-  margin-block-start: var(--space-2);
-}
-
-.workspace__recent {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.workspace__recent-time {
-  margin-inline-start: var(--space-3);
-  color: var(--color-ink-secondary);
-  font-size: 0.75rem;
-}
-
-.workspace__collection-form {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--space-3);
-  margin-block-end: var(--space-3);
-  max-width: 24rem;
-}
-
-.workspace__collection-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.workspace__collection-list li {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.workspace__collection-count {
-  color: var(--color-ink-secondary);
-  font-size: 0.8125rem;
-  margin-inline-end: auto;
+  .workspace__collection-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .workspace__recent li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .workspace__recent-time {
+    margin-left: 0;
+  }
 }
 </style>

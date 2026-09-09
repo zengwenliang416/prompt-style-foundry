@@ -4,10 +4,7 @@
  * by the web app yet.
  */
 
-/**
- * Case templates carry author + gallery attribution; framework blueprints
- * point at the upstream framework document instead (author may be empty).
- */
+/** Legacy catalog compatibility; newly generated public catalogs omit attribution. */
 export interface CatalogSource {
   project: string;
   repository: string;
@@ -35,7 +32,7 @@ export interface CatalogTemplate {
   generatedPreview: string | null;
   generatedPromptPath: string | null;
   promptPath: string;
-  source: CatalogSource | null;
+  source?: CatalogSource | null;
   promptSha256: string;
 }
 
@@ -57,7 +54,8 @@ export interface CatalogDocument {
   schemaVersion: string;
   generatedAt: string;
   project: { name: string; nameZh: string; description: string };
-  source: { project: string; repository: string; archiveSha256: string; license: string };
+  release?: { archiveSha256: string };
+  source?: { project: string; repository: string; archiveSha256: string; license: string };
   stats: CatalogStats;
   filters: CatalogFilters;
   templates: CatalogTemplate[];

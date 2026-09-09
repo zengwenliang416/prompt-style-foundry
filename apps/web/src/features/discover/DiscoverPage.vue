@@ -82,26 +82,12 @@ function previewSrc(id: string): string | undefined {
   <section class="discover">
     <header class="discover__header">
       <h1>为你的图片，找到下一种表达</h1>
-      <div class="discover__tools">
-        <input
-          v-model="query.q"
-          class="discover__search"
-          type="search"
-          :aria-label="'搜索模板（标题、风格、场景或编号）'"
-          placeholder="搜索标题、风格、场景或编号"
-        />
-        <label class="discover__sort">
-          排序
-          <select v-model="query.sort" aria-label="排序方式">
-            <option value="catalog">默认（目录序）</option>
-            <option value="title">标题</option>
-            <option value="id">编号</option>
-          </select>
-        </label>
-      </div>
-      <fieldset class="discover__group">
+      <p class="discover__promise">✧ 公开模板均支持单图使用</p>
+      <fieldset class="discover__modes discover__group">
         <legend>原始蓝图类型</legend>
-        <Chip :selected="query.mode === ''" @toggle="query.mode = ''">全部</Chip>
+        <Chip :selected="query.mode === ''" @toggle="query.mode = ''"
+          >全部 {{ store.templates.length }}</Chip
+        >
         <Chip
           v-for="mode in store.catalog?.filters?.blueprintInputModes ?? []"
           :key="mode"
@@ -111,8 +97,11 @@ function previewSrc(id: string): string | undefined {
           {{ mode === 'text-to-image' ? '文生图蓝图' : '图生图蓝图' }}
         </Chip>
       </fieldset>
-      <fieldset class="discover__group">
-        <legend>分类</legend>
+    </header>
+
+    <div class="discover__body">
+      <aside class="discover__categories" aria-label="模板分类">
+        <h2>模板分类</h2>
         <Chip :selected="query.category === ''" @toggle="query.category = ''">全部分类</Chip>
         <Chip
           v-for="category in store.catalog?.filters?.categories ?? []"
@@ -122,209 +111,375 @@ function previewSrc(id: string): string | undefined {
         >
           {{ category }}
         </Chip>
-      </fieldset>
-    </header>
+        <div class="discover__compass" aria-hidden="true"></div>
+      </aside>
 
-    <div v-if="store.status === 'loading'" role="status">目录加载中……</div>
-    <div v-else-if="store.status === 'error'" role="alert" class="discover__state">
-      <p>{{ store.error }}</p>
-      <Button variant="secondary" @click="() => void store.load()">重试</Button>
-    </div>
-    <div v-else-if="store.status === 'empty'" role="status" class="discover__state">
-      <p>目录为空。</p>
-      <Button variant="secondary" @click="() => void store.load()">重新加载</Button>
-    </div>
-    <template v-else>
-      <p class="discover__count" role="status">共 {{ filtered.length }} 个模板</p>
-      <div v-if="filtered.length === 0" class="discover__state">
-        <p>没有符合条件的结果。</p>
-        <Button v-if="hasActiveFilters" variant="secondary" @click="clearFilters">清空筛选</Button>
+      <div class="discover__catalog">
+        <div class="discover__tools">
+          <label class="discover__search-wrap">
+            <span aria-hidden="true">⌕</span>
+            <input
+              v-model="query.q"
+              class="discover__search"
+              type="search"
+              :aria-label="'搜索模板（标题、风格、场景或编号）'"
+              placeholder="搜索标题、风格、场景或编号"
+            />
+          </label>
+          <label class="discover__sort">
+            <span>排序</span>
+            <select v-model="query.sort" aria-label="排序方式">
+              <option value="catalog">默认（目录序）</option>
+              <option value="title">标题</option>
+              <option value="id">编号</option>
+            </select>
+          </label>
+          <span class="discover__examples">▦ 已生成示例</span>
+        </div>
+
+        <div v-if="store.status === 'loading'" role="status" class="discover__state">
+          目录加载中……
+        </div>
+        <div v-else-if="store.status === 'error'" role="alert" class="discover__state">
+          <p>{{ store.error }}</p>
+          <Button variant="secondary" @click="() => void store.load()">重试</Button>
+        </div>
+        <div v-else-if="store.status === 'empty'" role="status" class="discover__state">
+          <p>目录为空。</p>
+          <Button variant="secondary" @click="() => void store.load()">重新加载</Button>
+        </div>
+        <template v-else>
+          <p class="discover__count" role="status">共 {{ filtered.length }} 个模板</p>
+          <div v-if="filtered.length === 0" class="discover__state">
+            <p>没有符合条件的结果。</p>
+            <Button v-if="hasActiveFilters" variant="secondary" @click="clearFilters"
+              >清空筛选</Button
+            >
+          </div>
+          <div v-else class="discover__grid">
+            <Card v-for="template in visible" :key="template.id" class="discover__card">
+              <RouterLink :to="`/studio/${template.id}`" class="discover__card-link">
+                <LazyImage
+                  :src="previewSrc(template.id) ?? ''"
+                  :alt="`${template.title} 预览`"
+                  aspect-ratio="1 / 1"
+                  fit="contain"
+                  adapt-aspect
+                />
+                <div class="discover__card-body">
+                  <h2 class="discover__card-title">{{ template.title }}</h2>
+                  <p class="discover__card-meta-line">
+                    <span>案例编号　</span><span class="discover__card-id">{{ template.id }}</span>
+                  </p>
+                  <span
+                    class="discover__card-badge"
+                    :class="`discover__card-badge--${template.blueprintInputMode}`"
+                  >
+                    {{
+                      template.blueprintInputMode === 'text-to-image' ? '文生图蓝图' : '图生图蓝图'
+                    }}
+                  </span>
+                  <div class="discover__card-footer">
+                    <span>☆ 收藏</span>
+                    <span class="discover__card-cta">查看模板</span>
+                  </div>
+                </div>
+              </RouterLink>
+            </Card>
+          </div>
+          <p v-if="remaining > 0" class="discover__more">
+            <Button variant="secondary" @click="visibleCount += PAGE_SIZE">
+              加载更多（还有 {{ remaining }} 个）
+            </Button>
+          </p>
+        </template>
       </div>
-      <div v-else class="discover__grid">
-        <Card v-for="template in visible" :key="template.id" class="discover__card">
-          <RouterLink :to="`/studio/${template.id}`" class="discover__card-link">
-            <LazyImage :src="previewSrc(template.id) ?? ''" :alt="`${template.title} 预览`" />
-            <h2 class="discover__card-title">{{ template.title }}</h2>
-            <p class="discover__card-meta">
-              <span class="discover__card-id">{{ template.id }}</span>
-              <span
-                class="discover__card-badge"
-                :class="`discover__card-badge--${template.blueprintInputMode}`"
-              >
-                {{ template.blueprintInputMode === 'text-to-image' ? '文生图蓝图' : '图生图蓝图' }}
-              </span>
-            </p>
-            <p class="discover__card-category">{{ template.category }}</p>
-            <span class="discover__card-cta">查看模板</span>
-          </RouterLink>
-        </Card>
-      </div>
-      <p v-if="remaining > 0" class="discover__more">
-        <Button variant="secondary" @click="visibleCount += PAGE_SIZE">
-          加载更多（还有 {{ remaining }} 个）
-        </Button>
-      </p>
-    </template>
+    </div>
   </section>
 </template>
 
 <style scoped>
 .discover {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  min-width: 0;
 }
-
 .discover__header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  padding: 8px 8px 22px;
 }
-
 .discover__header h1 {
   margin: 0;
+  color: #11171b;
+  font-size: clamp(2.35rem, 4vw, 4.2rem);
+  letter-spacing: 0.045em;
 }
-
-.discover__tools {
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+.discover__header h1::after {
+  content: '';
+  display: block;
+  width: 110px;
+  height: 2px;
+  margin-top: 7px;
+  background: var(--color-accent-amber);
 }
-
-.discover__search {
-  flex: 1;
-  min-width: 16rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-control);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  padding: var(--space-2) var(--space-3);
+.discover__promise {
+  margin: 10px 0 16px;
+  color: var(--color-ink-secondary);
+  font-family: var(--font-heading);
 }
-
-.discover__sort select {
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-control);
-  background: var(--color-surface);
-  color: var(--color-ink);
-  padding: var(--space-2) var(--space-3);
-}
-
-.discover__group {
-  border: none;
-  margin: 0;
-  padding: 0;
+.discover__modes {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 10px;
   flex-wrap: wrap;
-}
-
-.discover__group legend {
-  float: left;
-  padding: 0;
-  margin-inline-end: var(--space-2);
-  color: var(--color-ink-secondary);
-  font-size: 0.875rem;
-}
-
-.discover__count {
   margin: 0;
-  color: var(--color-ink-secondary);
-  font-size: 0.875rem;
+  padding: 0;
+  border: 0;
 }
-
-.discover__state {
+.discover__modes legend {
+  float: left;
+  margin-right: 12px;
+  padding: 0;
+  color: var(--color-ink);
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+.discover__body {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 22px;
+}
+.discover__categories {
+  position: relative;
+  min-height: 610px;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--color-surface) 60%, transparent);
+}
+.discover__categories h2 {
+  margin: 0 0 6px;
+  padding: 18px 20px;
+  color: white;
+  background: linear-gradient(135deg, #0c4a50, #075f65);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+}
+.discover__categories :deep(.chip) {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-6);
-  border: 1px dashed var(--color-line);
-  border-radius: var(--radius-card);
+  width: calc(100% - 20px);
+  min-height: 42px;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px 10px;
+  padding: 8px 14px;
+  border-color: transparent;
+  border-radius: 5px;
+  background: transparent;
+  font-family: var(--font-heading);
+  text-align: left;
 }
-
+.discover__categories :deep(.chip[aria-pressed='true']) {
+  color: white;
+  background: var(--color-teal-deep);
+}
+.discover__compass {
+  position: absolute;
+  left: 44px;
+  bottom: 36px;
+  width: 104px;
+  height: 104px;
+  opacity: 0.28;
+  border: 1px solid #8f9d96;
+  border-radius: 50%;
+  background:
+    linear-gradient(45deg, transparent 49.5%, #8f9d96 50%, transparent 50.5%),
+    linear-gradient(-45deg, transparent 49.5%, #8f9d96 50%, transparent 50.5%),
+    radial-gradient(circle, transparent 0 26px, #8f9d96 27px, transparent 28px);
+}
+.discover__catalog {
+  min-width: 0;
+}
+.discover__tools {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.discover__search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+}
+.discover__search-wrap > span {
+  color: var(--color-ink);
+  font-size: 1.35rem;
+}
+.discover__search {
+  min-width: 0;
+  width: 100%;
+  padding: 8px 0;
+  border: 0;
+  outline: 0;
+  color: var(--color-ink);
+  background: transparent;
+}
+.discover__sort {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  padding-left: 10px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+.discover__sort span {
+  font-family: var(--font-heading);
+}
+.discover__sort select {
+  height: 42px;
+  border: 0;
+  border-left: 1px solid var(--color-line);
+  background: transparent;
+  padding: 0 10px;
+}
+.discover__examples {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  background: var(--color-surface);
+  font-family: var(--font-heading);
+  white-space: nowrap;
+}
+.discover__count {
+  margin: 0 0 10px;
+  color: var(--color-ink-secondary);
+  font-size: 0.82rem;
+}
 .discover__grid {
-  columns: 4;
-  column-gap: var(--space-3);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
 }
-
-@media (max-width: 1280px) {
-  .discover__grid {
-    columns: 3;
-  }
-}
-
-@media (max-width: 1024px) {
-  .discover__grid {
-    columns: 2;
-  }
-}
-
-@media (max-width: 640px) {
-  .discover__grid {
-    columns: 1;
-  }
-}
-
 .discover__card {
-  margin-block-end: var(--space-3);
-  break-inside: avoid;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgb(71 52 25 / 10%);
 }
-
 .discover__card-link {
   display: block;
-  text-decoration: none;
   color: inherit;
+  text-decoration: none;
 }
-
+.discover__card-link :deep(.lazy-image) {
+  border-radius: 0;
+}
+.discover__card-body {
+  padding: 9px 11px 10px;
+}
 .discover__card-title {
-  margin: var(--space-2) 0 0;
-  font-size: 1rem;
+  min-height: 2.4em;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
 }
-
-.discover__card-meta {
+.discover__card-meta-line {
+  margin: 3px 0 6px;
+  color: var(--color-ink-secondary);
+  font-size: 0.65rem;
+}
+.discover__card-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-size: 0.62rem;
+}
+.discover__card-badge--text-to-image {
+  color: #9b620b;
+  background: #fbf2de;
+}
+.discover__card-badge--image-to-image {
+  color: #0a6669;
+  background: #e8f3ef;
+}
+.discover__card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-2);
-  margin: var(--space-1) 0 0;
-}
-
-.discover__card-id {
+  gap: 8px;
+  margin-top: 8px;
   color: var(--color-ink-secondary);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
 }
-
-.discover__card-badge {
-  font-size: 0.6875rem;
-  border-radius: 999px;
-  padding: 0 var(--space-2);
-}
-
-.discover__card-badge--text-to-image {
-  background: var(--color-accent-amber);
-  color: var(--color-on-amber);
-}
-
-.discover__card-badge--image-to-image {
-  background: var(--color-accent-teal);
-  color: var(--color-on-teal);
-}
-
-.discover__card-category {
-  margin: var(--space-1) 0 0;
-  color: var(--color-ink-secondary);
-  font-size: 0.8125rem;
-}
-
 .discover__card-cta {
-  display: inline-block;
-  margin-block-start: var(--space-2);
-  color: var(--color-accent-teal);
-  font-size: 0.875rem;
+  padding: 4px 9px;
+  color: white;
+  border-radius: 4px;
+  background: var(--color-teal-deep);
+  font-family: var(--font-heading);
 }
-
+.discover__state {
+  padding: 24px;
+  border: 1px dashed var(--color-line);
+  border-radius: 8px;
+}
 .discover__more {
   text-align: center;
+}
+@media (max-width: 1380px) {
+  .discover__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1050px) {
+  .discover__body {
+    grid-template-columns: 1fr;
+  }
+  .discover__categories {
+    display: flex;
+    min-height: auto;
+    flex-wrap: wrap;
+    padding: 8px;
+  }
+  .discover__categories h2 {
+    width: 100%;
+    border-radius: 6px;
+  }
+  .discover__categories :deep(.chip) {
+    width: auto;
+  }
+  .discover__compass {
+    display: none;
+  }
+  .discover__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .discover__tools {
+    grid-template-columns: 1fr;
+  }
+  .discover__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 500px) {
+  .discover__header h1 {
+    font-size: 2rem;
+  }
+  .discover__grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

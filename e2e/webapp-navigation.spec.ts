@@ -53,7 +53,8 @@ test('guide page content matches protocol and modes', async ({ page }) => {
   const body = await page.locator('#main-content').textContent();
   expect(body).toContain('图片决定内容，蓝图决定风格');
   expect(body).toContain('Nano Banana Pro');
-  expect(body).toContain('未开放');
+  expect(body).not.toContain('未开放');
+  expect(body).toContain('部署方配置身份、数据库与受管 Provider 后可用');
   expect(body).not.toContain('禁止直接图生图');
   expect(body).not.toContain('零中转');
 });

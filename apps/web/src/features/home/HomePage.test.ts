@@ -6,6 +6,7 @@ import { createMemoryHistory, createRouter, type Router } from 'vue-router';
 
 import HomePage from './HomePage.vue';
 import { createAppRouter } from '../../app/router.js';
+import { BYOK_KEY_STORAGE, SETTINGS_KEY } from '../../entities/settings/store.js';
 import { LOCAL_RECORD_KEY } from '../../shared/platform/local-store.js';
 
 function jsonResponse(body: unknown): Response {
@@ -82,11 +83,40 @@ describe('HomePage (U06)', () => {
     const values = wrapper.findAll('.home__stat-value').map((node) => node.text());
     expect(values).toEqual(['5', '3', '2', '0']);
     // Honest service line: no fabricated online users or task counters.
-    expect(wrapper.text()).toContain('本地模式：未连接生成服务');
+    expect(wrapper.text()).toContain('目录浏览：生成已停用');
     expect(wrapper.text()).not.toContain('在线');
     expect(wrapper.text()).not.toContain('任务数');
   });
 
+  it('reports the selected generation path instead of a fixed disconnected message', async () => {
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        runMode: 'direct-byok',
+        byokEndpoint: 'https://images.example.test/v1',
+        byokModel: 'gpt-image-2',
+        byokQuality: 'high',
+      }),
+    );
+    localStorage.setItem(BYOK_KEY_STORAGE, JSON.stringify('configured-locally'));
+    const direct = await mountHome();
+    expect(direct.wrapper.text()).toContain('BYOK 直连：接口与本机密钥已配置');
+    direct.wrapper.unmount();
+
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify({
+        schemaVersion: 1,
+        runMode: 'managed-generation',
+        byokEndpoint: '',
+        byokModel: '',
+        byokQuality: '',
+      }),
+    );
+    const managed = await mountHome();
+    expect(managed.wrapper.text()).toContain('受管生成：需要已部署的 OnePic API 与有效登录会话');
+  });
   it('shows the empty recent state on first visit', async () => {
     const { wrapper } = await mountHome();
     await vi.waitFor(() => {

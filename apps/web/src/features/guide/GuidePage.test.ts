@@ -25,15 +25,17 @@ describe('GuidePage (U11)', () => {
     expect(wrapper.text()).toContain('目录浏览');
     expect(wrapper.text()).toContain('BYOK 直连');
     expect(wrapper.text()).toContain('受管生成');
-    expect(wrapper.text()).toContain('未开放');
+    expect(wrapper.text()).not.toContain('未开放');
+    expect(wrapper.text()).toContain('部署方配置身份、数据库与受管 Provider 后可用');
     expect(wrapper.text()).toContain('配置接口与隐私');
   });
 
-  it('covers source provenance and prompt structure', () => {
-    expect(wrapper.text()).toContain('SHA-256');
+  it('documents prompt structure without public source attribution', () => {
     expect(wrapper.text()).toContain('[System / Prompt]');
     expect(wrapper.text()).toContain('BEGIN VISUAL BLUEPRINT');
-    expect(wrapper.text()).toContain('MIT');
+    expect(wrapper.text()).not.toContain('来源与追溯');
+    expect(wrapper.text()).not.toContain('作者署名');
+    expect(wrapper.text()).not.toContain('MIT');
   });
 
   it('mentions Nano Banana Pro as preferred-when-available, not exclusive', () => {
@@ -47,7 +49,9 @@ describe('GuidePage (U11)', () => {
     expect(text).not.toContain('禁止图生图');
     expect(text).not.toContain('零中转');
     expect(text).not.toContain('完全不上传');
-    // Footer keeps the honest direct-connection statement.
-    expect(wrapper.find('.guide__footer').text()).toContain('数据只在你点击生成后直连自定义接口');
+    // Footer states the trigger and selected-mode routing without hiding managed relay.
+    expect(wrapper.find('.guide__footer').text()).toContain(
+      '只有明确点击生成后，才按所选模式发送图片与提示词',
+    );
   });
 });

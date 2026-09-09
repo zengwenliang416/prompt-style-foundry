@@ -48,8 +48,8 @@ const modeLabels: Record<string, { label: string; detail: string; available: boo
   },
   'managed-generation': {
     label: '受管生成',
-    detail: '需要服务端身份与授权配置；未配置时不会开启。',
-    available: false,
+    detail: '部署方配置身份、数据库与受管 Provider 后可用；未配置时工作台会明确提示。',
+    available: true,
   },
 };
 
@@ -98,15 +98,6 @@ const modeOrder = ['catalog-only', 'direct-byok', 'managed-generation'];
         </div>
       </div>
     </section>
-
-    <section aria-label="来源与追溯">
-      <h2 class="guide__title">来源与追溯</h2>
-      <p class="guide__text">
-        每份模板都保留模板编号、作者署名、上游项目链接与 MIT 许可；提示词正文有 SHA-256
-        校验值，详情页展示与下载的内容一致。示例预览来自上游示例，正式结果以你上传的图片为准。
-      </p>
-    </section>
-
     <section aria-label="运行模式">
       <h2 class="guide__title">运行模式</h2>
       <ul class="guide__modes">
@@ -124,149 +115,254 @@ const modeOrder = ['catalog-only', 'direct-byok', 'managed-generation'];
     </section>
 
     <footer class="guide__footer" role="note">
-      数据只在你点击生成后直连自定义接口；本站无遥测、无统计上报。
+      目录浏览不上传；只有明确点击生成后，才按所选模式发送图片与提示词。本站无遥测、无统计上报。
     </footer>
   </section>
 </template>
 
 <style scoped>
 .guide {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  max-width: 46rem;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
 }
-
+.guide::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 14px;
+  right: 34px;
+  width: 170px;
+  height: 170px;
+  opacity: 0.16;
+  border: 1px solid #7f9389;
+  border-radius: 50%;
+  background:
+    linear-gradient(45deg, transparent 49.7%, #7f9389 50%, transparent 50.3%),
+    linear-gradient(-45deg, transparent 49.7%, #7f9389 50%, transparent 50.3%),
+    radial-gradient(circle, transparent 0 48px, #7f9389 49px, transparent 50px);
+}
+.guide__hero {
+  grid-column: 1 / -1;
+  padding: 8px 4px 24px;
+  border-bottom: 1px solid var(--color-line);
+}
 .guide__hero h1 {
-  margin: 0 0 var(--space-2);
-}
-
-.guide__flow {
+  max-width: 920px;
   margin: 0;
-  border: 1px dashed var(--color-line);
-  border-radius: var(--radius-card);
-  padding: var(--space-3) var(--space-4);
-  color: var(--color-ink);
+  color: #11171b;
+  font-size: clamp(2.4rem, 4.6vw, 4.8rem);
+  letter-spacing: 0.055em;
 }
-
+.guide__hero h1::after {
+  content: '';
+  display: block;
+  width: 116px;
+  height: 2px;
+  margin-top: 8px;
+  background: var(--color-accent-amber);
+}
+.guide__flow {
+  display: flex;
+  max-width: 880px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 24px 0 0;
+  padding: 18px 24px;
+  border: 1px dashed #aa9e87;
+  border-radius: 9px;
+  color: var(--color-teal-deep);
+  background: color-mix(in srgb, var(--color-surface) 62%, transparent);
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.guide > section {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-surface) 68%, transparent);
+  box-shadow: 0 5px 14px rgb(69 52 28 / 7%);
+}
+.guide > section:first-of-type {
+  grid-column: 1 / -1;
+}
 .guide__title {
-  margin: 0 0 var(--space-3);
-  font-size: 1.125rem;
+  margin: 0 0 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-line);
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
 }
-
+.guide__title::before {
+  content: '✦';
+  margin-right: 7px;
+  color: var(--color-accent-amber);
+}
 .guide__priorities {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
   margin: 0;
   padding: 0;
   list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
-
 .guide__priorities li {
-  display: flex;
-  gap: var(--space-3);
-  align-items: flex-start;
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  min-height: 116px;
+  align-items: start;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--color-line) 80%, transparent);
+  border-radius: 7px;
+  background: var(--color-surface);
 }
-
 .guide__order {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 999px;
-  background: var(--color-accent-teal);
-  color: var(--color-on-teal);
-  font-size: 0.875rem;
-  flex-shrink: 0;
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  color: white;
+  border-radius: 50%;
+  background: var(--color-teal-deep);
+  font-family: Georgia, serif;
 }
-
+.guide__priorities strong {
+  font-family: var(--font-heading);
+}
 .guide__priorities p {
-  margin: var(--space-1) 0 0;
+  margin: 5px 0 0;
   color: var(--color-ink-secondary);
+  font-size: 0.8rem;
 }
-
 .guide__structure {
-  margin: 0;
-  padding-inline-start: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-
+.guide__structure li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 0.85rem;
+}
+.guide__structure li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--color-accent-teal);
+  font-weight: 700;
+}
 .guide__note {
-  margin: var(--space-3) 0 0;
+  margin: 14px 0 0;
+  padding: 10px 12px;
   color: var(--color-ink-secondary);
-  font-size: 0.875rem;
+  border-left: 3px solid var(--color-accent-amber);
+  background: #f5eddd;
+  font-size: 0.78rem;
 }
-
 .guide__cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3);
+  gap: 10px;
 }
-
-@media (max-width: 640px) {
-  .guide__cards {
-    grid-template-columns: 1fr;
-  }
-}
-
 .guide__card {
+  min-height: 116px;
+  padding: 16px;
   border: 1px solid var(--color-line);
-  border-radius: var(--radius-card);
+  border-radius: 7px;
   background: var(--color-surface);
-  padding: var(--space-4);
 }
-
+.guide__card strong {
+  color: var(--color-teal-deep);
+  font-family: var(--font-heading);
+}
 .guide__card p {
-  margin: var(--space-2) 0 0;
+  margin: 7px 0 0;
   color: var(--color-ink-secondary);
+  font-size: 0.8rem;
 }
-
-.guide__text {
-  margin: 0;
-  color: var(--color-ink);
-}
-
 .guide__modes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
 }
-
 .guide__modes li {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 12px;
   border: 1px solid var(--color-line);
-  border-radius: var(--radius-control);
-  padding: var(--space-3);
+  border-radius: 6px;
+  background: var(--color-surface);
 }
-
+.guide__modes strong {
+  color: var(--color-teal-deep);
+  font-family: var(--font-heading);
+}
 .guide__modes span {
   color: var(--color-ink-secondary);
-  font-size: 0.875rem;
+  font-size: 0.78rem;
 }
-
 .guide__mode-tag {
-  display: inline-block;
-  align-self: flex-start;
-  margin-block-start: var(--space-1);
-  background: var(--color-accent-amber);
-  color: var(--color-on-amber);
+  justify-self: start;
+  padding: 1px 6px;
   border-radius: 999px;
-  padding: 0 var(--space-2);
-  font-size: 0.75rem;
+  color: var(--color-on-amber);
+  background: var(--color-accent-amber);
+  font-size: 0.68rem;
 }
-
 .guide__footer {
-  border-top: 1px solid var(--color-line);
-  padding-block-start: var(--space-3);
+  grid-column: 1 / -1;
+  padding: 15px 18px;
   color: var(--color-ink-secondary);
-  font-size: 0.875rem;
+  border: 1px solid var(--color-line);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--color-surface) 65%, transparent);
+  font-size: 0.78rem;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .guide {
+    grid-template-columns: 1fr;
+  }
+  .guide > section,
+  .guide > section:first-of-type,
+  .guide__hero,
+  .guide__footer {
+    grid-column: 1;
+  }
+  .guide__priorities {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .guide__hero h1 {
+    font-size: 2rem;
+  }
+  .guide__flow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .guide__flow span[aria-hidden='true'] {
+    display: none;
+  }
+  .guide__cards {
+    grid-template-columns: 1fr;
+  }
+  .guide__modes li {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
