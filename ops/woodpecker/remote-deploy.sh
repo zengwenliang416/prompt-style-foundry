@@ -215,17 +215,25 @@ if ! nginx -s reload; then
   exit 1
 fi
 # The origin certificate can be self-signed behind the public TLS edge; this bypass is loopback-only.
-if ! curl --fail --silent --show-error \
-  --noproxy '*' \
-  --insecure \
-  --resolve "$domain:443:127.0.0.1" \
-  "https://$domain/guide" \
-  | grep -Eq 'src="/assets/index-[A-Za-z0-9_-]+\.js"'; then
+health_ok=false
+for _ in {1..12}; do
+  if curl --fail --silent \
+    --noproxy '*' \
+    --insecure \
+    --resolve "$domain:443:127.0.0.1" \
+    "https://$domain/guide" \
+    | grep -Eq 'src="/assets/index-[A-Za-z0-9_-]+\.js"'; then
+    health_ok=true
+    break
+  fi
+  sleep 1
+done
+if [[ "$health_ok" != true ]]; then
   if [[ -n "$previous_release" && -d "$previous_release" ]]; then
     ln -sfn "$previous_release" "$deploy_root/current.next"
     mv -Tf "$deploy_root/current.next" "$deploy_root/current"
   fi
-  echo "Local Nginx Vue route health check failed." >&2
+  echo "Local Nginx Vue route health check failed after waiting for reload." >&2
   exit 1
 fi
 config_installed=false
