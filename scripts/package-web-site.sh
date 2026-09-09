@@ -51,30 +51,30 @@ for required_entry in \
   LICENSE \
   third_party/animejs-LICENSE \
   third_party/awesome-gpt-image-2-LICENSE; do
-  if ! printf '%s\n' "$entries" | grep -Fx "$required_entry" >/dev/null; then
+  if ! grep -Fx "$required_entry" <<<"$entries" >/dev/null; then
     printf 'Packaged Vue artifact is missing required entry: %s\n' "$required_entry" >&2
     rm -f "$temporary"
     exit 1
   fi
 done
 
-if ! printf '%s\n' "$entries" | grep -Eq '^assets/[A-Za-z0-9._-]+\.js$'; then
+if ! grep -Eq '^assets/[A-Za-z0-9._-]+\.js$' <<<"$entries"; then
   echo "Packaged Vue artifact is missing a JavaScript bundle." >&2
   rm -f "$temporary"
   exit 1
 fi
-if ! printf '%s\n' "$entries" | grep -Eq '^assets/[A-Za-z0-9._-]+\.css$'; then
+if ! grep -Eq '^assets/[A-Za-z0-9._-]+\.css$' <<<"$entries"; then
   echo "Packaged Vue artifact is missing a CSS bundle." >&2
   rm -f "$temporary"
   exit 1
 fi
-if printf '%s\n' "$entries" | grep -Eq '(^|/)(docs|src|test-results|playwright-report|coverage)(/|$)|(^|/)(\.env[^/]*|.*\.tmp|.*\.pem|.*\.key|.*\.map)$'; then
+if grep -Eq '(^|/)(docs|src|test-results|playwright-report|coverage)(/|$)|(^|/)(\.env[^/]*|.*\.tmp|.*\.pem|.*\.key|.*\.map)$' <<<"$entries"; then
   echo "Packaged Vue artifact contains source, documentation, credential, temporary, or source-map paths." >&2
   rm -f "$temporary"
   exit 1
 fi
 
-prompt_count=$(printf '%s\n' "$entries" | grep -Ec '^data/prompts/(case-[0-9]+|framework-[0-9]{3})\.txt$')
+prompt_count=$(grep -Ec '^data/prompts/(case-[0-9]+|framework-[0-9]{3})\.txt$' <<<"$entries")
 if [[ "$prompt_count" -ne 576 ]]; then
   printf 'Expected 576 prompt files, found %s.\n' "$prompt_count" >&2
   rm -f "$temporary"
