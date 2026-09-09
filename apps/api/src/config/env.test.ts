@@ -71,7 +71,7 @@ describe('loadConfig (managed-generation gate)', () => {
     OIDC_CLIENT_ID: 'onepic-api',
     OIDC_CLIENT_SECRET: 'placeholder-secret-value-000000000001',
     OIDC_REDIRECT_URI: 'https://api.example.com/api/v1/auth/callback',
-    SESSION_SECRET: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+    SESSION_SECRET: 'test-only-session-secret-'.repeat(2),
   };
 
   it('refuses to start without any identity configuration (ADR 0001 D-4)', () => {
@@ -149,12 +149,38 @@ describe('loadConfig (managed-generation gate)', () => {
   it('accepts a fully configured managed setup', () => {
     const config = loadConfig(validManaged);
     expect(config.runMode).toBe('managed-generation');
-    expect(config.sessionSecret).toHaveLength(64);
+    expect(config.sessionSecret).toBe(validManaged.SESSION_SECRET);
   });
 });
 
 describe('loadConfig (validates DATABASE_URL even outside managed mode)', () => {
   it('rejects a malformed database URL in catalog-only mode', () => {
     expect(() => loadConfig({ DATABASE_URL: 'not-a-url' })).toThrow(ConfigError);
+  });
+});
+
+describe('loadConfig (retention policy overrides)', () => {
+  it('parses positive-integer retention values and rejects invalid ones', () => {
+    const config = loadConfig({
+      RETENTION_UPLOAD_INCOMPLETE_HOURS: '2',
+      RETENTION_INPUT_MEDIA_HOURS: '48',
+      RETENTION_RESULT_MEDIA_DAYS: '14',
+      RETENTION_GENERATION_DAYS: '60',
+      RETENTION_AUDIT_EVENT_DAYS: '180',
+    });
+    expect(config.retentionUploadIncompleteHours).toBe(2);
+    expect(config.retentionInputMediaHours).toBe(48);
+    expect(config.retentionResultMediaDays).toBe(14);
+    expect(config.retentionGenerationDays).toBe(60);
+    expect(config.retentionAuditEventDays).toBe(180);
+
+    try {
+      loadConfig({ RETENTION_RESULT_MEDIA_DAYS: '0' });
+      expect.unreachable('loadConfig should have thrown');
+    } catch (error) {
+      const issues = (error as ConfigError).issues;
+      expect(issues.map((i) => i.field)).toContain('RETENTION_RESULT_MEDIA_DAYS');
+    }
+    expect(() => loadConfig({ RETENTION_GENERATION_DAYS: 'thirty' })).toThrow(ConfigError);
   });
 });

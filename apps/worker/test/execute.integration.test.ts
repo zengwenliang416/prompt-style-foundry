@@ -5,12 +5,23 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Client } from 'pg';
 import { createHash } from 'node:crypto';
 
-import { startMockProvider, startPgTestCluster, type MockProviderHandle, type PgTestCluster } from '@onepic/test-support';
+import {
+  readMultipartTextField,
+  startMockProvider,
+  startPgTestCluster,
+  type MockProviderHandle,
+  type PgTestCluster,
+} from '@onepic/test-support';
 
 import { runMigrations } from '../../api/src/db/migrate.js';
 import { ProviderAdapter } from '../../api/src/modules/generation/provider-adapter.js';
 import { LocalDiskStorage } from '../../api/src/infra/storage/storage.js';
-import { importCatalogRelease, sha256Hex, stablePromptBody } from '../../api/src/modules/catalog/import.js';
+import { validateImage } from '../../api/src/modules/media/validate-image.js';
+import {
+  importCatalogRelease,
+  sha256Hex,
+  stablePromptBody,
+} from '../../api/src/modules/catalog/import.js';
 import { UploadService } from '../../api/src/modules/media/upload-service.js';
 import { PrecheckService } from '../../api/src/modules/media/precheck-service.js';
 import { GenerationService } from '../../api/src/modules/generation/create.js';
@@ -52,7 +63,10 @@ const adapter = (): ProviderAdapter =>
 const db = (): Queryable => client as unknown as Queryable;
 
 interface Queryable {
-  query<R extends Record<string, unknown>>(sql: string, values?: unknown[]): Promise<{ rows: R[]; rowCount: number | null }>;
+  query<R extends Record<string, unknown>>(
+    sql: string,
+    values?: unknown[],
+  ): Promise<{ rows: R[]; rowCount: number | null }>;
 }
 
 beforeAll(async () => {
@@ -70,7 +84,8 @@ beforeAll(async () => {
   );
   subjectId = subject.rows[0]!.id;
 
-  const promptBody = '[System / Prompt]\nj05 verbatim body\nBEGIN VISUAL BLUEPRINT\nblue\nEND VISUAL BLUEPRINT\n';
+  const promptBody =
+    '[System / Prompt]\nj05 verbatim body\nBEGIN VISUAL BLUEPRINT\nblue\nEND VISUAL BLUEPRINT\n';
   const fixtureRoot = await mkdtemp(path.join(tmpdir(), 'j05-catalog-'));
   const fs = await import('node:fs/promises');
   const catalog = {
@@ -98,7 +113,10 @@ beforeAll(async () => {
   };
   await fs.mkdir(path.join(fixtureRoot, 'data/library'), { recursive: true });
   await fs.mkdir(path.join(fixtureRoot, 'public/data/prompts'), { recursive: true });
-  await fs.writeFile(path.join(fixtureRoot, 'data/library/templates.json'), JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }));
+  await fs.writeFile(
+    path.join(fixtureRoot, 'data/library/templates.json'),
+    JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }),
+  );
   await fs.writeFile(path.join(fixtureRoot, 'public/data/catalog.json'), JSON.stringify(catalog));
   await fs.writeFile(path.join(fixtureRoot, 'public/data/prompts/case-7.txt'), promptBody);
   await importCatalogRelease({ client, rootDir: fixtureRoot });
@@ -106,10 +124,18 @@ beforeAll(async () => {
 
   const uploads = new UploadService(client, storage);
   const prechecks = new PrecheckService(client, storage);
-  const created = await uploads.createUpload({ ownerId: subjectId, declaredBytes: PNG.length, declaredMime: 'image/png' });
+  const created = await uploads.createUpload({
+    ownerId: subjectId,
+    declaredBytes: PNG.length,
+    declaredMime: 'image/png',
+  });
   if (!created.ok) throw new Error('fixture failed');
   await uploads.putQuarantineBytes(created.value.uploadId, subjectId, PNG);
-  const confirmed = await uploads.confirmUpload({ uploadId: created.value.uploadId, ownerId: subjectId, actualSha256: 'x' });
+  const confirmed = await uploads.confirmUpload({
+    uploadId: created.value.uploadId,
+    ownerId: subjectId,
+    actualSha256: createHash('sha256').update(PNG).digest('hex'),
+  });
   if (!confirmed.ok) throw new Error('fixture failed');
   const precheck = await prechecks.createPrecheck({
     subjectId,
@@ -157,7 +183,7 @@ describe('send traceability (J05)', () => {
     expect(lease).toBeDefined();
 
     const outcome = await executeClaimedJob(
-      { db: db(), adapter: adapter(), storage, providerId: 'direct-byok' },
+      { db: db(), adapter: adapter(), storage, validateImage, providerId: 'direct-byok' },
       { jobId: lease!.jobId, workerId: 'j05', generationId },
     );
     expect(outcome.ok).toBe(true);
@@ -173,14 +199,14 @@ describe('send traceability (J05)', () => {
 
     // The mock provider received EXACTLY the immutable snapshot text.
     const sent = provider.requests[requestsBefore]!;
-    const body = JSON.parse(sent.body.toString());
+    const sentPrompt = readMultipartTextField(sent, 'prompt');
     const snapshot = await client.query<{ prompt_text: string }>(
       'SELECT prompt_text FROM template_version WHERE compiled_prompt_sha256 = $1',
       [outcome.sentPromptSha256],
     );
-    expect(body.prompt).toBe(snapshot.rows[0]!.prompt_text);
+    expect(sentPrompt).toBe(snapshot.rows[0]!.prompt_text);
     expect(outcome.sentPromptSha256).toBe(
-      createHash('sha256').update(body.prompt.replace(/\n+$/, '')).digest('hex'),
+      createHash('sha256').update(sentPrompt!.replace(/\n+$/, '')).digest('hex'),
     );
 
     // Attempt row records the same hash + sent/succeeded states.
@@ -192,10 +218,34 @@ describe('send traceability (J05)', () => {
     expect(attempt.rows[0]!.state).toBe('succeeded');
 
     // Generation and result are terminal and consistent.
-    const generation = await client.query<{ state: string }>('SELECT state FROM generation WHERE id = $1', [generationId]);
+    const generation = await client.query<{ state: string }>(
+      'SELECT state FROM generation WHERE id = $1',
+      [generationId],
+    );
     expect(generation.rows[0]!.state).toBe('succeeded');
-    const result = await client.query<{ actual_bytes: number }>('SELECT actual_bytes FROM result WHERE generation_id = $1', [generationId]);
+    const result = await client.query<{ actual_bytes: number }>(
+      'SELECT actual_bytes FROM result WHERE generation_id = $1',
+      [generationId],
+    );
     expect(Number(result.rows[0]!.actual_bytes)).toBeGreaterThan(0);
+  });
+
+  it('refuses a generation assigned to a different server provider without sending', async () => {
+    const generationId = await createGeneration('trace-provider-mismatch');
+    const requestsBefore = provider.requests.length;
+    const [lease] = await claimJobs(client, { workerId: 'j05', kinds: ['generate'] });
+    const outcome = await executeClaimedJob(
+      { db: db(), adapter: adapter(), storage, validateImage, providerId: 'other-provider' },
+      { jobId: lease!.jobId, workerId: 'j05', generationId },
+    );
+
+    expect(outcome).toMatchObject({
+      ok: false,
+      refused: true,
+      errorCode: 'PROVIDER_NOT_ALLOWLISTED',
+      sentPromptSha256: null,
+    });
+    expect(provider.requests.length).toBe(requestsBefore);
   });
 
   it('refuses execution when the prompt snapshot was tampered (no provider call)', async () => {
@@ -208,7 +258,7 @@ describe('send traceability (J05)', () => {
 
     const [lease] = await claimJobs(client, { workerId: 'j05', kinds: ['generate'] });
     const outcome = await executeClaimedJob(
-      { db: db(), adapter: adapter(), storage, providerId: 'direct-byok' },
+      { db: db(), adapter: adapter(), storage, validateImage, providerId: 'direct-byok' },
       { jobId: lease!.jobId, workerId: 'j05', generationId },
     );
 
@@ -222,6 +272,9 @@ describe('send traceability (J05)', () => {
 });
 
 interface Queryable {
-  query<R extends Record<string, unknown>>(sql: string, values?: unknown[]): Promise<{ rows: R[]; rowCount: number | null }>;
+  query<R extends Record<string, unknown>>(
+    sql: string,
+    values?: unknown[],
+  ): Promise<{ rows: R[]; rowCount: number | null }>;
 }
 void sha256Hex;

@@ -1,15 +1,26 @@
 import path from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { createHash } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Client } from 'pg';
 
-import { startMockProvider, startPgTestCluster, type MockProviderHandle, type PgTestCluster } from '@onepic/test-support';
+import {
+  startMockProvider,
+  startPgTestCluster,
+  type MockProviderHandle,
+  type PgTestCluster,
+} from '@onepic/test-support';
 
 import { runMigrations } from '../../api/src/db/migrate.js';
 import { ProviderAdapter } from '../../api/src/modules/generation/provider-adapter.js';
 import { LocalDiskStorage } from '../../api/src/infra/storage/storage.js';
-import { importCatalogRelease, sha256Hex, stablePromptBody } from '../../api/src/modules/catalog/import.js';
+import { validateImage } from '../../api/src/modules/media/validate-image.js';
+import {
+  importCatalogRelease,
+  sha256Hex,
+  stablePromptBody,
+} from '../../api/src/modules/catalog/import.js';
 import { UploadService } from '../../api/src/modules/media/upload-service.js';
 import { PrecheckService } from '../../api/src/modules/media/precheck-service.js';
 import { GenerationService } from '../../api/src/modules/generation/create.js';
@@ -38,8 +49,6 @@ let subjectId = '';
 let precheckId = '';
 let counter = 0;
 
-const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
-
 beforeAll(async () => {
   cluster = await startPgTestCluster();
   database = await cluster.createDatabase('retry');
@@ -55,7 +64,8 @@ beforeAll(async () => {
   );
   subjectId = subject.rows[0]!.id;
 
-  const promptBody = '[System / Prompt]\nj07 body\nBEGIN VISUAL BLUEPRINT\nb\nEND VISUAL BLUEPRINT\n';
+  const promptBody =
+    '[System / Prompt]\nj07 body\nBEGIN VISUAL BLUEPRINT\nb\nEND VISUAL BLUEPRINT\n';
   const fixtureRoot = await mkdtemp(path.join(tmpdir(), 'j07-catalog-'));
   const catalog = {
     schemaVersion: '1.1.0',
@@ -83,7 +93,10 @@ beforeAll(async () => {
   const fs = await import('node:fs/promises');
   await fs.mkdir(path.join(fixtureRoot, 'data/library'), { recursive: true });
   await fs.mkdir(path.join(fixtureRoot, 'public/data/prompts'), { recursive: true });
-  await fs.writeFile(path.join(fixtureRoot, 'data/library/templates.json'), JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }));
+  await fs.writeFile(
+    path.join(fixtureRoot, 'data/library/templates.json'),
+    JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }),
+  );
   await fs.writeFile(path.join(fixtureRoot, 'public/data/catalog.json'), JSON.stringify(catalog));
   await fs.writeFile(path.join(fixtureRoot, 'public/data/prompts/case-77.txt'), promptBody);
   await importCatalogRelease({ client, rootDir: fixtureRoot });
@@ -91,10 +104,18 @@ beforeAll(async () => {
 
   const uploads = new UploadService(client, storage);
   const prechecks = new PrecheckService(client, storage);
-  const created = await uploads.createUpload({ ownerId: subjectId, declaredBytes: PNG.length, declaredMime: 'image/png' });
+  const created = await uploads.createUpload({
+    ownerId: subjectId,
+    declaredBytes: PNG.length,
+    declaredMime: 'image/png',
+  });
   if (!created.ok) throw new Error('fixture failed');
   await uploads.putQuarantineBytes(created.value.uploadId, subjectId, PNG);
-  const confirmed = await uploads.confirmUpload({ uploadId: created.value.uploadId, ownerId: subjectId, actualSha256: 'x' });
+  const confirmed = await uploads.confirmUpload({
+    uploadId: created.value.uploadId,
+    ownerId: subjectId,
+    actualSha256: createHash('sha256').update(PNG).digest('hex'),
+  });
   if (!confirmed.ok) throw new Error('fixture failed');
   const precheck = await prechecks.createPrecheck({
     subjectId,
@@ -149,19 +170,26 @@ function deps(): ExecutionDeps {
       { fetchImpl: fetch },
     ),
     storage,
+    validateImage,
     providerId: 'direct-byok',
   };
 }
 
-async function jobRow(jobId: string): Promise<{ state: string; attempts: number; dead_reason: string | null; run_after: string }> {
-  const row = await client.query<{ state: string; attempts: number; dead_reason: string | null; run_after: string }>(
-    'SELECT state, attempts, dead_reason, run_after FROM job WHERE id = $1',
-    [jobId],
-  );
+async function jobRow(
+  jobId: string,
+): Promise<{ state: string; attempts: number; dead_reason: string | null; run_after: string }> {
+  const row = await client.query<{
+    state: string;
+    attempts: number;
+    dead_reason: string | null;
+    run_after: string;
+  }>('SELECT state, attempts, dead_reason, run_after FROM job WHERE id = $1', [jobId]);
   return row.rows[0]!;
 }
 
-async function generationState(generationId: string): Promise<{ state: string; error_code: string | null }> {
+async function generationState(
+  generationId: string,
+): Promise<{ state: string; error_code: string | null }> {
   const row = await client.query<{ state: string; error_code: string | null }>(
     'SELECT state, error_code FROM generation WHERE id = $1',
     [generationId],
@@ -173,10 +201,16 @@ describe('bounded retry + failure archival (J07)', () => {
   it('429 with Retry-After returns the job to pending and a later attempt succeeds', async () => {
     const generationId = await createGeneration();
     const requestsBefore = provider.requests.length;
-    provider.scriptResponses([{ status: 429, body: '{"error":"rate limited"}', headers: { 'retry-after': '1' } }]);
+    provider.scriptResponses([
+      { status: 429, body: '{"error":"rate limited"}', headers: { 'retry-after': '1' } },
+    ]);
 
     const [lease] = await claimJobs(client, { workerId: 'j07', kinds: ['generate'] });
-    const first = await executeClaimedJob(deps(), { jobId: lease!.jobId, workerId: 'j07', generationId });
+    const first = await executeClaimedJob(deps(), {
+      jobId: lease!.jobId,
+      workerId: 'j07',
+      generationId,
+    });
     expect(first.ok).toBe(false);
     if (!first.ok) {
       expect(first.errorCode).toBe('PROVIDER_REJECTED');
@@ -185,26 +219,41 @@ describe('bounded retry + failure archival (J07)', () => {
 
     // Failure archived on the attempt; job back to pending with a delayed
     // run_after; generation stays queued (NOT failed while a retry remains).
-    const attempt = await client.query<{ state: string; http_status: number | null; error_code: string | null }>(
-      'SELECT state, http_status, error_code FROM attempt WHERE generation_id = $1',
-      [generationId],
-    );
+    const attempt = await client.query<{
+      state: string;
+      http_status: number | null;
+      error_code: string | null;
+    }>('SELECT state, http_status, error_code FROM attempt WHERE generation_id = $1', [
+      generationId,
+    ]);
     expect(attempt.rows[0]!.state).toBe('failed');
     expect(attempt.rows[0]!.http_status).toBe(429);
     expect(attempt.rows[0]!.error_code).toBe('PROVIDER_REJECTED');
     const jobAfterFirst = await jobRow(lease!.jobId);
     expect(jobAfterFirst.state).toBe('pending');
     expect(new Date(jobAfterFirst.run_after).getTime()).toBeGreaterThan(Date.now());
-    expect((await generationState(generationId)).state).toBe('queued');
+    // The task is honestly 'running' while a retry is scheduled (J08); it is
+    // NOT failed and NOT re-queued.
+    expect((await generationState(generationId)).state).toBe('running');
 
-    // Retry after the Retry-After delay: second attempt succeeds end-to-end.
-    await sleep(1100);
+    // Retry once the Retry-After delay has elapsed (deterministically
+    // fast-forwarded; the delay itself is asserted above).
+    await client.query('UPDATE job SET run_after = now() WHERE id = $1', [lease!.jobId]);
     const [reclaim] = await claimJobs(client, { workerId: 'j07', kinds: ['generate'] });
     expect(reclaim!.jobId).toBe(lease!.jobId);
     expect(reclaim!.attempts).toBe(2);
-    const second = await executeClaimedJob(deps(), { jobId: lease!.jobId, workerId: 'j07', generationId });
+    const second = await executeClaimedJob(deps(), {
+      jobId: lease!.jobId,
+      workerId: 'j07',
+      generationId,
+    });
     expect(second.ok).toBe(true);
-    const completion = await completeJob(client, { jobId: lease!.jobId, workerId: 'j07', generationId, generationState: 'succeeded' });
+    const completion = await completeJob(client, {
+      jobId: lease!.jobId,
+      workerId: 'j07',
+      generationId,
+      generationState: 'succeeded',
+    });
     expect(completion.completed).toBe(true);
     expect(provider.requests.length).toBe(requestsBefore + 2);
     expect((await generationState(generationId)).state).toBe('succeeded');
@@ -216,7 +265,11 @@ describe('bounded retry + failure archival (J07)', () => {
     provider.scriptResponses([{ status: 429, body: '{"error":"rate limited"}' }]);
 
     const [lease] = await claimJobs(client, { workerId: 'j07', kinds: ['generate'] });
-    const outcome = await executeClaimedJob(deps(), { jobId: lease!.jobId, workerId: 'j07', generationId });
+    const outcome = await executeClaimedJob(deps(), {
+      jobId: lease!.jobId,
+      workerId: 'j07',
+      generationId,
+    });
     expect(outcome.ok).toBe(false);
     if (!outcome.ok) {
       expect(outcome.retried).toBe(false);
@@ -238,7 +291,11 @@ describe('bounded retry + failure archival (J07)', () => {
     provider.scriptResponses([{ status: 401, body: '{"error":"bad key"}' }]);
 
     const [lease] = await claimJobs(client, { workerId: 'j07', kinds: ['generate'] });
-    const outcome = await executeClaimedJob(deps(), { jobId: lease!.jobId, workerId: 'j07', generationId });
+    const outcome = await executeClaimedJob(deps(), {
+      jobId: lease!.jobId,
+      workerId: 'j07',
+      generationId,
+    });
     expect(outcome.ok).toBe(false);
     if (!outcome.ok) {
       expect(outcome.retried).toBe(false);
@@ -263,9 +320,12 @@ describe('bounded retry + failure archival (J07)', () => {
     ]);
 
     // attempts 1 and 2 retry; the third claim exhausts max_attempts (3).
+    // The Retry-After delay is fast-forwarded deterministically instead of
+    // racing wall-clock sleeps against run_after.
     let jobId = '';
     for (let round = 1; round <= 3; round += 1) {
       const [lease] = await claimJobs(client, { workerId: 'j07', kinds: ['generate'] });
+      expect(lease).toBeDefined();
       jobId = lease!.jobId;
       const outcome = await executeClaimedJob(deps(), { jobId, workerId: 'j07', generationId });
       expect(outcome.ok).toBe(false);
@@ -273,7 +333,7 @@ describe('bounded retry + failure archival (J07)', () => {
         expect(outcome.retried).toBe(round < 3);
       }
       if (round < 3) {
-        await sleep(1100);
+        await client.query('UPDATE job SET run_after = now() WHERE id = $1', [jobId]);
       }
     }
 
@@ -303,7 +363,11 @@ describe('bounded retry + failure archival (J07)', () => {
     const requestsBefore = provider.requests.length;
 
     const [lease] = await claimJobs(client, { workerId: 'j07', kinds: ['generate'] });
-    const outcome = await executeClaimedJob(deps(), { jobId: lease!.jobId, workerId: 'j07', generationId });
+    const outcome = await executeClaimedJob(deps(), {
+      jobId: lease!.jobId,
+      workerId: 'j07',
+      generationId,
+    });
     expect(outcome.ok).toBe(false);
     if (!outcome.ok) {
       expect(outcome.refused).toBe(true);

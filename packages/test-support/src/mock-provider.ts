@@ -26,10 +26,33 @@ export interface MockProviderHandle {
   port: number;
   readonly requests: readonly RecordedProviderRequest[];
   /** Queue responses; the last one repeats once the queue is drained. */
-  scriptResponses(responses: Array<{ status: number; body: string; headers?: Record<string, string> }>): void;
+  scriptResponses(
+    responses: Array<{ status: number; body: string; headers?: Record<string, string> }>,
+  ): void;
   /** Delay every response by the given milliseconds (timeout tests). */
   setDelayMs(delayMs: number): void;
   close(): Promise<void>;
+}
+
+export function readMultipartTextField(
+  request: RecordedProviderRequest,
+  field: string,
+): string | undefined {
+  const contentType = request.headers['content-type'];
+  const header = Array.isArray(contentType) ? contentType[0] : contentType;
+  const boundary = header
+    ?.match(/boundary=(?:"([^"]+)"|([^;]+))/i)
+    ?.slice(1)
+    .find(Boolean);
+  if (boundary === undefined) return undefined;
+  const marker = `name="${field.replace(/["\\]/g, '')}"`;
+  for (const part of request.body.toString('utf8').split(`--${boundary}`)) {
+    if (!part.includes(marker)) continue;
+    const separator = part.indexOf('\r\n\r\n');
+    if (separator < 0) return undefined;
+    return part.slice(separator + 4).replace(/\r\n$/, '');
+  }
+  return undefined;
 }
 
 const DEFAULT_SUCCESS_BODY = JSON.stringify({

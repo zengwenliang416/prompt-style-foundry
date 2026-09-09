@@ -26,7 +26,8 @@ let client: Client;
 let fixtureRoot = '';
 
 const PROMPT_V1 = '[System / Prompt]\nv1 body\nBEGIN VISUAL BLUEPRINT\nb1\nEND VISUAL BLUEPRINT\n';
-const PROMPT_V2 = '[System / Prompt]\nv2 body REWRITTEN\nBEGIN VISUAL BLUEPRINT\nb2\nEND VISUAL BLUEPRINT\n';
+const PROMPT_V2 =
+  '[System / Prompt]\nv2 body REWRITTEN\nBEGIN VISUAL BLUEPRINT\nb2\nEND VISUAL BLUEPRINT\n';
 
 async function writeCatalog(promptText: string): Promise<void> {
   const catalog = {
@@ -60,9 +61,7 @@ async function writeCatalog(promptText: string): Promise<void> {
 
 async function sourceTreeDigest(): Promise<string> {
   return sha256Hex(
-    (
-      await readFile(path.join(fixtureRoot, 'public/data/prompts/case-77.txt'))
-    ).toString(),
+    (await readFile(path.join(fixtureRoot, 'public/data/prompts/case-77.txt'))).toString(),
   );
 }
 
@@ -130,20 +129,27 @@ describe('prompt version binding + maintenance flow (M05)', () => {
 
     // Read-only discipline: the import never rewrote the source prompt.
     expect(await sourceTreeDigest()).not.toBe(digestBefore || 'never-equal-guard');
-    expect(await readFile(path.join(fixtureRoot, 'public/data/prompts/case-77.txt'), 'utf8')).toBe(PROMPT_V2);
+    expect(await readFile(path.join(fixtureRoot, 'public/data/prompts/case-77.txt'), 'utf8')).toBe(
+      PROMPT_V2,
+    );
   });
 
   it('unchanged reimports do not create versions or audit rows', async () => {
-    const before = await client.query<{ n: string }>('SELECT count(*)::text AS n FROM template_version');
-    const auditsBefore = await client.query<{ n: string }>('SELECT count(*)::text AS n FROM audit_event');
+    const before = await client.query<{ n: string }>(
+      'SELECT count(*)::text AS n FROM template_version',
+    );
+    const auditsBefore = await client.query<{ n: string }>(
+      'SELECT count(*)::text AS n FROM audit_event',
+    );
 
     await importCatalogRelease({ client, rootDir: fixtureRoot });
 
-    expect((await client.query<{ n: string }>('SELECT count(*)::text AS n FROM template_version')).rows[0]!.n).toBe(
-      before.rows[0]!.n,
-    );
-    expect((await client.query<{ n: string }>('SELECT count(*)::text AS n FROM audit_event')).rows[0]!.n).toBe(
-      auditsBefore.rows[0]!.n,
-    );
+    expect(
+      (await client.query<{ n: string }>('SELECT count(*)::text AS n FROM template_version'))
+        .rows[0]!.n,
+    ).toBe(before.rows[0]!.n);
+    expect(
+      (await client.query<{ n: string }>('SELECT count(*)::text AS n FROM audit_event')).rows[0]!.n,
+    ).toBe(auditsBefore.rows[0]!.n);
   });
 });

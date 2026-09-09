@@ -28,6 +28,16 @@ export interface ApiConfig {
   sessionSecret?: string;
   /** Private media storage root (local adapter); S3 adapter swaps in later. */
   mediaStorageRoot?: string;
+  /** Allowlisted provider id recorded on managed generations (ADR 0003). */
+  managedProviderId?: string;
+  /** Per-subject concurrent generation allowance (B05/J01). */
+  generationQuotaLimit?: number;
+  /** Retention policy values (data dictionary §3); defaults apply when unset. */
+  retentionUploadIncompleteHours?: number;
+  retentionInputMediaHours?: number;
+  retentionResultMediaDays?: number;
+  retentionGenerationDays?: number;
+  retentionAuditEventDays?: number;
 }
 
 export interface ConfigIssue {
@@ -117,6 +127,23 @@ function readLogLevel(source: NodeJS.ProcessEnv, issues: ConfigIssue[]): LogLeve
   return raw as LogLevel;
 }
 
+function readPositiveInt(
+  source: NodeJS.ProcessEnv,
+  field: string,
+  issues: ConfigIssue[],
+): number | undefined {
+  const raw = readString(source, field);
+  if (raw === undefined) {
+    return undefined;
+  }
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    issues.push({ field, problem: 'must be a positive integer' });
+    return undefined;
+  }
+  return parsed;
+}
+
 /**
  * Issuer must be an HTTPS URL, except plain HTTP is tolerated for local
  * development/test identity providers on loopback hosts.
@@ -182,6 +209,26 @@ export function loadConfig(source: NodeJS.ProcessEnv): ApiConfig {
   const oidcRedirectUri = readString(source, 'OIDC_REDIRECT_URI');
   const sessionSecret = readString(source, 'SESSION_SECRET');
   const mediaStorageRoot = readString(source, 'MEDIA_STORAGE_ROOT');
+  const managedProviderId = readString(source, 'MANAGED_PROVIDER_ID');
+  const rawQuotaLimit = readString(source, 'GENERATION_QUOTA_LIMIT');
+  let generationQuotaLimit: number | undefined;
+  if (rawQuotaLimit !== undefined) {
+    const parsed = Number(rawQuotaLimit);
+    if (!Number.isInteger(parsed) || parsed <= 0) {
+      issues.push({ field: 'GENERATION_QUOTA_LIMIT', problem: 'must be a positive integer' });
+    } else {
+      generationQuotaLimit = parsed;
+    }
+  }
+  const retentionUploadIncompleteHours = readPositiveInt(
+    source,
+    'RETENTION_UPLOAD_INCOMPLETE_HOURS',
+    issues,
+  );
+  const retentionInputMediaHours = readPositiveInt(source, 'RETENTION_INPUT_MEDIA_HOURS', issues);
+  const retentionResultMediaDays = readPositiveInt(source, 'RETENTION_RESULT_MEDIA_DAYS', issues);
+  const retentionGenerationDays = readPositiveInt(source, 'RETENTION_GENERATION_DAYS', issues);
+  const retentionAuditEventDays = readPositiveInt(source, 'RETENTION_AUDIT_EVENT_DAYS', issues);
 
   if (runMode === 'managed-generation') {
     const present = new Set(
@@ -225,5 +272,12 @@ export function loadConfig(source: NodeJS.ProcessEnv): ApiConfig {
     oidcRedirectUri,
     sessionSecret,
     mediaStorageRoot,
+    managedProviderId,
+    generationQuotaLimit,
+    retentionUploadIncompleteHours,
+    retentionInputMediaHours,
+    retentionResultMediaDays,
+    retentionGenerationDays,
+    retentionAuditEventDays,
   };
 }

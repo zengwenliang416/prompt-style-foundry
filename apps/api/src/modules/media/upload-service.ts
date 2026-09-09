@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 
 import type { Queryable } from '../../db/queryable.js';
 import type { StoragePort } from '../../infra/storage/storage.js';
@@ -8,8 +8,9 @@ import type { StoragePort } from '../../infra/storage/storage.js';
  * §8). Rules enforced here:
  * - declared limits: 20 MiB, JPEG/PNG/WebP only (§8 first-phase caps);
  * - object keys are SERVER-generated — client paths are never accepted;
- * - confirm requires the bytes to be fully present and equal to the declared
- *   size; double confirmation is rejected;
+ * - confirm requires the bytes to be fully present, equal to the declared
+ *   size, and matching the declared sha256 (verified server-side, O03);
+ *   double confirmation is rejected;
  * - expired sessions (1 hour default) cannot be confirmed;
  * - only the owning subject can confirm;
  * - unconfirmed/quarantine objects are not usable for generation (M04).
@@ -33,11 +34,11 @@ export type UploadProblem =
   | 'FORBIDDEN'
   | 'UPLOAD_EXPIRED'
   | 'INCOMPLETE_UPLOAD'
+  | 'HASH_MISMATCH'
   | 'ALREADY_CONFIRMED';
 
 export type UploadOutcome<T> =
-  | { ok: true; value: T }
-  | { ok: false; problem: UploadProblem; message: string };
+  { ok: true; value: T } | { ok: false; problem: UploadProblem; message: string };
 
 export class UploadService {
   constructor(
@@ -91,10 +92,18 @@ export class UploadService {
   }
 
   /** Server-side byte placement into quarantine (direct or via signed URL). */
-  async putQuarantineBytes(uploadId: string, ownerId: string, body: Buffer): Promise<UploadOutcome<{ bytes: number }>> {
+  async putQuarantineBytes(
+    uploadId: string,
+    ownerId: string,
+    body: Buffer,
+  ): Promise<UploadOutcome<{ bytes: number }>> {
     const session = await this.loadSession(uploadId);
     if (session === null || session.ownerId !== ownerId) {
-      return { ok: false, problem: session === null ? 'NOT_FOUND' : 'FORBIDDEN', message: 'upload not accessible' };
+      return {
+        ok: false,
+        problem: session === null ? 'NOT_FOUND' : 'FORBIDDEN',
+        message: 'upload not accessible',
+      };
     }
     if (session.expired) {
       return { ok: false, problem: 'UPLOAD_EXPIRED', message: 'upload session expired' };
@@ -135,7 +144,24 @@ export class UploadService {
       return { ok: false, problem: 'INCOMPLETE_UPLOAD', message: 'no bytes uploaded' };
     }
     if (bytes.length !== Number(session.declaredBytes)) {
-      return { ok: false, problem: 'INCOMPLETE_UPLOAD', message: `expected ${session.declaredBytes} bytes` };
+      return {
+        ok: false,
+        problem: 'INCOMPLETE_UPLOAD',
+        message: `expected ${session.declaredBytes} bytes`,
+      };
+    }
+
+    // The recorded hash is a VERIFIED fact, not a client claim (O03): the
+    // declared sha256 must match the actual stored bytes, otherwise the hash
+    // chain feeding generation.input_sha256 could be forged. The session is
+    // NOT consumed — the caller can retry with the correct hash.
+    const actualHash = createHash('sha256').update(bytes).digest('hex');
+    if (actualHash !== input.actualSha256.toLowerCase()) {
+      return {
+        ok: false,
+        problem: 'HASH_MISMATCH',
+        message: 'declared sha256 does not match the uploaded bytes',
+      };
     }
 
     const updated = await this.client.query<{ media_object_id: string }>(
@@ -148,26 +174,21 @@ export class UploadService {
       return { ok: false, problem: 'ALREADY_CONFIRMED', message: 'upload already confirmed' };
     }
     const mediaObjectId = updated.rows[0]!.media_object_id;
-    await this.client.query(
-      `UPDATE media_object SET sha256 = $2 WHERE id = $1`,
-      [mediaObjectId, input.actualSha256],
-    );
+    await this.client.query(`UPDATE media_object SET sha256 = $2 WHERE id = $1`, [
+      mediaObjectId,
+      input.actualSha256,
+    ]);
     return { ok: true, value: { mediaObjectId, bytes: bytes.length } };
   }
 
-  private async loadSession(
-    uploadId: string,
-  ): Promise<
-    | {
-        ownerId: string;
-        bucket: string;
-        objectKey: string;
-        declaredBytes: number;
-        confirmedAt: Date | null;
-        expired: boolean;
-      }
-    | null
-  > {
+  private async loadSession(uploadId: string): Promise<{
+    ownerId: string;
+    bucket: string;
+    objectKey: string;
+    declaredBytes: number;
+    confirmedAt: Date | null;
+    expired: boolean;
+  } | null> {
     const result = await this.client.query<{
       owner_id: string;
       bucket: string;

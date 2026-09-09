@@ -46,9 +46,12 @@ beforeAll(async () => {
   );
   subjectId = subject.rows[0]!.id;
 
-  PNG = await (await import('sharp')).default({
-    create: { width: 2, height: 1, channels: 3, background: { r: 10, g: 20, b: 30 } },
-  })
+  PNG = await (
+    await import('sharp')
+  )
+    .default({
+      create: { width: 2, height: 1, channels: 3, background: { r: 10, g: 20, b: 30 } },
+    })
     .png()
     .toBuffer();
   storageRoot = await mkdtemp(path.join(tmpdir(), 'm04-storage-'));
@@ -85,7 +88,10 @@ beforeAll(async () => {
   await import('node:fs/promises').then(async (fs) => {
     await fs.mkdir(path.join(fixtureRoot, 'data/library'), { recursive: true });
     await fs.mkdir(path.join(fixtureRoot, 'public/data/prompts'), { recursive: true });
-    await fs.writeFile(path.join(fixtureRoot, 'data/library/templates.json'), JSON.stringify(library));
+    await fs.writeFile(
+      path.join(fixtureRoot, 'data/library/templates.json'),
+      JSON.stringify(library),
+    );
     await fs.writeFile(path.join(fixtureRoot, 'public/data/catalog.json'), JSON.stringify(catalog));
     await fs.writeFile(path.join(fixtureRoot, 'public/data/prompts/case-9.txt'), 'PROMPT BODY\n');
   });
@@ -93,7 +99,9 @@ beforeAll(async () => {
   await rm(fixtureRoot, { recursive: true, force: true });
 
   versionId = (
-    await client.query<{ id: string }>("SELECT id FROM template_version WHERE template_key = 'case-9'")
+    await client.query<{ id: string }>(
+      "SELECT id FROM template_version WHERE template_key = 'case-9'",
+    )
   ).rows[0]!.id;
 });
 
@@ -117,7 +125,7 @@ async function confirmedUpload(): Promise<string> {
   const confirm = await uploads.confirmUpload({
     uploadId: created.value.uploadId,
     ownerId: subjectId,
-    actualSha256: 'placeholder',
+    actualSha256: sha256Hex(PNG),
   });
   if (!confirm.ok) {
     throw new Error('fixture confirm failed');
@@ -226,7 +234,10 @@ describe('precheck (M04)', () => {
     const precheckId = passed.ok ? passed.value.precheckId : '';
 
     // Expire it.
-    await client.query(`UPDATE precheck SET expires_at = now() - interval '1 minute' WHERE id = $1`, [precheckId]);
+    await client.query(
+      `UPDATE precheck SET expires_at = now() - interval '1 minute' WHERE id = $1`,
+      [precheckId],
+    );
     const expired = await prechecks.validateForGeneration({
       precheckId,
       subjectId,

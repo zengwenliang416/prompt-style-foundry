@@ -26,15 +26,18 @@ let database: Awaited<ReturnType<PgTestCluster['createDatabase']>>;
 let client: Client;
 let fixtureRoot = '';
 
-const PROMPT_A_V1 = '[System / Prompt]\nprompt A v1\nBEGIN VISUAL BLUEPRINT\nblueprint lines\nEND VISUAL BLUEPRINT\n';
-const PROMPT_B = '[System / Prompt]\nprompt B\nBEGIN VISUAL BLUEPRINT\nb blue\nEND VISUAL BLUEPRINT\n';
-const PROMPT_A_V2 = '[System / Prompt]\nprompt A v2 CHANGED\nBEGIN VISUAL BLUEPRINT\nblueprint lines v2\nEND VISUAL BLUEPRINT\n';
+const PROMPT_A_V1 =
+  '[System / Prompt]\nprompt A v1\nBEGIN VISUAL BLUEPRINT\nblueprint lines\nEND VISUAL BLUEPRINT\n';
+const PROMPT_B =
+  '[System / Prompt]\nprompt B\nBEGIN VISUAL BLUEPRINT\nb blue\nEND VISUAL BLUEPRINT\n';
+const PROMPT_A_V2 =
+  '[System / Prompt]\nprompt A v2 CHANGED\nBEGIN VISUAL BLUEPRINT\nblueprint lines v2\nEND VISUAL BLUEPRINT\n';
 
 async function writeFixture(promptA: string): Promise<void> {
   // data/library/templates.json + public/data/catalog.json + prompt files.
   const catalog = {
     schemaVersion: '1.1.0',
-    source: { project: 't', repository: 'r', archiveSha256: 'a'.repeat(64), license: 'MIT' },
+    release: { archiveSha256: 'a'.repeat(64) },
     stats: { total: 2, cases: 2, frameworks: 0 },
     filters: {},
     templates: [
@@ -52,7 +55,6 @@ async function writeFixture(promptA: string): Promise<void> {
         requiresText: false,
         promptPath: 'data/prompts/case-1.txt',
         promptSha256: sha256Hex(stablePromptBody(promptA)),
-        source: null,
       },
       {
         id: 'case-2',
@@ -68,7 +70,6 @@ async function writeFixture(promptA: string): Promise<void> {
         requiresText: false,
         promptPath: 'data/prompts/case-2.txt',
         promptSha256: sha256Hex(stablePromptBody(PROMPT_B)),
-        source: null,
       },
     ],
   };
@@ -78,10 +79,7 @@ async function writeFixture(promptA: string): Promise<void> {
   await mkdir(path.join(fixtureRoot, 'data/prompts'), { recursive: true });
   await mkdir(path.join(fixtureRoot, 'public/data/prompts'), { recursive: true });
   await writeFile(path.join(fixtureRoot, 'data/library/templates.json'), JSON.stringify(library));
-  await writeFile(
-    path.join(fixtureRoot, 'public/data/catalog.json'),
-    JSON.stringify(catalog),
-  );
+  await writeFile(path.join(fixtureRoot, 'public/data/catalog.json'), JSON.stringify(catalog));
   await writeFile(path.join(fixtureRoot, 'public/data/prompts/case-1.txt'), promptA);
   await writeFile(path.join(fixtureRoot, 'public/data/prompts/case-2.txt'), PROMPT_B);
 }
@@ -137,13 +135,42 @@ describe('catalog release import (B02)', () => {
   });
 
   it('is idempotent for the same library (created=false, no new rows)', async () => {
-    const before = await client.query<{ n: string }>('SELECT count(*)::text AS n FROM template_version');
+    const before = await client.query<{ n: string }>(
+      'SELECT count(*)::text AS n FROM template_version',
+    );
 
     const result = await runImport();
 
     expect(result.created).toBe(false);
-    const after = await client.query<{ n: string }>('SELECT count(*)::text AS n FROM template_version');
+    const after = await client.query<{ n: string }>(
+      'SELECT count(*)::text AS n FROM template_version',
+    );
     expect(after.rows[0]!.n).toBe(before.rows[0]!.n);
+  });
+
+  it('serializes concurrent imports of the same immutable library', async () => {
+    const concurrentDb = await cluster.createDatabase('concurrent_import');
+    await runMigrations(concurrentDb.uri);
+    const clients = [
+      new Client({ connectionString: concurrentDb.uri }),
+      new Client({ connectionString: concurrentDb.uri }),
+    ];
+    try {
+      await Promise.all(clients.map((item) => item.connect()));
+      const results = await Promise.all(
+        clients.map((item) => importCatalogRelease({ client: item, rootDir: fixtureRoot })),
+      );
+      expect(results.map((item) => item.created).sort()).toEqual([false, true]);
+      const counts = await clients[0]!.query<{ releases: string; versions: string }>(
+        `SELECT
+           (SELECT count(*)::text FROM catalog_release) AS releases,
+           (SELECT count(*)::text FROM template_version) AS versions`,
+      );
+      expect(counts.rows[0]).toEqual({ releases: '1', versions: '2' });
+    } finally {
+      await Promise.all(clients.map((item) => item.end()));
+      await concurrentDb.drop();
+    }
   });
 
   it('rejects a tampered prompt body via hash mismatch', async () => {
@@ -160,9 +187,8 @@ describe('catalog release import (B02)', () => {
     const v1 = await client.query<{ id: string }>(
       "SELECT id FROM template_version WHERE template_key = 'case-1' AND version = 1",
     );
-    const releaseId = (
-      await client.query<{ id: string }>('SELECT id FROM catalog_release LIMIT 1')
-    ).rows[0]!.id;
+    const releaseId = (await client.query<{ id: string }>('SELECT id FROM catalog_release LIMIT 1'))
+      .rows[0]!.id;
     const subject = await client.query<{ id: string }>(
       "INSERT INTO subject (issuer, subject_claim, role) VALUES ('https://id.test', 'bob', 'member') RETURNING id",
     );

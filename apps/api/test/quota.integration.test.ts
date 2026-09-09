@@ -3,6 +3,7 @@ import { Client } from 'pg';
 
 import { startPgTestCluster, type PgTestCluster } from '@onepic/test-support';
 
+import type { Queryable } from '../src/db/queryable.js';
 import { runMigrations } from '../src/db/migrate.js';
 import { QuotaService } from '../src/modules/quota/service.js';
 import { RateLimiter, safeQuotaError } from '../src/modules/policy/rate-limit.js';
@@ -42,38 +43,50 @@ afterAll(async () => {
 });
 
 /** Creates a full valid generation chain in the given state. */
-async function seedGeneration(index: number, state: string): Promise<string> {
-  const release = await client.query<{ id: string }>(
+async function seedGeneration(
+  index: number,
+  state: string,
+  queryable: Queryable = client,
+): Promise<string> {
+  const release = await queryable.query<{ id: string }>(
     `INSERT INTO catalog_release (schema_version, source_sha256, library_sha256, template_count)
      VALUES ('1.1.0', 'src', $1, 1) RETURNING id`,
     [`lib-b05-${index}-${state}`],
   );
   const releaseId = release.rows[0]!.id;
-  const version = await client.query<{ id: string }>(
+  const version = await queryable.query<{ id: string }>(
     `INSERT INTO template_version (catalog_release_id, template_key, version,
        compiled_prompt_sha256, blueprint_sha256, metadata)
      VALUES ($1, $2, 1, $3, 'b', '{}') RETURNING id`,
     [releaseId, `case-b05-${index}`, `psha-b05-${index}-${state}`],
   );
   const versionId = version.rows[0]!.id;
-  const media = await client.query<{ id: string }>(
+  const media = await queryable.query<{ id: string }>(
     `INSERT INTO media_object (owner_id, kind, state, bucket, object_key, sha256, expires_at)
      VALUES ($1, 'input', 'ready', $2, $3, 'isha', now() + interval '1 day') RETURNING id`,
     [subjectId, `bucket-b05-${index}`, `key-b05-${index}-${state}`],
   );
   const mediaId = media.rows[0]!.id;
-  const precheck = await client.query<{ id: string }>(
+  const precheck = await queryable.query<{ id: string }>(
     `INSERT INTO precheck (subject_id, media_object_id, template_version_id, settings,
        result, expires_at)
      VALUES ($1, $2, $3, '{}', 'passed', now() + interval '1 hour') RETURNING id`,
     [subjectId, mediaId, versionId],
   );
-  const generation = await client.query<{ id: string }>(
+  const generation = await queryable.query<{ id: string }>(
     `INSERT INTO generation (owner_id, template_version_id, catalog_release_id, precheck_id,
        input_object_id, input_sha256, compiled_prompt_sha256, effective_prompt_sha256,
        provider_id, model, settings, idempotency_key, state)
      VALUES ($1, $2, $3, $4, $5, 'isha', 'psha', 'psha', 'provider', 'model', '{}', $6, $7) RETURNING id`,
-    [subjectId, versionId, releaseId, precheck.rows[0]!.id, mediaId, `b05-idem-${index}-${state}`, state],
+    [
+      subjectId,
+      versionId,
+      releaseId,
+      precheck.rows[0]!.id,
+      mediaId,
+      `b05-idem-${index}-${state}`,
+      state,
+    ],
   );
   return generation.rows[0]!.id;
 }
@@ -93,15 +106,17 @@ describe('quota service (B05)', () => {
     const unknownId = await seedGeneration(2, 'outcome_unknown');
     const service = new QuotaService(client, { limit: 5 });
     await service.reserve({ subjectId, generationId: unknownId });
-    await expect(
-      service.release({ subjectId, generationId: unknownId }),
-    ).resolves.toEqual({ ok: false, code: 'ILLEGAL_RELEASE' });
+    await expect(service.release({ subjectId, generationId: unknownId })).resolves.toEqual({
+      ok: false,
+      code: 'ILLEGAL_RELEASE',
+    });
 
     const succeededId = await seedGeneration(3, 'succeeded');
     await service.reserve({ subjectId, generationId: succeededId });
-    await expect(
-      service.release({ subjectId, generationId: succeededId }),
-    ).resolves.toEqual({ ok: false, code: 'ILLEGAL_RELEASE' });
+    await expect(service.release({ subjectId, generationId: succeededId })).resolves.toEqual({
+      ok: false,
+      code: 'ILLEGAL_RELEASE',
+    });
   });
 
   it('releases exactly once for failed tasks', async () => {
@@ -128,20 +143,18 @@ describe('quota service (B05)', () => {
     // Parallel callers each need their own connection: exercise the Pool path.
     const service = new QuotaService(pool, { limit });
     const generationIds = await Promise.all([
-      seedGeneration(10, 'queued'),
-      seedGeneration(11, 'queued'),
-      seedGeneration(12, 'queued'),
-      seedGeneration(13, 'queued'),
-      seedGeneration(14, 'queued'),
+      seedGeneration(10, 'queued', pool),
+      seedGeneration(11, 'queued', pool),
+      seedGeneration(12, 'queued', pool),
+      seedGeneration(13, 'queued', pool),
+      seedGeneration(14, 'queued', pool),
     ]);
 
     const outcomes = await Promise.all(
       generationIds.map((generationId) => service.reserve({ subjectId, generationId })),
     );
     const succeeded = outcomes.filter((outcome) => outcome.ok);
-    const exceeded = outcomes.filter(
-      (outcome) => !outcome.ok && outcome.code === 'QUOTA_EXCEEDED',
-    );
+    const exceeded = outcomes.filter((outcome) => !outcome.ok && outcome.code === 'QUOTA_EXCEEDED');
     expect(succeeded, JSON.stringify(outcomes)).toHaveLength(2);
     expect(exceeded, JSON.stringify(outcomes)).toHaveLength(3);
 
@@ -152,7 +165,10 @@ describe('quota service (B05)', () => {
       generationIds[firstOk]!,
     ]);
     await service.release({ subjectId, generationId: generationIds[firstOk]! });
-    const next = await service.reserve({ subjectId, generationId: await seedGeneration(15, 'queued') });
+    const next = await service.reserve({
+      subjectId,
+      generationId: await seedGeneration(15, 'queued'),
+    });
     expect(next).toEqual({ ok: true, used: limit });
   });
 

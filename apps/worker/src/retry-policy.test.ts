@@ -39,7 +39,11 @@ describe('classifyProviderFailure (J07)', () => {
       { code: 'PROVIDER_REJECTED', status, retryAfterSeconds: 17 },
       { idempotencySafe: false },
     );
-    expect(verdict).toEqual({ retryable: true, retryDelaySeconds: 17, rationale: 'provider_evidence_retry_after' });
+    expect(verdict).toEqual({
+      retryable: true,
+      retryDelaySeconds: 17,
+      rationale: 'provider_evidence_retry_after',
+    });
   });
 
   it.each([429, 503])('refuses %s without evidence on the non-idempotent path', (status) => {
@@ -63,18 +67,26 @@ describe('classifyProviderFailure (J07)', () => {
 
   it('retries a plain 500 only with Retry-After evidence', () => {
     expect(
-      classifyProviderFailure({ code: 'PROVIDER_REJECTED', status: 500 }, { idempotencySafe: true }).retryable,
+      classifyProviderFailure({ code: 'PROVIDER_REJECTED', status: 500 }, { idempotencySafe: true })
+        .retryable,
     ).toBe(false);
     expect(
       classifyProviderFailure(
         { code: 'PROVIDER_REJECTED', status: 500, retryAfterSeconds: 3 },
         { idempotencySafe: false },
       ),
-    ).toEqual({ retryable: true, retryDelaySeconds: 3, rationale: 'provider_evidence_retry_after' });
+    ).toEqual({
+      retryable: true,
+      retryDelaySeconds: 3,
+      rationale: 'provider_evidence_retry_after',
+    });
   });
 
   it('refuses failures without any status evidence (redirect, SSRF, malformed)', () => {
-    const verdict = classifyProviderFailure({ code: 'PROVIDER_REJECTED' }, { idempotencySafe: true });
+    const verdict = classifyProviderFailure(
+      { code: 'PROVIDER_REJECTED' },
+      { idempotencySafe: true },
+    );
     expect(verdict.retryable).toBe(false);
   });
 });

@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { Client } from 'pg';
 
 import {
@@ -12,6 +13,7 @@ import {
 } from '@onepic/test-support';
 
 import { runMigrations } from '../../api/src/db/migrate.js';
+import { validateImage } from '../../api/src/modules/media/validate-image.js';
 import { claimJobs, type Queryable } from '../src/queue.js';
 import { executeClaimedJob, type ExecutionDeps } from '../src/execute.js';
 import {
@@ -52,7 +54,9 @@ beforeAll(async () => {
   await client.connect();
   provider = await startMockProvider();
   storageRoot = await mkdtemp(path.join(tmpdir(), 'j06-storage-'));
-  storage = new (await import('../../api/src/infra/storage/storage.js')).LocalDiskStorage(storageRoot);
+  storage = new (await import('../../api/src/infra/storage/storage.js')).LocalDiskStorage(
+    storageRoot,
+  );
 
   const subject = await client.query<{ id: string }>(
     "INSERT INTO subject (issuer, subject_claim, role) VALUES ('https://id.test', 'j06-user', 'member') RETURNING id",
@@ -89,18 +93,36 @@ beforeAll(async () => {
   };
   await fs.mkdir(path.join(fixtureRoot, 'data/library'), { recursive: true });
   await fs.mkdir(path.join(fixtureRoot, 'public/data/prompts'), { recursive: true });
-  await fs.writeFile(path.join(fixtureRoot, 'data/library/templates.json'), JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }));
+  await fs.writeFile(
+    path.join(fixtureRoot, 'data/library/templates.json'),
+    JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }),
+  );
   await fs.writeFile(path.join(fixtureRoot, 'public/data/catalog.json'), JSON.stringify(catalog));
   await fs.writeFile(path.join(fixtureRoot, 'public/data/prompts/case-6.txt'), promptBody);
-  await (await import('../../api/src/modules/catalog/import.js')).importCatalogRelease({ client, rootDir: fixtureRoot });
+  await (
+    await import('../../api/src/modules/catalog/import.js')
+  ).importCatalogRelease({ client, rootDir: fixtureRoot });
   await rm(fixtureRoot, { recursive: true, force: true });
 
-  const uploads = new (await import('../../api/src/modules/media/upload-service.js')).UploadService(client, storage);
-  const prechecks = new (await import('../../api/src/modules/media/precheck-service.js')).PrecheckService(client, storage);
-  const created = await uploads.createUpload({ ownerId: subjectId, declaredBytes: PNG.length, declaredMime: 'image/png' });
+  const uploads = new (await import('../../api/src/modules/media/upload-service.js')).UploadService(
+    client,
+    storage,
+  );
+  const prechecks = new (
+    await import('../../api/src/modules/media/precheck-service.js')
+  ).PrecheckService(client, storage);
+  const created = await uploads.createUpload({
+    ownerId: subjectId,
+    declaredBytes: PNG.length,
+    declaredMime: 'image/png',
+  });
   if (!created.ok) throw new Error('fixture failed');
   await uploads.putQuarantineBytes(created.value.uploadId, subjectId, PNG);
-  const confirmed = await uploads.confirmUpload({ uploadId: created.value.uploadId, ownerId: subjectId, actualSha256: 'x' });
+  const confirmed = await uploads.confirmUpload({
+    uploadId: created.value.uploadId,
+    ownerId: subjectId,
+    actualSha256: createHash('sha256').update(PNG).digest('hex'),
+  });
   if (!confirmed.ok) throw new Error('fixture failed');
   const precheck = await prechecks.createPrecheck({
     subjectId,
@@ -140,7 +162,9 @@ async function createGeneration(key: string): Promise<string> {
   const { Pool } = await import('pg');
   const pool = new Pool({ connectionString: database.uri });
   try {
-    const service = new (await import('../../api/src/modules/generation/create.js')).GenerationService({ pool }, 5);
+    const service = new (
+      await import('../../api/src/modules/generation/create.js')
+    ).GenerationService({ pool }, 5);
     const result = await service.create({
       ownerId: subjectId,
       precheckId,
@@ -171,6 +195,7 @@ async function adapterDeps(fetchImpl: typeof fetch): Promise<ExecutionDeps> {
     db: client as unknown as Queryable,
     adapter,
     storage,
+    validateImage,
     providerId: 'direct-byok',
   };
 }
@@ -223,7 +248,13 @@ describe('outcome_unknown + reconciliation (J06)', () => {
 
     // Re-applying the transition helpers is a CAS no-op (idempotent).
     expect(await markGenerationOutcomeUnknown(client, { generationId })).toBe(false);
-    expect(await deadLetterJob(client, { jobId: lease!.jobId, workerId: 'j06', reason: 'PROVIDER_TIMEOUT_UNKNOWN' })).toBe(false);
+    expect(
+      await deadLetterJob(client, {
+        jobId: lease!.jobId,
+        workerId: 'j06',
+        reason: 'PROVIDER_TIMEOUT_UNKNOWN',
+      }),
+    ).toBe(false);
   });
 
   it('stays unknown without a request ID and needs explicit disposition', async () => {
@@ -233,7 +264,10 @@ describe('outcome_unknown + reconciliation (J06)', () => {
     const deps = await adapterDeps(droppingFetch);
     await executeClaimedJob(deps, { jobId: lease!.jobId, workerId: 'j06', generationId });
 
-    const generation = await client.query<{ state: string }>('SELECT state FROM generation WHERE id = $1', [generationId]);
+    const generation = await client.query<{ state: string }>(
+      'SELECT state FROM generation WHERE id = $1',
+      [generationId],
+    );
     expect(generation.rows[0]!.state).toBe('outcome_unknown');
 
     // No request ID recorded: automatic success resolution is refused.
@@ -264,13 +298,20 @@ describe('outcome_unknown + reconciliation (J06)', () => {
     // Provider answers 504 with an x-request-id header: acceptance evidence.
     provider.scriptResponses([{ status: 504, body: '{"error":"upstream timeout"}' }]);
     const deps = await adapterDeps(fetch);
-    const outcome = await executeClaimedJob(deps, { jobId: lease!.jobId, workerId: 'j06', generationId });
+    const outcome = await executeClaimedJob(deps, {
+      jobId: lease!.jobId,
+      workerId: 'j06',
+      generationId,
+    });
     expect(outcome.ok).toBe(false);
     if (!outcome.ok) {
       expect(outcome.errorCode).toBe('PROVIDER_TIMEOUT_UNKNOWN');
     }
 
-    const generation = await client.query<{ state: string }>('SELECT state FROM generation WHERE id = $1', [generationId]);
+    const generation = await client.query<{ state: string }>(
+      'SELECT state FROM generation WHERE id = $1',
+      [generationId],
+    );
     expect(generation.rows[0]!.state).toBe('outcome_unknown');
 
     // The request ID traveled: mock provider header → adapter → attempt row.

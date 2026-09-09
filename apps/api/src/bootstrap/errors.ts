@@ -2,6 +2,8 @@ import { randomUUID } from 'node:crypto';
 
 import type { FastifyInstance } from 'fastify';
 
+import { redactText } from '@onepic/contracts';
+
 import type { ApiConfig } from '../config/env.js';
 
 /**
@@ -20,7 +22,12 @@ export class AppError extends Error {
   readonly code: string;
   readonly details?: Record<string, unknown>;
 
-  constructor(statusCode: number, code: string, message: string, details?: Record<string, unknown>) {
+  constructor(
+    statusCode: number,
+    code: string,
+    message: string,
+    details?: Record<string, unknown>,
+  ) {
     super(message);
     this.name = 'AppError';
     this.statusCode = statusCode;
@@ -84,6 +91,29 @@ export function registerErrorHandling(app: FastifyInstance, config: ApiConfig): 
       void reply.code(error.statusCode).send(body);
       return;
     }
+    // Framework-raised client faults with a status code (e.g. body limit
+    // exceeded on the byte-upload route) map to stable catalog codes.
+    const statusCode = (error as { statusCode?: number }).statusCode;
+    if (statusCode === 413) {
+      const body: ErrorBody = {
+        error: { code: 'PAYLOAD_TOO_LARGE', message: 'Request body too large', correlationId },
+      };
+      void reply.code(413).send(body);
+      return;
+    }
+    if (statusCode === 415) {
+      // Wrong Content-Type on a byte endpoint (e.g. text/html disguised as an
+      // upload) is a client fault, not a 500 (O03).
+      const body: ErrorBody = {
+        error: {
+          code: 'UNSUPPORTED_MEDIA_TYPE',
+          message: 'Unsupported content type',
+          correlationId,
+        },
+      };
+      void reply.code(415).send(body);
+      return;
+    }
     // Unexpected: log server-side (with stack), return nothing internal.
     request.log.error({ event: 'internal_error', correlationId, error });
     const body: ErrorBody = {
@@ -100,7 +130,8 @@ export function registerErrorHandling(app: FastifyInstance, config: ApiConfig): 
     const body: ErrorBody = {
       error: {
         code: 'NOT_FOUND',
-        message: `Route ${request.method}:${request.url ?? ''} not found`,
+        // The URL may carry a signed-media signature parameter (O02).
+        message: `Route ${request.method}:${redactText(request.url ?? '')} not found`,
         correlationId: request.id,
       },
     };

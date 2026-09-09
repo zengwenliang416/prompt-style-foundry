@@ -33,6 +33,7 @@ const PNG_BYTES = Buffer.from(
   '89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000a49444154789c6360000002000148afa4710000000049454e44ae426082',
   'hex',
 );
+const SESSION_SECRET = 'test-only-session-secret-'.repeat(2);
 
 beforeAll(async () => {
   cluster = await startPgTestCluster();
@@ -67,7 +68,7 @@ beforeAll(async () => {
     oidcClientId: 'onepic-api',
     oidcClientSecret: 'b03-test-secret',
     oidcRedirectUri: 'http://127.0.0.1:9999/api/v1/auth/callback',
-    sessionSecret: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+    sessionSecret: SESSION_SECRET,
     mediaStorageRoot: storageRoot,
   };
   app = buildApp(config);
@@ -90,6 +91,17 @@ afterAll(async () => {
 });
 
 describe('signed private media access (M03)', () => {
+  /** O01: the media route now re-checks media_object state — tests register their objects. */
+  async function registerObject(bucket: string, key: string, ownerId: string): Promise<string> {
+    const inserted = await client.query<{ id: string }>(
+      `INSERT INTO media_object (owner_id, kind, state, bucket, object_key, sha256, mime, expires_at)
+       VALUES ($1, 'input', 'ready', $2, $3, $4, 'image/png', now() + interval '1 hour')
+       RETURNING id`,
+      [ownerId, bucket, key, 'a'.repeat(64)],
+    );
+    return inserted.rows[0]!.id;
+  }
+
   it('round-trips bytes through the local private storage adapter', async () => {
     await storage.put({ bucket: 'quarantine', key: 'roundtrip/x.png', body: PNG_BYTES });
     const read = await storage.get({ bucket: 'quarantine', key: 'roundtrip/x.png' });
@@ -98,9 +110,10 @@ describe('signed private media access (M03)', () => {
 
   it('serves the owner their media with a private cache policy', async () => {
     await storage.put({ bucket: 'quarantine', key: 'owner/x.png', body: PNG_BYTES });
+    await registerObject('quarantine', 'owner/x.png', ownerB);
     const signed = signMediaPath(
       { bucket: 'quarantine', key: 'owner/x.png', ownerId: ownerB, method: 'GET', ttlSeconds: 300 },
-      'b03-test-secret',
+      SESSION_SECRET,
     );
 
     const response = await app.inject({
@@ -111,13 +124,72 @@ describe('signed private media access (M03)', () => {
     expect(response.statusCode).toBe(200);
     expect(response.rawPayload?.equals(PNG_BYTES)).toBe(true);
     expect(response.headers['cache-control']).toBe('private, no-store');
+    expect(response.headers['content-type']).toBe('image/png');
+  });
+
+  it('revokes a still-valid signed URL once the object expires or is deleted (O01)', async () => {
+    await storage.put({ bucket: 'quarantine', key: 'owner/revoked.png', body: PNG_BYTES });
+    const objectId = await registerObject('quarantine', 'owner/revoked.png', ownerB);
+    const signed = signMediaPath(
+      {
+        bucket: 'quarantine',
+        key: 'owner/revoked.png',
+        ownerId: ownerB,
+        method: 'GET',
+        ttlSeconds: 300,
+      },
+      SESSION_SECRET,
+    );
+
+    const live = await app.inject({
+      method: 'GET',
+      url: signed.path,
+      cookies: { onepic_session: sessionB },
+    });
+    expect(live.statusCode).toBe(200);
+
+    await client.query(`UPDATE media_object SET state = 'expired' WHERE id = $1`, [objectId]);
+    const expired = await app.inject({
+      method: 'GET',
+      url: signed.path,
+      cookies: { onepic_session: sessionB },
+    });
+    expect(expired.statusCode).toBe(410);
+    expect(expired.json()).toMatchObject({ error: { code: 'MEDIA_EXPIRED' } });
+
+    await client.query(`UPDATE media_object SET state = 'deleted' WHERE id = $1`, [objectId]);
+    const deleted = await app.inject({
+      method: 'GET',
+      url: signed.path,
+      cookies: { onepic_session: sessionB },
+    });
+    expect(deleted.statusCode).toBe(410);
+
+    // A signature for an object with no database row at all is a 404.
+    const unknown = signMediaPath(
+      {
+        bucket: 'quarantine',
+        key: 'owner/never-existed.png',
+        ownerId: ownerB,
+        method: 'GET',
+        ttlSeconds: 300,
+      },
+      SESSION_SECRET,
+    );
+    const missing = await app.inject({
+      method: 'GET',
+      url: unknown.path,
+      cookies: { onepic_session: sessionB },
+    });
+    expect(missing.statusCode).toBe(404);
+    expect(missing.json()).toMatchObject({ error: { code: 'NOT_FOUND' } });
   });
 
   it('fails cross-user access even with a valid signature for the owner', async () => {
     await storage.put({ bucket: 'quarantine', key: 'owner/x.png', body: PNG_BYTES });
     const signedForB = signMediaPath(
       { bucket: 'quarantine', key: 'owner/x.png', ownerId: ownerB, method: 'GET', ttlSeconds: 300 },
-      'b03-test-secret',
+      SESSION_SECRET,
     );
 
     // A presents B's link: the session owner does not match the signed owner.
@@ -145,7 +217,7 @@ describe('signed private media access (M03)', () => {
         method: 'GET',
         ttlSeconds: -10,
       },
-      'b03-test-secret',
+      SESSION_SECRET,
     );
     const expiredResponse = await app.inject({
       method: 'GET',
@@ -156,8 +228,14 @@ describe('signed private media access (M03)', () => {
     expect(expiredResponse.json()).toMatchObject({ error: { code: 'MEDIA_EXPIRED' } });
 
     const tampered = signMediaPath(
-      { bucket: 'quarantine', key: 'owner/exp.png', ownerId: ownerB, method: 'GET', ttlSeconds: 300 },
-      'b03-test-secret',
+      {
+        bucket: 'quarantine',
+        key: 'owner/exp.png',
+        ownerId: ownerB,
+        method: 'GET',
+        ttlSeconds: 300,
+      },
+      SESSION_SECRET,
     ).path.replace('signature=', 'signature=AAAA');
     const tamperedResponse = await app.inject({
       method: 'GET',

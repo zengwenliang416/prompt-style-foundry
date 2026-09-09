@@ -4,7 +4,7 @@
     "title": "OnePic API",
     "version": "0.1.0",
     "summary": "OnePic 单图模板库的首期受控生图 API",
-    "description": "首期 API 表面（docs/full-stack-architecture.md §6、ADR 0001 D-1）：\n本版本仅包含健康检查端点，上传、生成、取消端点随 B/M/J 阶段清单落地时\n加入本契约。响应统一为 `{ data, meta }` 成功信封与 `{ error }` 失败信封；\n字段命名 camelCase，时间 UTC ISO-8601，ID 使用 UUID/ULID，分页使用 cursor。\n本契约是生成类型与运行时校验的唯一事实来源。\n"
+    "description": "当前 phase-one API 表面（docs/full-stack-architecture.md §6、ADR 0001 D-1）：\n健康、上传、预审、生成/取消/删除/历史、收藏/集合与工作区导出。模板目录仍由\n静态 JSON/TXT/WebP 提供。成功响应为 `{ data, meta }`，失败响应为 `{ error }`；\n字段命名 camelCase，时间 UTC ISO-8601，ID 使用 UUID/ULID，分页使用 cursor。\n本契约是生成类型与运行时校验的唯一事实来源；实现和 generated client 漂移由 CI 阻断。\n"
   },
   "servers": [
     {
@@ -14,7 +14,27 @@
   "tags": [
     {
       "name": "health",
-      "description": "进程与依赖探针（语义由 B06 最终确定）"
+      "description": "进程存活与 PostgreSQL/运行配置就绪探针；不触发 Provider"
+    },
+    {
+      "name": "auth",
+      "description": "OIDC 登录与服务端 opaque 会话生命周期"
+    },
+    {
+      "name": "media",
+      "description": "上传隔离区与确认（M01/M04，W01 接通）"
+    },
+    {
+      "name": "precheck",
+      "description": "生成前预审（M04/J01，W01 接通）"
+    },
+    {
+      "name": "generation",
+      "description": "幂等生成任务提交与轮询（J01/J10，W01 接通）"
+    },
+    {
+      "name": "workspace",
+      "description": "历史分页与收藏/集合（§1.13，W03 接通）"
     }
   ],
   "paths": {
@@ -54,7 +74,7 @@
         ],
         "summary": "依赖就绪探针",
         "security": [],
-        "description": "返回 200 与 status=ok 表示依赖就绪，status=degraded 表示部分依赖不可用； 不得触发付费 provider 探测（B06 语义占位，当前无依赖恒为 ok）。\n",
+        "description": "返回 200/status=ok 表示当前模式依赖就绪（未配置数据库时 catalog-only 仍可就绪）； 返回 503/status=degraded 表示 PostgreSQL 不可达，或 managed-generation 的 schema/catalog 完整性条件不满足。探针不访问 Provider，不会触发付费调用。\n",
         "responses": {
           "200": {
             "description": "就绪状态",
@@ -70,12 +90,1294 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "PostgreSQL 不可达或 managed schema/catalog 未就绪",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfHealthReady"
+                },
+                "example": {
+                  "data": {
+                    "status": "degraded"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "operationId": "login",
+        "tags": [
+          "auth"
+        ],
+        "summary": "发起 OIDC 登录",
+        "description": "创建服务端 PKCE 登录挑战，设置短期 onepic_login cookie，并重定向到身份提供方。",
+        "security": [],
+        "responses": {
+          "302": {
+            "description": "重定向到 OIDC 身份提供方",
+            "headers": {
+              "Location": {
+                "description": "OIDC 授权端点 URL。",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/callback": {
+      "get": {
+        "operationId": "completeLogin",
+        "tags": [
+          "auth"
+        ],
+        "summary": "完成 OIDC 授权码回调",
+        "description": "校验 code、state、onepic_login 挑战与 OIDC token 后创建 opaque 会话； 成功时设置 onepic_session、清除 onepic_login，并重定向到站点根路径。\n",
+        "security": [],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AuthCode"
+          },
+          {
+            "$ref": "#/components/parameters/AuthState"
+          },
+          {
+            "$ref": "#/components/parameters/PendingLoginCookie"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "登录成功并重定向到站点根路径",
+            "headers": {
+              "Location": {
+                "description": "登录后的站内重定向路径。",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "operationId": "getCurrentSubject",
+        "tags": [
+          "auth"
+        ],
+        "summary": "查询当前登录主体",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "当前登录主体",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfAuthMe"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "refreshSession",
+        "tags": [
+          "auth"
+        ],
+        "summary": "轮换当前会话",
+        "description": "签发新 opaque session cookie 并撤销旧会话。",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "会话已轮换",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfAuthRefresh"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "tags": [
+          "auth"
+        ],
+        "summary": "注销当前会话",
+        "description": "有会话时撤销它，并始终清除 onepic_session cookie。",
+        "security": [
+          {
+            "sessionCookie": []
+          },
+          {}
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "注销完成",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfAuthLogout"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/media/{bucket}/{objectKey}": {
+      "get": {
+        "operationId": "getSignedMedia",
+        "tags": [
+          "media"
+        ],
+        "summary": "下载属主绑定的私有媒体",
+        "description": "同时要求有效 onepic_session 与短期 HMAC 签名。owner 既参与签名，也必须 等于当前会话主体；objectKey 对应 runtime 的通配路径，可包含斜杠。 匿名或跨属主请求按 runtime 防枚举语义返回 404。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/MediaBucket"
+          },
+          {
+            "$ref": "#/components/parameters/MediaObjectKey"
+          },
+          {
+            "$ref": "#/components/parameters/MediaOwner"
+          },
+          {
+            "$ref": "#/components/parameters/MediaExpires"
+          },
+          {
+            "$ref": "#/components/parameters/MediaSignature"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "私有图片字节",
+            "headers": {
+              "Cache-Control": {
+                "description": "私有媒体禁止共享缓存与持久缓存。",
+                "schema": {
+                  "type": "string",
+                  "const": "private, no-store"
+                }
+              }
+            },
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/webp": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "410": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "500": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/uploads": {
+      "post": {
+        "operationId": "createUpload",
+        "tags": [
+          "media"
+        ],
+        "summary": "创建短期上传会话（隔离区）",
+        "description": "声明字节数与 MIME，服务端生成对象键（客户端路径一律拒绝）。 字节经 PUT /uploads/{uploadId}/bytes 上传，POST /uploads/{uploadId}/confirm 确认后方可用于预审。会话 1 小时过期。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "上传会话已创建",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfUploadSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "413": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "415": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/uploads/{uploadId}/bytes": {
+      "put": {
+        "operationId": "uploadBytes",
+        "tags": [
+          "media"
+        ],
+        "summary": "上传字节到隔离区",
+        "description": "原始字节正文（application/octet-stream），长度必须与创建时声明的 declaredBytes 完全一致；仅会话属主可写。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UploadId"
+          },
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "字节已落盘到隔离区",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfUploadBytes"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "410": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/uploads/{uploadId}/confirm": {
+      "post": {
+        "operationId": "confirmUpload",
+        "tags": [
+          "media"
+        ],
+        "summary": "确认上传完成",
+        "description": "校验字节完整后把上传标记为已确认并记录实际 sha256；重复确认返回 409。确认后的对象仍需经预审解码校验才进入 ready。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/UploadId"
+          },
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UploadConfirmRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "上传已确认",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfUploadConfirmed"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "410": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/prechecks": {
+      "post": {
+        "operationId": "createPrecheck",
+        "tags": [
+          "precheck"
+        ],
+        "summary": "生成前预审",
+        "description": "校验模板不可变版本存在、输入对象属主/确认状态、真实解码与像素上限、 模型/质量落在能力注册表内；settings 中携带提示词正文一律拒绝 （PROMPT_REWRITE_BLOCKED）。预审 1 小时过期，生成创建时重新核对 同一预审行绑定的模板版本与输入对象。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrecheckCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "预审通过",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfPrecheckCreated"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "413": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "415": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/generations": {
+      "get": {
+        "operationId": "listGenerations",
+        "tags": [
+          "workspace"
+        ],
+        "summary": "本人生成历史（cursor 分页）",
+        "description": "仅返回本人任务，稳定排序 created_at DESC + id tiebreaker。 cursor 为不透明签名串（服务端 HMAC 签发，篡改/非法一律 400）， 逐页遍历不重不漏；state 过滤可选。limit 上限 50，默认 20。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/HistoryStateFilter"
+          },
+          {
+            "$ref": "#/components/parameters/PageCursor"
+          },
+          {
+            "$ref": "#/components/parameters/PageLimit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "一页历史（meta.nextCursor 存在时还有下一页）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfGenerationList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createGeneration",
+        "tags": [
+          "generation"
+        ],
+        "summary": "幂等创建生成任务",
+        "description": "携带 Idempotency-Key；同键同请求指纹返回同一任务，同键不同指纹返回 409 IDEMPOTENCY_CONFLICT。服务端重新读取不可变模板版本并比对 promptSha256，拒绝浏览器正文替换。任务异步执行，恒返回 202， 经 GET /generations/{generationId} 轮询。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "幂等键；浏览器端在一次点击周期内生成并复用。",
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerationCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "任务已受理（新建或幂等重放）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfGenerationStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/generations/{generationId}": {
+      "get": {
+        "operationId": "getGeneration",
+        "tags": [
+          "generation"
+        ],
+        "summary": "查询生成任务状态与结果元数据",
+        "description": "对象级鉴权：仅属主可读（越权 403 FORBIDDEN，不存在 404 NOT_FOUND）。 data 字段以 generation-status-response.schema.json 为准；签名下载 地址与建议轮询间隔在 meta 中（结果媒体存活时才有 downloadUrl， 过期不改变历史成功事实）。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GenerationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "任务状态",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfGenerationStatus"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteGeneration",
+        "tags": [
+          "generation"
+        ],
+        "summary": "用户删除生成任务的结果媒体（O01）",
+        "description": "仅属主可删（越权 403，不存在 404）。任务/attempt/result 元数据与哈希 事实行保留（历史不改写）；结果媒体字节立即物理删除并写入 deletion_manifest（reason=user_delete），既有签名下载地址即刻 410。 created/queued 任务先按 J08 语义取消（释放配额、job 移除）再删； running 任务记录取消请求后删除（CANCEL_NOT_GUARANTEED，不保证免计 费）；outcome_unknown 拒绝（409 GENERATION_STATE_ILLEGAL，只能经 request-ID 对账退出）。输入媒体在无其他任务引用时一并过期删除。 重复删除幂等：返回一致的 deleted=true。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GenerationId"
+          },
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除结果（含删除后的任务状态）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfGenerationDelete"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/generations/{generationId}/sidecar": {
+      "get": {
+        "operationId": "getGenerationSidecar",
+        "tags": [
+          "generation"
+        ],
+        "summary": "查询生成任务的可追溯 sidecar",
+        "description": "authenticated GET；仅属主可读。成功信封只包含模板、输入、提示词、attempt 与结果的哈希和元数据，不包含提示词正文、Provider 凭据或签名材料。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GenerationId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "哈希与元数据 sidecar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfGenerationSidecar"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/generations/{generationId}/cancel": {
+      "post": {
+        "operationId": "cancelGeneration",
+        "tags": [
+          "generation"
+        ],
+        "summary": "协作式取消生成任务",
+        "description": "J08 诚实语义：queued 立即取消并释放配额（job 从 pending 队列移除）； running 仅记录取消请求（outcome=cancel_requested， code=CANCEL_NOT_GUARANTEED——provider 可能已接受并计费，上游无取消 API）；已终态任务原样回报（already_terminal）；outcome_unknown 拒绝 取消（409 GENERATION_STATE_ILLEGAL，只能经 request-ID 对账或人工 处置退出）。重复取消幂等：同一任务返回一致状态，配额不会重复释放。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GenerationId"
+          },
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取消结果（含 already_terminal 与 cancel_requested）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfGenerationCancel"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "409": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/collections": {
+      "get": {
+        "operationId": "listCollections",
+        "tags": [
+          "workspace"
+        ],
+        "summary": "本人集合列表（cursor 分页，含条目计数）",
+        "description": "仅返回本人集合，稳定排序 created_at ASC + id tiebreaker； cursor 机制与历史分页一致（签名防篡改，非法 400）。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageCursor"
+          },
+          {
+            "$ref": "#/components/parameters/PageLimit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "一页集合",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfCollectionList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createCollection",
+        "tags": [
+          "workspace"
+        ],
+        "summary": "创建集合",
+        "description": "同一属主下 name 唯一（§1.13）；重名返回 409 COLLECTION_NAME_CONFLICT。",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "集合已创建",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfCollectionSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "409": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/collections/{collectionId}": {
+      "delete": {
+        "operationId": "deleteCollection",
+        "tags": [
+          "workspace"
+        ],
+        "summary": "删除集合（不触碰任务与媒体）",
+        "description": "仅删除集合行与成员关系（collection_item 级联）；绝不删除 generation / media_object / result 行，被收藏任务仍可经 GET /generations/{id} 读取。仅属主可删（越权 403，不存在 404）。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CollectionId"
+          },
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "集合已删除",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfCollectionDeleted"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/collections/{collectionId}/items": {
+      "post": {
+        "operationId": "addCollectionItem",
+        "tags": [
+          "workspace"
+        ],
+        "summary": "收藏模板或生成任务到集合（幂等）",
+        "description": "PK (collection_id, item_type, item_key) 保证重复收藏幂等：重复 POST 返回相同结果（200，addedAt 为首次收藏时间），不产生重复行。 itemType=template 时 itemKey 必须存在于已导入目录；itemType= generation 时 itemKey 必须是本人 generation 的 UUID（他人 403， 不存在 404）。集合本身仅属主可写（越权 403，不存在 404）。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CollectionId"
+          },
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CollectionItemAddRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "条目已在集合中（新增或幂等重放）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfCollectionItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationFailed"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/collections/{collectionId}/items/{itemType}/{itemKey}": {
+      "delete": {
+        "operationId": "removeCollectionItem",
+        "tags": [
+          "workspace"
+        ],
+        "summary": "从集合移除条目（幂等）",
+        "description": "条目不存在同样返回 200（removed=false）；仅属主可操作。",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CollectionId"
+          },
+          {
+            "$ref": "#/components/parameters/CollectionItemType"
+          },
+          {
+            "$ref": "#/components/parameters/CollectionItemKey"
+          },
+          {
+            "$ref": "#/components/parameters/CsrfHeader"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "移除结果（removed 表示是否确有此行）",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfCollectionItemRemoval"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
+          },
+          "403": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          },
+          "404": {
+            "$ref": "#/components/responses/ApiFailureResponse"
+          }
+        }
+      }
+    },
+    "/exports/workspace": {
+      "get": {
+        "operationId": "exportWorkspace",
+        "tags": [
+          "workspace"
+        ],
+        "summary": "导出本人收藏/集合/历史（不含密钥）",
+        "description": "data 严格遵循 docs/design/backend-schemas/workspace-export.schema.json： favorites 为本人集合内收藏的模板 id（去重），collections 为集合名与 成员，history 为本人全部任务摘要（服务端内部以 W03 keyset 分页翻完 全部页）。响应绝不包含密钥、会话、签名材料或他人记录。\n",
+        "security": [
+          {
+            "sessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "导出文档",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessOfWorkspaceExport"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthenticated"
           }
         }
       }
     }
   },
   "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "onepic_session",
+        "description": "服务端 opaque 会话（OIDC 授权码 + PKCE 登录后签发，B03）。"
+      }
+    },
+    "parameters": {
+      "CsrfHeader": {
+        "name": "x-onepic-requested-with",
+        "in": "header",
+        "required": true,
+        "description": "CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。",
+        "schema": {
+          "type": "string",
+          "const": "onepic-fetch"
+        }
+      },
+      "AuthCode": {
+        "name": "code",
+        "in": "query",
+        "required": true,
+        "description": "OIDC provider 返回的一次性授权码。",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "AuthState": {
+        "name": "state",
+        "in": "query",
+        "required": true,
+        "description": "与服务端 pending login challenge 绑定的 OIDC state。",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "PendingLoginCookie": {
+        "name": "onepic_login",
+        "in": "cookie",
+        "required": true,
+        "description": "/auth/login 设置的短期、HttpOnly 登录挑战句柄。",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "MediaBucket": {
+        "name": "bucket",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "MediaObjectKey": {
+        "name": "objectKey",
+        "in": "path",
+        "required": true,
+        "description": "私有对象键；runtime 使用通配路径，因此可包含斜杠。",
+        "schema": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "MediaOwner": {
+        "name": "owner",
+        "in": "query",
+        "required": true,
+        "description": "参与 HMAC 签名且必须等于当前 session 主体的 subject UUID。",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "MediaExpires": {
+        "name": "expires",
+        "in": "query",
+        "required": true,
+        "description": "签名 URL 的 Unix 秒过期时间。",
+        "schema": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0
+        }
+      },
+      "MediaSignature": {
+        "name": "signature",
+        "in": "query",
+        "required": true,
+        "description": "HMAC-SHA256 的无填充 base64url 签名。",
+        "schema": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      },
+      "UploadId": {
+        "name": "uploadId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "GenerationId": {
+        "name": "generationId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "CollectionId": {
+        "name": "collectionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "CollectionItemType": {
+        "name": "itemType",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "enum": [
+            "template",
+            "generation"
+          ]
+        }
+      },
+      "CollectionItemKey": {
+        "name": "itemKey",
+        "in": "path",
+        "required": true,
+        "description": "template 为模板 ID，generation 为任务 UUID。",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "PageCursor": {
+        "name": "cursor",
+        "in": "query",
+        "required": false,
+        "description": "上一页 meta.nextCursor 原样回传；不透明签名串，篡改/非法一律 400。",
+        "schema": {
+          "type": "string",
+          "maxLength": 512
+        }
+      },
+      "PageLimit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "每页条数，默认 20，上限 50。",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "HistoryStateFilter": {
+        "name": "state",
+        "in": "query",
+        "required": false,
+        "description": "按任务状态过滤（架构 §9 生命周期枚举）。",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "created",
+            "queued",
+            "running",
+            "succeeded",
+            "failed",
+            "cancelled",
+            "expired",
+            "outcome_unknown"
+          ]
+        }
+      }
+    },
+    "responses": {
+      "ValidationFailed": {
+        "description": "请求未通过契约校验（含未知字段）",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiFailure"
+            }
+          }
+        }
+      },
+      "Unauthenticated": {
+        "description": "无有效会话",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiFailure"
+            }
+          }
+        }
+      },
+      "ApiFailureResponse": {
+        "description": "稳定错误码信封（错误码目录见 D06 数据字典）",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiFailure"
+            }
+          }
+        }
+      }
+    },
     "schemas": {
       "ApiMeta": {
         "type": "object",
@@ -121,6 +1423,121 @@
         "properties": {
           "error": {
             "$ref": "#/components/schemas/ApiErrorBody"
+          }
+        }
+      },
+      "Subject": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "issuer",
+          "subjectClaim",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "issuer": {
+            "type": "string",
+            "format": "uri"
+          },
+          "subjectClaim": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "guest",
+              "member",
+              "admin"
+            ]
+          }
+        }
+      },
+      "AuthMe": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "subject"
+        ],
+        "properties": {
+          "subject": {
+            "$ref": "#/components/schemas/Subject"
+          }
+        }
+      },
+      "AuthRefresh": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "rotated"
+        ],
+        "properties": {
+          "rotated": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "AuthLogout": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "loggedOut"
+        ],
+        "properties": {
+          "loggedOut": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "ApiSuccessOfAuthMe": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AuthMe"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "ApiSuccessOfAuthRefresh": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AuthRefresh"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "ApiSuccessOfAuthLogout": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AuthLogout"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
           }
         }
       },
@@ -179,6 +1596,1171 @@
         "properties": {
           "data": {
             "$ref": "#/components/schemas/HealthReady"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "UploadCreateRequest": {
+        "type": "object",
+        "description": "字段以 docs/design/backend-schemas/upload-create-request.schema.json 为准。",
+        "additionalProperties": false,
+        "required": [
+          "declaredBytes",
+          "declaredMime"
+        ],
+        "properties": {
+          "declaredBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20971520
+          },
+          "declaredMime": {
+            "type": "string",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          }
+        }
+      },
+      "UploadSession": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "uploadId",
+          "bucket",
+          "expiresAt"
+        ],
+        "properties": {
+          "uploadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bucket": {
+            "type": "string",
+            "description": "服务端隔离区桶名（quarantine）；对象键永不返回给客户端。"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UploadConfirmRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sha256"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "客户端对已上传字节计算的 SHA-256（hex）。"
+          }
+        }
+      },
+      "UploadConfirmed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mediaObjectId",
+          "bytes"
+        ],
+        "properties": {
+          "mediaObjectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "UploadBytes": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "bytes"
+        ],
+        "properties": {
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "PrecheckCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "templateId",
+          "templateVersion",
+          "sourceObjectId",
+          "settings"
+        ],
+        "properties": {
+          "templateId": {
+            "type": "string",
+            "pattern": "^(case-[0-9]+|framework-[0-9]{3})$"
+          },
+          "templateVersion": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sourceObjectId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "已确认上传的 mediaObjectId。"
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "model": {
+                "type": "string",
+                "minLength": 1
+              },
+              "quality": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "description": "比例恒为继承参考图（单图协议），不接受 aspect 参数； 携带提示词正文（prompt/effectivePrompt）会被拒绝。\n"
+          }
+        }
+      },
+      "PrecheckCreated": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "precheckId",
+          "expiresAt"
+        ],
+        "properties": {
+          "precheckId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GenerationCreateRequest": {
+        "type": "object",
+        "description": "字段以 docs/design/backend-schemas/generation-create-request.schema.json 为准。",
+        "additionalProperties": false,
+        "required": [
+          "templateId",
+          "templateVersion",
+          "promptSha256",
+          "sourceObjectId",
+          "settings"
+        ],
+        "properties": {
+          "templateId": {
+            "type": "string",
+            "pattern": "^(case-[0-9]+|framework-[0-9]{3})$"
+          },
+          "templateVersion": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "promptSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "客户端核验过的目录 promptSha256；服务端与不可变版本再比对。"
+          },
+          "sourceObjectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "precheckId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "settings": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "model"
+            ],
+            "properties": {
+              "model": {
+                "type": "string",
+                "minLength": 1
+              },
+              "quality": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "high"
+                ]
+              },
+              "aspectRatio": {
+                "type": "string",
+                "pattern": "^[0-9]+:[0-9]+$"
+              }
+            }
+          }
+        }
+      },
+      "GenerationResult": {
+        "type": "object",
+        "description": "结果实际解码元数据（actual* 与请求参数分开记录）。",
+        "additionalProperties": false,
+        "required": [
+          "objectId",
+          "actualMime",
+          "actualBytes",
+          "actualWidth",
+          "actualHeight",
+          "sha256"
+        ],
+        "properties": {
+          "objectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actualMime": {
+            "type": "string",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          },
+          "actualBytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "actualWidth": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "actualHeight": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "GenerationStatus": {
+        "type": "object",
+        "description": "data 字段以 generation-status-response.schema.json 为准。",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "state",
+          "templateId",
+          "templateVersion",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "created",
+              "queued",
+              "running",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "expired",
+              "outcome_unknown"
+            ]
+          },
+          "templateId": {
+            "type": "string",
+            "pattern": "^(case-[0-9]+|framework-[0-9]{3})$"
+          },
+          "templateVersion": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "result": {
+            "$ref": "#/components/schemas/GenerationResult"
+          }
+        }
+      },
+      "GenerationStatusMeta": {
+        "type": "object",
+        "description": "轮询建议与签名下载地址（结果媒体存活时才有 downloadUrl）。",
+        "additionalProperties": true,
+        "properties": {
+          "pollAfterMs": {
+            "type": "integer",
+            "minimum": 250
+          },
+          "downloadUrl": {
+            "type": "string",
+            "description": "短期签名下载路径（/api/v1/media/...，属主绑定）。"
+          },
+          "downloadExpires": {
+            "type": "integer",
+            "description": "downloadUrl 的过期时间（Unix 秒）。"
+          }
+        }
+      },
+      "ApiSuccessOfUploadSession": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UploadSession"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "ApiSuccessOfUploadBytes": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UploadBytes"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "ApiSuccessOfUploadConfirmed": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/UploadConfirmed"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "ApiSuccessOfPrecheckCreated": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/PrecheckCreated"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "ApiSuccessOfGenerationStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GenerationStatus"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/GenerationStatusMeta"
+          }
+        }
+      },
+      "GenerationSidecarTemplate": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "version"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^(case-[0-9]+|framework-[0-9]{3})$"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "GenerationSidecarPrompt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "compiledSha256",
+          "effectiveSha256"
+        ],
+        "properties": {
+          "compiledSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "effectiveSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "GenerationSidecarInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sha256"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "GenerationSidecarAttempt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "attemptNo",
+          "state",
+          "errorCode",
+          "httpStatus",
+          "sentPromptSha256",
+          "providerRequestId"
+        ],
+        "properties": {
+          "attemptNo": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "sent",
+              "accepted",
+              "succeeded",
+              "failed",
+              "unknown"
+            ]
+          },
+          "errorCode": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "httpStatus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "sentPromptSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "providerRequestId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "GenerationSidecarResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sha256",
+          "mime",
+          "bytes",
+          "width",
+          "height",
+          "mediaState",
+          "mediaExpired"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "mime": {
+            "type": "string",
+            "enum": [
+              "image/jpeg",
+              "image/png",
+              "image/webp"
+            ]
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "mediaState": {
+            "type": "string",
+            "enum": [
+              "quarantine",
+              "ready",
+              "rejected",
+              "expired",
+              "deleted"
+            ]
+          },
+          "mediaExpired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GenerationSidecar": {
+        "type": "object",
+        "description": "只含哈希与元数据的可追溯 sidecar；不含提示词正文、密钥或签名材料。",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "kind",
+          "generationId",
+          "state",
+          "template",
+          "prompt",
+          "input",
+          "attempts",
+          "result",
+          "createdAt",
+          "completedAt"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "const": "1.0.0"
+          },
+          "kind": {
+            "type": "string",
+            "const": "onepic-generation-sidecar"
+          },
+          "generationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "created",
+              "queued",
+              "running",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "expired",
+              "outcome_unknown"
+            ]
+          },
+          "template": {
+            "$ref": "#/components/schemas/GenerationSidecarTemplate"
+          },
+          "prompt": {
+            "$ref": "#/components/schemas/GenerationSidecarPrompt"
+          },
+          "input": {
+            "$ref": "#/components/schemas/GenerationSidecarInput"
+          },
+          "attempts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GenerationSidecarAttempt"
+            }
+          },
+          "result": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GenerationSidecarResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "ApiSuccessOfGenerationSidecar": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GenerationSidecar"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "GenerationCancelResult": {
+        "type": "object",
+        "description": "取消结果（J08）；running 任务的 code 恒为 CANCEL_NOT_GUARANTEED。",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "state",
+          "outcome"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "created",
+              "queued",
+              "running",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "expired",
+              "outcome_unknown"
+            ]
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "cancelled",
+              "cancel_requested",
+              "already_terminal"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "const": "CANCEL_NOT_GUARANTEED"
+          }
+        }
+      },
+      "ApiSuccessOfGenerationCancel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GenerationCancelResult"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "GenerationDeleteResult": {
+        "type": "object",
+        "description": "用户删除结果（O01）：元数据与哈希事实保留，结果媒体字节已物理删除 并写入 deletion_manifest；state 为删除后的任务状态。\n",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "deleted",
+          "state"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deleted": {
+            "type": "boolean",
+            "const": true
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "created",
+              "queued",
+              "running",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "expired",
+              "outcome_unknown"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "const": "CANCEL_NOT_GUARANTEED",
+            "description": "running 任务删除时恒出现——取消请求已记录但不保证免计费。"
+          }
+        }
+      },
+      "ApiSuccessOfGenerationDelete": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GenerationDeleteResult"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "GenerationList": {
+        "type": "object",
+        "description": "一页历史；item 形状与 generation-status-response 相同（不含 result）。",
+        "additionalProperties": false,
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GenerationStatus"
+            }
+          }
+        }
+      },
+      "GenerationListMeta": {
+        "type": "object",
+        "description": "分页元数据；nextCursor 仅在还有下一页时出现。",
+        "additionalProperties": true,
+        "properties": {
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiSuccessOfGenerationList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GenerationList"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/GenerationListMeta"
+          }
+        }
+      },
+      "CollectionSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "createdAt",
+          "itemCount"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "itemCount": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "CollectionList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CollectionSummary"
+            }
+          }
+        }
+      },
+      "ApiSuccessOfCollectionList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CollectionList"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/GenerationListMeta"
+          }
+        }
+      },
+      "CollectionCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          }
+        }
+      },
+      "ApiSuccessOfCollectionSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CollectionSummary"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "CollectionDeleted": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "deleted"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deleted": {
+            "type": "boolean",
+            "const": true
+          }
+        }
+      },
+      "ApiSuccessOfCollectionDeleted": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CollectionDeleted"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "CollectionItemAddRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "itemType",
+          "itemKey"
+        ],
+        "properties": {
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "template",
+              "generation"
+            ]
+          },
+          "itemKey": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "template 为模板 ID（case-N / framework-NNN），generation 为任务 UUID。"
+          }
+        }
+      },
+      "CollectionItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "collectionId",
+          "itemType",
+          "itemKey",
+          "addedAt"
+        ],
+        "properties": {
+          "collectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "template",
+              "generation"
+            ]
+          },
+          "itemKey": {
+            "type": "string"
+          },
+          "addedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "首次收藏时间；幂等重放不改变该值。"
+          }
+        }
+      },
+      "ApiSuccessOfCollectionItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CollectionItem"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "CollectionItemRemoval": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "collectionId",
+          "itemType",
+          "itemKey",
+          "removed"
+        ],
+        "properties": {
+          "collectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "template",
+              "generation"
+            ]
+          },
+          "itemKey": {
+            "type": "string"
+          },
+          "removed": {
+            "type": "boolean",
+            "description": "是否确有此行被删除；重复移除为 false（幂等 200）。"
+          }
+        }
+      },
+      "ApiSuccessOfCollectionItemRemoval": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/CollectionItemRemoval"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/ApiMeta"
+          }
+        }
+      },
+      "WorkspaceExportCollectionItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "itemType",
+          "itemKey"
+        ],
+        "properties": {
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "template",
+              "generation"
+            ]
+          },
+          "itemKey": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "WorkspaceExportCollection": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "items"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceExportCollectionItem"
+            }
+          }
+        }
+      },
+      "WorkspaceExportHistoryItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "generationId",
+          "templateId",
+          "state",
+          "createdAt"
+        ],
+        "properties": {
+          "generationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "templateId": {
+            "type": "string",
+            "pattern": "^(case-[0-9]+|framework-[0-9]{3})$"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "created",
+              "queued",
+              "running",
+              "succeeded",
+              "failed",
+              "cancelled",
+              "expired",
+              "outcome_unknown"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WorkspaceExport": {
+        "type": "object",
+        "description": "与 docs/design/backend-schemas/workspace-export.schema.json 同形； 私人收藏/集合/历史导出，不得包含任何密钥。\n",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "exportedAt",
+          "favorites",
+          "collections",
+          "history"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          },
+          "exportedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "favorites": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^(case-[0-9]+|framework-[0-9]{3})$"
+            }
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceExportCollection"
+            }
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceExportHistoryItem"
+            }
+          }
+        }
+      },
+      "ApiSuccessOfWorkspaceExport": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/WorkspaceExport"
           },
           "meta": {
             "$ref": "#/components/schemas/ApiMeta"

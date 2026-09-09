@@ -35,14 +35,17 @@ export interface ClaimOptions {
   kinds?: string[];
 }
 
-export async function claimJobs(
-  db: Queryable,
-  options: ClaimOptions,
-): Promise<ClaimedJob[]> {
+export async function claimJobs(db: Queryable, options: ClaimOptions): Promise<ClaimedJob[]> {
   const leaseSeconds = options.leaseSeconds ?? 60;
   const batch = options.batch ?? 1;
   const kinds = options.kinds ?? ['generate'];
-  const result = await db.query<{ id: string; generation_id: string; kind: string; attempts: number; max_attempts: number }>(
+  const result = await db.query<{
+    id: string;
+    generation_id: string;
+    kind: string;
+    attempts: number;
+    max_attempts: number;
+  }>(
     `UPDATE job SET state = 'leased', lease_owner = $1, lease_expires_at = now() + make_interval(secs => $2),
        heartbeat_at = now(), attempts = attempts + 1
      WHERE id IN (
@@ -64,7 +67,10 @@ export async function claimJobs(
   }));
 }
 
-export async function heartbeat(db: Queryable, input: { jobId: string; workerId: string; leaseSeconds: number }): Promise<boolean> {
+export async function heartbeat(
+  db: Queryable,
+  input: { jobId: string; workerId: string; leaseSeconds: number },
+): Promise<boolean> {
   const result = await db.query(
     `UPDATE job SET heartbeat_at = now(), lease_expires_at = now() + make_interval(secs => $3)
      WHERE id = $1 AND lease_owner = $2 AND state = 'leased'`,
@@ -109,8 +115,14 @@ export async function completeJob(
       [input.generationId],
     );
     const generationState = generation.rows[0]?.state ?? 'missing';
-    if (generationState === 'succeeded' || generationState === 'failed' || generationState === 'cancelled') {
-      await db.query(`UPDATE job SET state = 'done', lease_owner = NULL WHERE id = $1`, [input.jobId]);
+    if (
+      generationState === 'succeeded' ||
+      generationState === 'failed' ||
+      generationState === 'cancelled'
+    ) {
+      await db.query(`UPDATE job SET state = 'done', lease_owner = NULL WHERE id = $1`, [
+        input.jobId,
+      ]);
       await db.query('COMMIT');
       return { completed: true, reason: 'ALREADY_TERMINAL' };
     }
@@ -126,7 +138,9 @@ export async function completeJob(
         [input.generationId, input.errorCode ?? 'INTERNAL'],
       );
     }
-    await db.query(`UPDATE job SET state = 'done', lease_owner = NULL WHERE id = $1`, [input.jobId]);
+    await db.query(`UPDATE job SET state = 'done', lease_owner = NULL WHERE id = $1`, [
+      input.jobId,
+    ]);
     await db.query('COMMIT');
     return { completed: true };
   } catch (error) {
@@ -151,10 +165,14 @@ export async function failJob(
 ): Promise<{ retried: boolean; dead: boolean }> {
   await db.query('BEGIN');
   try {
-    const job = await db.query<{ lease_owner: string; state: string; attempts: number; max_attempts: number }>(
-      `SELECT lease_owner, state, attempts, max_attempts FROM job WHERE id = $1 FOR UPDATE`,
-      [input.jobId],
-    );
+    const job = await db.query<{
+      lease_owner: string;
+      state: string;
+      attempts: number;
+      max_attempts: number;
+    }>(`SELECT lease_owner, state, attempts, max_attempts FROM job WHERE id = $1 FOR UPDATE`, [
+      input.jobId,
+    ]);
     const row = job.rows[0];
     if (row === undefined || row.state !== 'leased' || row.lease_owner !== input.workerId) {
       await db.query('ROLLBACK');

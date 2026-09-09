@@ -86,7 +86,11 @@ export async function resolveUnknown(
   }
   await db.query(
     `UPDATE generation SET state = $2, error_code = $3, updated_at = now(), completed_at = now() WHERE id = $1`,
-    [input.generationId, input.decision, input.decision === 'failed' ? 'PROVIDER_TIMEOUT_UNKNOWN' : null],
+    [
+      input.generationId,
+      input.decision,
+      input.decision === 'failed' ? 'PROVIDER_TIMEOUT_UNKNOWN' : null,
+    ],
   );
   return { resolved: true, state: input.decision };
 }

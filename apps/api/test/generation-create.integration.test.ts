@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Client } from 'pg';
+import { createHash } from 'node:crypto';
 
 import { startPgTestCluster, type PgTestCluster } from '@onepic/test-support';
 
@@ -9,7 +10,11 @@ import { QuotaService } from '../src/modules/quota/service.js';
 import { PrecheckService } from '../src/modules/media/precheck-service.js';
 import { UploadService } from '../src/modules/media/upload-service.js';
 import { LocalDiskStorage } from '../src/infra/storage/storage.js';
-import { importCatalogRelease, sha256Hex, stablePromptBody } from '../src/modules/catalog/import.js';
+import {
+  importCatalogRelease,
+  sha256Hex,
+  stablePromptBody,
+} from '../src/modules/catalog/import.js';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -54,7 +59,8 @@ beforeAll(async () => {
   // Import a one-template catalog (B02) and precheck an upload (M01–M04).
   const fixtureRoot = await mkdtemp(path.join(tmpdir(), 'j01-catalog-'));
   const fs = await import('node:fs/promises');
-  const promptBody = '[System / Prompt]\nj01 body\nBEGIN VISUAL BLUEPRINT\nb\nEND VISUAL BLUEPRINT\n';
+  const promptBody =
+    '[System / Prompt]\nj01 body\nBEGIN VISUAL BLUEPRINT\nb\nEND VISUAL BLUEPRINT\n';
   const catalog = {
     schemaVersion: '1.1.0',
     source: { project: 't', repository: 'r', archiveSha256: 'a'.repeat(64), license: 'MIT' },
@@ -80,7 +86,10 @@ beforeAll(async () => {
   };
   await fs.mkdir(path.join(fixtureRoot, 'data/library'), { recursive: true });
   await fs.mkdir(path.join(fixtureRoot, 'public/data/prompts'), { recursive: true });
-  await fs.writeFile(path.join(fixtureRoot, 'data/library/templates.json'), JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }));
+  await fs.writeFile(
+    path.join(fixtureRoot, 'data/library/templates.json'),
+    JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }),
+  );
   await fs.writeFile(path.join(fixtureRoot, 'public/data/catalog.json'), JSON.stringify(catalog));
   await fs.writeFile(path.join(fixtureRoot, 'public/data/prompts/case-42.txt'), promptBody);
   await importCatalogRelease({ client, rootDir: fixtureRoot });
@@ -88,10 +97,18 @@ beforeAll(async () => {
 
   const uploads = new UploadService(client, storage);
   const prechecks = new PrecheckService(client, storage);
-  const created = await uploads.createUpload({ ownerId: subjectId, declaredBytes: PNG.length, declaredMime: 'image/png' });
+  const created = await uploads.createUpload({
+    ownerId: subjectId,
+    declaredBytes: PNG.length,
+    declaredMime: 'image/png',
+  });
   if (!created.ok) throw new Error('fixture upload failed');
   await uploads.putQuarantineBytes(created.value.uploadId, subjectId, PNG);
-  const confirmed = await uploads.confirmUpload({ uploadId: created.value.uploadId, ownerId: subjectId, actualSha256: 'fixture' });
+  const confirmed = await uploads.confirmUpload({
+    uploadId: created.value.uploadId,
+    ownerId: subjectId,
+    actualSha256: createHash('sha256').update(PNG).digest('hex'),
+  });
   if (!confirmed.ok) throw new Error('fixture confirm failed');
 
   const precheck = await prechecks.createPrecheck({

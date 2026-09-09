@@ -16,8 +16,8 @@
     "validate": "python3 scripts/validate_library.py && python3 scripts/install_generated_previews.py --check",
     "test": "python3 -m unittest discover -s tests -p 'test_*.py'",
     "check": "npm run build && npm run validate && npm run test",
-    "build:workspaces": "npm run build -w @onepic/contracts && npm run build -w @onepic/client && npm run build -w @onepic/test-support && npm run build -w @onepic/api && npm run build -w @onepic/worker && npm run build -w @onepic/web",
-    "typecheck": "npm run typecheck -w @onepic/contracts && npm run typecheck -w @onepic/client && npm run typecheck -w @onepic/test-support && npm run typecheck -w @onepic/api && npm run typecheck:test -w @onepic/api && npm run typecheck:test -w @onepic/worker && npm run typecheck -w @onepic/worker && npm run typecheck -w @onepic/web",
+    "build:workspaces": "npm run build -w @onepic/contracts && npm run build -w @onepic/managed-runtime && npm run build -w @onepic/client && npm run build -w @onepic/test-support && npm run build -w @onepic/api && npm run build -w @onepic/worker && npm run build -w @onepic/web",
+    "typecheck": "npm run typecheck -w @onepic/contracts && npm run typecheck -w @onepic/managed-runtime && npm run typecheck:test -w @onepic/managed-runtime && npm run typecheck -w @onepic/client && npm run typecheck -w @onepic/test-support && npm run typecheck -w @onepic/api && npm run typecheck:test -w @onepic/api && npm run typecheck:test -w @onepic/worker && npm run typecheck -w @onepic/worker && npm run typecheck -w @onepic/web",
     "lint": "eslint .",
     "format": "prettier --write apps packages tsconfig.base.json eslint.config.js vitest.config.ts vitest.integration.config.ts playwright.config.ts",
     "format:check": "prettier --check apps packages tsconfig.base.json eslint.config.js vitest.config.ts vitest.integration.config.ts playwright.config.ts",
@@ -26,7 +26,13 @@
     "test:e2e": "playwright test",
     "lint:contract": "redocly lint packages/contracts/openapi/api-v1.yaml",
     "gen:api": "npm run generate -w @onepic/contracts",
-    "gen:api:check": "npm run generate:check -w @onepic/contracts"
+    "gen:api:check": "npm run generate:check -w @onepic/contracts",
+    "benchmark:capacity": "npm run build:workspaces && node scripts/benchmark-capacity.mjs",
+    "verify:local-stack": "bash scripts/verify-local-stack.sh",
+    "verify:managed-image": "bash scripts/verify-managed-image.sh",
+    "verify:real-provider": "npm run build:workspaces && node scripts/verify-real-provider.mjs",
+    "rehearse:recovery": "npm run build:workspaces && npm run rehearse:recovery:built",
+    "rehearse:recovery:built": "node scripts/rehearse-recovery.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

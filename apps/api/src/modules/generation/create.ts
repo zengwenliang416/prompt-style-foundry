@@ -88,8 +88,9 @@ export class GenerationService {
     try {
       await connection.query('BEGIN');
       try {
-        const inserted = await connection.query<{ id: string }>(
-          `INSERT INTO generation (id, owner_id, template_version_id, catalog_release_id,
+        const inserted = await connection
+          .query<{ id: string }>(
+            `INSERT INTO generation (id, owner_id, template_version_id, catalog_release_id,
              precheck_id, input_object_id, input_sha256, compiled_prompt_sha256,
              effective_prompt_sha256, provider_id, model, settings, idempotency_key, state)
            SELECT $1, p.subject_id, p.template_version_id, tv.catalog_release_id, p.id,
@@ -101,32 +102,39 @@ export class GenerationService {
            JOIN media_object m ON m.id = p.media_object_id
            WHERE p.id = $6 AND p.subject_id = $7 AND p.result = 'passed'
            RETURNING id`,
-          [
-            randomUUID(),
-            input.providerId,
-            input.model,
-            fp,
-            input.idempotencyKey,
-            input.precheckId,
-            input.ownerId,
-          ],
-        ).catch((error: unknown) => {
-          const code = (error as { code?: string }).code;
-          if (code === '23505') {
-            // (owner_id, idempotency_key) collision: resolve below.
-            return { rows: [], rowCount: null, fields: [], command: '' };
-          }
-          throw error;
-        });
+            [
+              randomUUID(),
+              input.providerId,
+              input.model,
+              fp,
+              input.idempotencyKey,
+              input.precheckId,
+              input.ownerId,
+            ],
+          )
+          .catch((error: unknown) => {
+            const code = (error as { code?: string }).code;
+            if (code === '23505') {
+              // (owner_id, idempotency_key) collision: resolve below.
+              return { rows: [], rowCount: null, fields: [], command: '' };
+            }
+            throw error;
+          });
 
         if (inserted.rows[0] === undefined) {
-          // Lost a concurrent race for this idempotency key.
-          const existing = await connection.query<{ id: string; state: string; fingerprint: string | null }>(
+          // Lost a concurrent race for this idempotency key. The 23505 above
+          // ABORTED this transaction at the PG level — roll back BEFORE
+          // reading, or the SELECT dies with "current transaction is aborted".
+          await connection.query('ROLLBACK');
+          const existing = await connection.query<{
+            id: string;
+            state: string;
+            fingerprint: string | null;
+          }>(
             `SELECT id, state, settings->>'_fingerprint' AS fingerprint
              FROM generation WHERE owner_id = $1 AND idempotency_key = $2`,
             [input.ownerId, input.idempotencyKey],
           );
-          await connection.query('ROLLBACK');
           const row = existing.rows[0];
           if (row === undefined) {
             return { ok: false, code: 'PRECHECK_INVALID' };

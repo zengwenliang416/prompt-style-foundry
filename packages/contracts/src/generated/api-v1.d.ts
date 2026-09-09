@@ -33,9 +33,398 @@ export interface paths {
         };
         /**
          * 依赖就绪探针
-         * @description 返回 200 与 status=ok 表示依赖就绪，status=degraded 表示部分依赖不可用； 不得触发付费 provider 探测（B06 语义占位，当前无依赖恒为 ok）。
+         * @description 返回 200/status=ok 表示当前模式依赖就绪（未配置数据库时 catalog-only 仍可就绪）； 返回 503/status=degraded 表示 PostgreSQL 不可达，或 managed-generation 的 schema/catalog 完整性条件不满足。探针不访问 Provider，不会触发付费调用。
          */
         get: operations["getHealthReady"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 发起 OIDC 登录
+         * @description 创建服务端 PKCE 登录挑战，设置短期 onepic_login cookie，并重定向到身份提供方。
+         */
+        get: operations["login"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 完成 OIDC 授权码回调
+         * @description 校验 code、state、onepic_login 挑战与 OIDC token 后创建 opaque 会话； 成功时设置 onepic_session、清除 onepic_login，并重定向到站点根路径。
+         */
+        get: operations["completeLogin"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 查询当前登录主体 */
+        get: operations["getCurrentSubject"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 轮换当前会话
+         * @description 签发新 opaque session cookie 并撤销旧会话。
+         */
+        post: operations["refreshSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 注销当前会话
+         * @description 有会话时撤销它，并始终清除 onepic_session cookie。
+         */
+        post: operations["logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/media/{bucket}/{objectKey}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 下载属主绑定的私有媒体
+         * @description 同时要求有效 onepic_session 与短期 HMAC 签名。owner 既参与签名，也必须 等于当前会话主体；objectKey 对应 runtime 的通配路径，可包含斜杠。 匿名或跨属主请求按 runtime 防枚举语义返回 404。
+         */
+        get: operations["getSignedMedia"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 创建短期上传会话（隔离区）
+         * @description 声明字节数与 MIME，服务端生成对象键（客户端路径一律拒绝）。 字节经 PUT /uploads/{uploadId}/bytes 上传，POST /uploads/{uploadId}/confirm 确认后方可用于预审。会话 1 小时过期。
+         */
+        post: operations["createUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/uploads/{uploadId}/bytes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * 上传字节到隔离区
+         * @description 原始字节正文（application/octet-stream），长度必须与创建时声明的 declaredBytes 完全一致；仅会话属主可写。
+         */
+        put: operations["uploadBytes"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/uploads/{uploadId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 确认上传完成
+         * @description 校验字节完整后把上传标记为已确认并记录实际 sha256；重复确认返回 409。确认后的对象仍需经预审解码校验才进入 ready。
+         */
+        post: operations["confirmUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/prechecks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 生成前预审
+         * @description 校验模板不可变版本存在、输入对象属主/确认状态、真实解码与像素上限、 模型/质量落在能力注册表内；settings 中携带提示词正文一律拒绝 （PROMPT_REWRITE_BLOCKED）。预审 1 小时过期，生成创建时重新核对 同一预审行绑定的模板版本与输入对象。
+         */
+        post: operations["createPrecheck"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/generations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 本人生成历史（cursor 分页）
+         * @description 仅返回本人任务，稳定排序 created_at DESC + id tiebreaker。 cursor 为不透明签名串（服务端 HMAC 签发，篡改/非法一律 400）， 逐页遍历不重不漏；state 过滤可选。limit 上限 50，默认 20。
+         */
+        get: operations["listGenerations"];
+        put?: never;
+        /**
+         * 幂等创建生成任务
+         * @description 携带 Idempotency-Key；同键同请求指纹返回同一任务，同键不同指纹返回 409 IDEMPOTENCY_CONFLICT。服务端重新读取不可变模板版本并比对 promptSha256，拒绝浏览器正文替换。任务异步执行，恒返回 202， 经 GET /generations/{generationId} 轮询。
+         */
+        post: operations["createGeneration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/generations/{generationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 查询生成任务状态与结果元数据
+         * @description 对象级鉴权：仅属主可读（越权 403 FORBIDDEN，不存在 404 NOT_FOUND）。 data 字段以 generation-status-response.schema.json 为准；签名下载 地址与建议轮询间隔在 meta 中（结果媒体存活时才有 downloadUrl， 过期不改变历史成功事实）。
+         */
+        get: operations["getGeneration"];
+        put?: never;
+        post?: never;
+        /**
+         * 用户删除生成任务的结果媒体（O01）
+         * @description 仅属主可删（越权 403，不存在 404）。任务/attempt/result 元数据与哈希 事实行保留（历史不改写）；结果媒体字节立即物理删除并写入 deletion_manifest（reason=user_delete），既有签名下载地址即刻 410。 created/queued 任务先按 J08 语义取消（释放配额、job 移除）再删； running 任务记录取消请求后删除（CANCEL_NOT_GUARANTEED，不保证免计 费）；outcome_unknown 拒绝（409 GENERATION_STATE_ILLEGAL，只能经 request-ID 对账退出）。输入媒体在无其他任务引用时一并过期删除。 重复删除幂等：返回一致的 deleted=true。
+         */
+        delete: operations["deleteGeneration"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/generations/{generationId}/sidecar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 查询生成任务的可追溯 sidecar
+         * @description authenticated GET；仅属主可读。成功信封只包含模板、输入、提示词、attempt 与结果的哈希和元数据，不包含提示词正文、Provider 凭据或签名材料。
+         */
+        get: operations["getGenerationSidecar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/generations/{generationId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 协作式取消生成任务
+         * @description J08 诚实语义：queued 立即取消并释放配额（job 从 pending 队列移除）； running 仅记录取消请求（outcome=cancel_requested， code=CANCEL_NOT_GUARANTEED——provider 可能已接受并计费，上游无取消 API）；已终态任务原样回报（already_terminal）；outcome_unknown 拒绝 取消（409 GENERATION_STATE_ILLEGAL，只能经 request-ID 对账或人工 处置退出）。重复取消幂等：同一任务返回一致状态，配额不会重复释放。
+         */
+        post: operations["cancelGeneration"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 本人集合列表（cursor 分页，含条目计数）
+         * @description 仅返回本人集合，稳定排序 created_at ASC + id tiebreaker； cursor 机制与历史分页一致（签名防篡改，非法 400）。
+         */
+        get: operations["listCollections"];
+        put?: never;
+        /**
+         * 创建集合
+         * @description 同一属主下 name 唯一（§1.13）；重名返回 409 COLLECTION_NAME_CONFLICT。
+         */
+        post: operations["createCollection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collections/{collectionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * 删除集合（不触碰任务与媒体）
+         * @description 仅删除集合行与成员关系（collection_item 级联）；绝不删除 generation / media_object / result 行，被收藏任务仍可经 GET /generations/{id} 读取。仅属主可删（越权 403，不存在 404）。
+         */
+        delete: operations["deleteCollection"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collections/{collectionId}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 收藏模板或生成任务到集合（幂等）
+         * @description PK (collection_id, item_type, item_key) 保证重复收藏幂等：重复 POST 返回相同结果（200，addedAt 为首次收藏时间），不产生重复行。 itemType=template 时 itemKey 必须存在于已导入目录；itemType= generation 时 itemKey 必须是本人 generation 的 UUID（他人 403， 不存在 404）。集合本身仅属主可写（越权 403，不存在 404）。
+         */
+        post: operations["addCollectionItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/collections/{collectionId}/items/{itemType}/{itemKey}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * 从集合移除条目（幂等）
+         * @description 条目不存在同样返回 200（removed=false）；仅属主可操作。
+         */
+        delete: operations["removeCollectionItem"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/exports/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 导出本人收藏/集合/历史（不含密钥）
+         * @description data 严格遵循 docs/design/backend-schemas/workspace-export.schema.json： favorites 为本人集合内收藏的模板 id（去重），collections 为集合名与 成员，history 为本人全部任务摘要（服务端内部以 W03 keyset 分页翻完 全部页）。响应绝不包含密钥、会话、签名材料或他人记录。
+         */
+        get: operations["exportWorkspace"];
         put?: never;
         post?: never;
         delete?: never;
@@ -69,6 +458,38 @@ export interface components {
         ApiFailure: {
             error: components["schemas"]["ApiErrorBody"];
         };
+        Subject: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uri */
+            issuer: string;
+            subjectClaim: string;
+            /** @enum {string} */
+            role: "guest" | "member" | "admin";
+        };
+        AuthMe: {
+            subject: components["schemas"]["Subject"];
+        };
+        AuthRefresh: {
+            /** @constant */
+            rotated: true;
+        };
+        AuthLogout: {
+            /** @constant */
+            loggedOut: true;
+        };
+        ApiSuccessOfAuthMe: {
+            data: components["schemas"]["AuthMe"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        ApiSuccessOfAuthRefresh: {
+            data: components["schemas"]["AuthRefresh"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        ApiSuccessOfAuthLogout: {
+            data: components["schemas"]["AuthLogout"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
         HealthLive: {
             /** @constant */
             status: "ok";
@@ -87,9 +508,386 @@ export interface components {
             data: components["schemas"]["HealthReady"];
             meta?: components["schemas"]["ApiMeta"];
         };
+        /** @description 字段以 docs/design/backend-schemas/upload-create-request.schema.json 为准。 */
+        UploadCreateRequest: {
+            declaredBytes: number;
+            /** @enum {string} */
+            declaredMime: "image/jpeg" | "image/png" | "image/webp";
+        };
+        UploadSession: {
+            /** Format: uuid */
+            uploadId: string;
+            /** @description 服务端隔离区桶名（quarantine）；对象键永不返回给客户端。 */
+            bucket: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        UploadConfirmRequest: {
+            /** @description 客户端对已上传字节计算的 SHA-256（hex）。 */
+            sha256: string;
+        };
+        UploadConfirmed: {
+            /** Format: uuid */
+            mediaObjectId: string;
+            bytes: number;
+        };
+        UploadBytes: {
+            bytes: number;
+        };
+        PrecheckCreateRequest: {
+            templateId: string;
+            templateVersion: number;
+            /**
+             * Format: uuid
+             * @description 已确认上传的 mediaObjectId。
+             */
+            sourceObjectId: string;
+            /** @description 比例恒为继承参考图（单图协议），不接受 aspect 参数； 携带提示词正文（prompt/effectivePrompt）会被拒绝。 */
+            settings: {
+                model?: string;
+                quality?: string;
+            };
+        };
+        PrecheckCreated: {
+            /** Format: uuid */
+            precheckId: string;
+            /** Format: date-time */
+            expiresAt: string;
+        };
+        /** @description 字段以 docs/design/backend-schemas/generation-create-request.schema.json 为准。 */
+        GenerationCreateRequest: {
+            templateId: string;
+            templateVersion: number;
+            /** @description 客户端核验过的目录 promptSha256；服务端与不可变版本再比对。 */
+            promptSha256: string;
+            /** Format: uuid */
+            sourceObjectId: string;
+            /** Format: uuid */
+            precheckId?: string;
+            settings: {
+                model: string;
+                /** @enum {string} */
+                quality?: "standard" | "high";
+                aspectRatio?: string;
+            };
+        };
+        /** @description 结果实际解码元数据（actual* 与请求参数分开记录）。 */
+        GenerationResult: {
+            /** Format: uuid */
+            objectId: string;
+            /** @enum {string} */
+            actualMime: "image/jpeg" | "image/png" | "image/webp";
+            actualBytes: number;
+            actualWidth: number;
+            actualHeight: number;
+            sha256: string;
+        };
+        /** @description data 字段以 generation-status-response.schema.json 为准。 */
+        GenerationStatus: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            state: "created" | "queued" | "running" | "succeeded" | "failed" | "cancelled" | "expired" | "outcome_unknown";
+            templateId: string;
+            templateVersion: number;
+            errorCode?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            completedAt?: string;
+            result?: components["schemas"]["GenerationResult"];
+        };
+        /** @description 轮询建议与签名下载地址（结果媒体存活时才有 downloadUrl）。 */
+        GenerationStatusMeta: {
+            pollAfterMs?: number;
+            /** @description 短期签名下载路径（/api/v1/media/...，属主绑定）。 */
+            downloadUrl?: string;
+            /** @description downloadUrl 的过期时间（Unix 秒）。 */
+            downloadExpires?: number;
+        } & {
+            [key: string]: unknown;
+        };
+        ApiSuccessOfUploadSession: {
+            data: components["schemas"]["UploadSession"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        ApiSuccessOfUploadBytes: {
+            data: components["schemas"]["UploadBytes"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        ApiSuccessOfUploadConfirmed: {
+            data: components["schemas"]["UploadConfirmed"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        ApiSuccessOfPrecheckCreated: {
+            data: components["schemas"]["PrecheckCreated"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        ApiSuccessOfGenerationStatus: {
+            data: components["schemas"]["GenerationStatus"];
+            meta?: components["schemas"]["GenerationStatusMeta"];
+        };
+        GenerationSidecarTemplate: {
+            key: string;
+            version: number;
+        };
+        GenerationSidecarPrompt: {
+            compiledSha256: string;
+            effectiveSha256: string;
+        };
+        GenerationSidecarInput: {
+            sha256: string;
+        };
+        GenerationSidecarAttempt: {
+            attemptNo: number;
+            /** @enum {string} */
+            state: "sent" | "accepted" | "succeeded" | "failed" | "unknown";
+            errorCode: string | null;
+            httpStatus: number | null;
+            sentPromptSha256: string;
+            providerRequestId: string | null;
+        };
+        GenerationSidecarResult: {
+            sha256: string;
+            /** @enum {string} */
+            mime: "image/jpeg" | "image/png" | "image/webp";
+            bytes: number;
+            width: number;
+            height: number;
+            /** @enum {string} */
+            mediaState: "quarantine" | "ready" | "rejected" | "expired" | "deleted";
+            mediaExpired: boolean;
+        };
+        /** @description 只含哈希与元数据的可追溯 sidecar；不含提示词正文、密钥或签名材料。 */
+        GenerationSidecar: {
+            /** @constant */
+            schemaVersion: "1.0.0";
+            /** @constant */
+            kind: "onepic-generation-sidecar";
+            /** Format: uuid */
+            generationId: string;
+            /** @enum {string} */
+            state: "created" | "queued" | "running" | "succeeded" | "failed" | "cancelled" | "expired" | "outcome_unknown";
+            template: components["schemas"]["GenerationSidecarTemplate"];
+            prompt: components["schemas"]["GenerationSidecarPrompt"];
+            input: components["schemas"]["GenerationSidecarInput"];
+            attempts: components["schemas"]["GenerationSidecarAttempt"][];
+            result: components["schemas"]["GenerationSidecarResult"] | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            completedAt: string | null;
+        };
+        ApiSuccessOfGenerationSidecar: {
+            data: components["schemas"]["GenerationSidecar"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        /** @description 取消结果（J08）；running 任务的 code 恒为 CANCEL_NOT_GUARANTEED。 */
+        GenerationCancelResult: {
+            /** Format: uuid */
+            id: string;
+            /** @enum {string} */
+            state: "created" | "queued" | "running" | "succeeded" | "failed" | "cancelled" | "expired" | "outcome_unknown";
+            /** @enum {string} */
+            outcome: "cancelled" | "cancel_requested" | "already_terminal";
+            /** @constant */
+            code?: "CANCEL_NOT_GUARANTEED";
+        };
+        ApiSuccessOfGenerationCancel: {
+            data: components["schemas"]["GenerationCancelResult"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        /** @description 用户删除结果（O01）：元数据与哈希事实保留，结果媒体字节已物理删除 并写入 deletion_manifest；state 为删除后的任务状态。 */
+        GenerationDeleteResult: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            deleted: true;
+            /** @enum {string} */
+            state: "created" | "queued" | "running" | "succeeded" | "failed" | "cancelled" | "expired" | "outcome_unknown";
+            /**
+             * @description running 任务删除时恒出现——取消请求已记录但不保证免计费。
+             * @constant
+             */
+            code?: "CANCEL_NOT_GUARANTEED";
+        };
+        ApiSuccessOfGenerationDelete: {
+            data: components["schemas"]["GenerationDeleteResult"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        /** @description 一页历史；item 形状与 generation-status-response 相同（不含 result）。 */
+        GenerationList: {
+            items: components["schemas"]["GenerationStatus"][];
+        };
+        /** @description 分页元数据；nextCursor 仅在还有下一页时出现。 */
+        GenerationListMeta: {
+            nextCursor?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        ApiSuccessOfGenerationList: {
+            data: components["schemas"]["GenerationList"];
+            meta?: components["schemas"]["GenerationListMeta"];
+        };
+        CollectionSummary: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            itemCount: number;
+        };
+        CollectionList: {
+            items: components["schemas"]["CollectionSummary"][];
+        };
+        ApiSuccessOfCollectionList: {
+            data: components["schemas"]["CollectionList"];
+            meta?: components["schemas"]["GenerationListMeta"];
+        };
+        CollectionCreateRequest: {
+            name: string;
+        };
+        ApiSuccessOfCollectionSummary: {
+            data: components["schemas"]["CollectionSummary"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        CollectionDeleted: {
+            /** Format: uuid */
+            id: string;
+            /** @constant */
+            deleted: true;
+        };
+        ApiSuccessOfCollectionDeleted: {
+            data: components["schemas"]["CollectionDeleted"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        CollectionItemAddRequest: {
+            /** @enum {string} */
+            itemType: "template" | "generation";
+            /** @description template 为模板 ID（case-N / framework-NNN），generation 为任务 UUID。 */
+            itemKey: string;
+        };
+        CollectionItem: {
+            /** Format: uuid */
+            collectionId: string;
+            /** @enum {string} */
+            itemType: "template" | "generation";
+            itemKey: string;
+            /**
+             * Format: date-time
+             * @description 首次收藏时间；幂等重放不改变该值。
+             */
+            addedAt: string;
+        };
+        ApiSuccessOfCollectionItem: {
+            data: components["schemas"]["CollectionItem"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        CollectionItemRemoval: {
+            /** Format: uuid */
+            collectionId: string;
+            /** @enum {string} */
+            itemType: "template" | "generation";
+            itemKey: string;
+            /** @description 是否确有此行被删除；重复移除为 false（幂等 200）。 */
+            removed: boolean;
+        };
+        ApiSuccessOfCollectionItemRemoval: {
+            data: components["schemas"]["CollectionItemRemoval"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
+        WorkspaceExportCollectionItem: {
+            /** @enum {string} */
+            itemType: "template" | "generation";
+            itemKey: string;
+        };
+        WorkspaceExportCollection: {
+            name: string;
+            items: components["schemas"]["WorkspaceExportCollectionItem"][];
+        };
+        WorkspaceExportHistoryItem: {
+            /** Format: uuid */
+            generationId: string;
+            templateId: string;
+            /** @enum {string} */
+            state: "created" | "queued" | "running" | "succeeded" | "failed" | "cancelled" | "expired" | "outcome_unknown";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        /** @description 与 docs/design/backend-schemas/workspace-export.schema.json 同形； 私人收藏/集合/历史导出，不得包含任何密钥。 */
+        WorkspaceExport: {
+            schemaVersion: string;
+            /** Format: date-time */
+            exportedAt: string;
+            favorites: string[];
+            collections: components["schemas"]["WorkspaceExportCollection"][];
+            history: components["schemas"]["WorkspaceExportHistoryItem"][];
+        };
+        ApiSuccessOfWorkspaceExport: {
+            data: components["schemas"]["WorkspaceExport"];
+            meta?: components["schemas"]["ApiMeta"];
+        };
     };
-    responses: never;
-    parameters: never;
+    responses: {
+        /** @description 请求未通过契约校验（含未知字段） */
+        ValidationFailed: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ApiFailure"];
+            };
+        };
+        /** @description 无有效会话 */
+        Unauthenticated: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ApiFailure"];
+            };
+        };
+        /** @description 稳定错误码信封（错误码目录见 D06 数据字典） */
+        ApiFailureResponse: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["ApiFailure"];
+            };
+        };
+    };
+    parameters: {
+        /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+        CsrfHeader: "onepic-fetch";
+        /** @description OIDC provider 返回的一次性授权码。 */
+        AuthCode: string;
+        /** @description 与服务端 pending login challenge 绑定的 OIDC state。 */
+        AuthState: string;
+        /** @description /auth/login 设置的短期、HttpOnly 登录挑战句柄。 */
+        PendingLoginCookie: string;
+        MediaBucket: string;
+        /** @description 私有对象键；runtime 使用通配路径，因此可包含斜杠。 */
+        MediaObjectKey: string;
+        /** @description 参与 HMAC 签名且必须等于当前 session 主体的 subject UUID。 */
+        MediaOwner: string;
+        /** @description 签名 URL 的 Unix 秒过期时间。 */
+        MediaExpires: number;
+        /** @description HMAC-SHA256 的无填充 base64url 签名。 */
+        MediaSignature: string;
+        UploadId: string;
+        GenerationId: string;
+        CollectionId: string;
+        CollectionItemType: "template" | "generation";
+        /** @description template 为模板 ID，generation 为任务 UUID。 */
+        CollectionItemKey: string;
+        /** @description 上一页 meta.nextCursor 原样回传；不透明签名串，篡改/非法一律 400。 */
+        PageCursor: string;
+        /** @description 每页条数，默认 20，上限 50。 */
+        PageLimit: number;
+        /** @description 按任务状态过滤（架构 §9 生命周期枚举）。 */
+        HistoryStateFilter: "created" | "queued" | "running" | "succeeded" | "failed" | "cancelled" | "expired" | "outcome_unknown";
+    };
     requestBodies: never;
     headers: never;
     pathItems: never;
@@ -148,6 +946,657 @@ export interface operations {
                     "application/json": components["schemas"]["ApiSuccessOfHealthReady"];
                 };
             };
+            /** @description PostgreSQL 不可达或 managed schema/catalog 未就绪 */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    /**
+                     * @example {
+                     *       "data": {
+                     *         "status": "degraded"
+                     *       }
+                     *     }
+                     */
+                    "application/json": components["schemas"]["ApiSuccessOfHealthReady"];
+                };
+            };
+        };
+    };
+    login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 重定向到 OIDC 身份提供方 */
+            302: {
+                headers: {
+                    /** @description OIDC 授权端点 URL。 */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    completeLogin: {
+        parameters: {
+            query: {
+                /** @description OIDC provider 返回的一次性授权码。 */
+                code: components["parameters"]["AuthCode"];
+                /** @description 与服务端 pending login challenge 绑定的 OIDC state。 */
+                state: components["parameters"]["AuthState"];
+            };
+            header?: never;
+            path?: never;
+            cookie: {
+                /** @description /auth/login 设置的短期、HttpOnly 登录挑战句柄。 */
+                onepic_login: components["parameters"]["PendingLoginCookie"];
+            };
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 登录成功并重定向到站点根路径 */
+            302: {
+                headers: {
+                    /** @description 登录后的站内重定向路径。 */
+                    Location?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["ApiFailureResponse"];
+            401: components["responses"]["Unauthenticated"];
+        };
+    };
+    getCurrentSubject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 当前登录主体 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfAuthMe"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+        };
+    };
+    refreshSession: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 会话已轮换 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfAuthRefresh"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    logout: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 注销完成 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfAuthLogout"];
+                };
+            };
+            403: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    getSignedMedia: {
+        parameters: {
+            query: {
+                /** @description 参与 HMAC 签名且必须等于当前 session 主体的 subject UUID。 */
+                owner: components["parameters"]["MediaOwner"];
+                /** @description 签名 URL 的 Unix 秒过期时间。 */
+                expires: components["parameters"]["MediaExpires"];
+                /** @description HMAC-SHA256 的无填充 base64url 签名。 */
+                signature: components["parameters"]["MediaSignature"];
+            };
+            header?: never;
+            path: {
+                bucket: components["parameters"]["MediaBucket"];
+                /** @description 私有对象键；runtime 使用通配路径，因此可包含斜杠。 */
+                objectKey: components["parameters"]["MediaObjectKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 私有图片字节 */
+            200: {
+                headers: {
+                    /** @description 私有媒体禁止共享缓存与持久缓存。 */
+                    "Cache-Control"?: "private, no-store";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "image/jpeg": string;
+                    "image/png": string;
+                    "image/webp": string;
+                };
+            };
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+            410: components["responses"]["ApiFailureResponse"];
+            500: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    createUpload: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 上传会话已创建 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfUploadSession"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+            413: components["responses"]["ApiFailureResponse"];
+            415: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    uploadBytes: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                uploadId: components["parameters"]["UploadId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/octet-stream": string;
+            };
+        };
+        responses: {
+            /** @description 字节已落盘到隔离区 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfUploadBytes"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+            410: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    confirmUpload: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                uploadId: components["parameters"]["UploadId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description 上传已确认 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfUploadConfirmed"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+            409: components["responses"]["ApiFailureResponse"];
+            410: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    createPrecheck: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrecheckCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 预审通过 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfPrecheckCreated"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+            409: components["responses"]["ApiFailureResponse"];
+            413: components["responses"]["ApiFailureResponse"];
+            415: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    listGenerations: {
+        parameters: {
+            query?: {
+                /** @description 按任务状态过滤（架构 §9 生命周期枚举）。 */
+                state?: components["parameters"]["HistoryStateFilter"];
+                /** @description 上一页 meta.nextCursor 原样回传；不透明签名串，篡改/非法一律 400。 */
+                cursor?: components["parameters"]["PageCursor"];
+                /** @description 每页条数，默认 20，上限 50。 */
+                limit?: components["parameters"]["PageLimit"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 一页历史（meta.nextCursor 存在时还有下一页） */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfGenerationList"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+        };
+    };
+    createGeneration: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+                /** @description 幂等键；浏览器端在一次点击周期内生成并复用。 */
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerationCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 任务已受理（新建或幂等重放） */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfGenerationStatus"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+            409: components["responses"]["ApiFailureResponse"];
+            429: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    getGeneration: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                generationId: components["parameters"]["GenerationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 任务状态 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfGenerationStatus"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    deleteGeneration: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                generationId: components["parameters"]["GenerationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 删除结果（含删除后的任务状态） */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfGenerationDelete"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+            409: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    getGenerationSidecar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                generationId: components["parameters"]["GenerationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 哈希与元数据 sidecar */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfGenerationSidecar"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    cancelGeneration: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                generationId: components["parameters"]["GenerationId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 取消结果（含 already_terminal 与 cancel_requested） */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfGenerationCancel"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+            409: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    listCollections: {
+        parameters: {
+            query?: {
+                /** @description 上一页 meta.nextCursor 原样回传；不透明签名串，篡改/非法一律 400。 */
+                cursor?: components["parameters"]["PageCursor"];
+                /** @description 每页条数，默认 20，上限 50。 */
+                limit?: components["parameters"]["PageLimit"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 一页集合 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfCollectionList"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+        };
+    };
+    createCollection: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description 集合已创建 */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfCollectionSummary"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+            409: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    deleteCollection: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                collectionId: components["parameters"]["CollectionId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 集合已删除 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfCollectionDeleted"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    addCollectionItem: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                collectionId: components["parameters"]["CollectionId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CollectionItemAddRequest"];
+            };
+        };
+        responses: {
+            /** @description 条目已在集合中（新增或幂等重放） */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfCollectionItem"];
+                };
+            };
+            400: components["responses"]["ValidationFailed"];
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    removeCollectionItem: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description CSRF 护栏自定义头，恒为 onepic-fetch（跨站表单无法设置）。 */
+                "x-onepic-requested-with": components["parameters"]["CsrfHeader"];
+            };
+            path: {
+                collectionId: components["parameters"]["CollectionId"];
+                itemType: components["parameters"]["CollectionItemType"];
+                /** @description template 为模板 ID，generation 为任务 UUID。 */
+                itemKey: components["parameters"]["CollectionItemKey"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 移除结果（removed 表示是否确有此行） */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfCollectionItemRemoval"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
+            403: components["responses"]["ApiFailureResponse"];
+            404: components["responses"]["ApiFailureResponse"];
+        };
+    };
+    exportWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 导出文档 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiSuccessOfWorkspaceExport"];
+                };
+            };
+            401: components["responses"]["Unauthenticated"];
         };
     };
 }

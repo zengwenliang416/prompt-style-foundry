@@ -32,7 +32,9 @@ describe('validateImage (M02)', () => {
   });
 
   it('accepts a real JPEG', async () => {
-    const jpeg = await sharp({ create: { width: 64, height: 48, channels: 3, background: { r: 0, g: 0, b: 0 } } })
+    const jpeg = await sharp({
+      create: { width: 64, height: 48, channels: 3, background: { r: 0, g: 0, b: 0 } },
+    })
       .jpeg()
       .toBuffer();
     const result = await validateImage(jpeg);
@@ -44,7 +46,9 @@ describe('validateImage (M02)', () => {
   });
 
   it('rejects a fake suffix: GIF bytes claiming to be PNG', async () => {
-    const gif = await sharp({ create: { width: 8, height: 8, channels: 3, background: { r: 0, g: 255, b: 0 } } })
+    const gif = await sharp({
+      create: { width: 8, height: 8, channels: 3, background: { r: 0, g: 255, b: 0 } },
+    })
       .gif()
       .toBuffer();
     const result = await validateImage(gif, { declaredMime: 'image/png' });

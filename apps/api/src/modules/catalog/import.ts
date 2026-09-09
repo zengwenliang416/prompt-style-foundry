@@ -21,13 +21,7 @@ import type { Queryable } from '../../db/queryable.js';
  *   existing release untouched.
  */
 
-export interface ImportCatalogOptions {
-  /** Transaction-capable client (pg Client, Pool, or PoolClient). */
-  client: Queryable;
-  /** Directory containing data/ and the library file. Defaults to repo root. */
-  rootDir?: string;
-}
-
+const CATALOG_IMPORT_ADVISORY_LOCK_KEY = '5630014476080789842';
 export interface ImportCatalogResult {
   releaseId: string;
   librarySha256: string;
@@ -71,12 +65,13 @@ interface CatalogTemplate {
   requiresText: boolean;
   promptPath: string;
   promptSha256: string;
-  source: unknown;
+  source?: unknown;
 }
 
 interface CatalogDocument {
   schemaVersion: string;
-  source: { archiveSha256: string };
+  release?: { archiveSha256: string };
+  source?: { archiveSha256: string };
   stats: { total: number };
   templates: CatalogTemplate[];
 }
@@ -114,16 +109,25 @@ export interface VersionChange {
   compiledPromptSha256: string;
 }
 
+/**
+ * Repository/catalog bundle root for both source and compiled layouts.
+ * Source: <repo>/apps/api/src/modules/catalog/import.ts
+ * Build:  <repo>/apps/api/dist/modules/catalog/import.js
+ */
+export function defaultCatalogRoot(): string {
+  return fileURLToPath(new URL('../../../../../', import.meta.url));
+}
 export async function importCatalogRelease(
   options: ImportCatalogOptions,
 ): Promise<ImportCatalogResult & { changes: VersionChange[] }> {
-  const root = options.rootDir ?? fileURLToPath(new URL('../../../../', import.meta.url));
+  const root = options.rootDir ?? defaultCatalogRoot();
   const catalogBytes = await readFile(path.join(root, 'public/data/catalog.json'));
   const catalog = JSON.parse(catalogBytes.toString('utf8')) as CatalogDocument;
+  const archiveSha256 = catalog.release?.archiveSha256 ?? catalog.source?.archiveSha256;
   if (
     typeof catalog.schemaVersion !== 'string' ||
     !Array.isArray(catalog.templates) ||
-    typeof catalog.source?.archiveSha256 !== 'string'
+    typeof archiveSha256 !== 'string'
   ) {
     throw new ImportSchemaError('catalog.json does not match the expected shape');
   }
@@ -154,29 +158,34 @@ export async function importCatalogRelease(
     throw new ImportHashMismatchError(mismatches);
   }
 
-  // Idempotency anchor: identical library content means identical release.
-  const existing = await options.client.query<{ id: string; template_count: number }>(
-    'SELECT id, template_count FROM catalog_release WHERE library_sha256 = $1',
-    [librarySha256],
-  );
-  if (existing.rows.length > 0) {
-    const row = existing.rows[0]!;
-    return {
-      releaseId: row.id,
-      librarySha256,
-      templateCount: row.template_count,
-      created: false,
-      changes: [],
-    };
-  }
-
   const changes: VersionChange[] = [];
   await options.client.query('BEGIN');
   try {
+    await options.client.query('SELECT pg_advisory_xact_lock($1)', [
+      CATALOG_IMPORT_ADVISORY_LOCK_KEY,
+    ]);
+
+    // Idempotency anchor is checked while holding the transaction-level lock,
+    // so concurrent replicas converge on the same immutable release.
+    const existing = await options.client.query<{ id: string; template_count: number }>(
+      'SELECT id, template_count FROM catalog_release WHERE library_sha256 = $1',
+      [librarySha256],
+    );
+    if (existing.rows.length > 0) {
+      const row = existing.rows[0]!;
+      await options.client.query('COMMIT');
+      return {
+        releaseId: row.id,
+        librarySha256,
+        templateCount: row.template_count,
+        created: false,
+        changes: [],
+      };
+    }
     const release = await options.client.query<{ id: string }>(
       `INSERT INTO catalog_release (schema_version, source_sha256, library_sha256, template_count)
        VALUES ($1, $2, $3, $4) RETURNING id`,
-      [catalog.schemaVersion, catalog.source.archiveSha256, librarySha256, catalog.templates.length],
+      [catalog.schemaVersion, archiveSha256, librarySha256, catalog.templates.length],
     );
     const releaseId = release.rows[0]!.id;
 
@@ -228,7 +237,6 @@ export async function importCatalogRelease(
             mode: template.mode,
             blueprintInputMode: template.blueprintInputMode,
             requiresText: template.requiresText,
-            source: template.source,
           }),
           promptText,
         ],

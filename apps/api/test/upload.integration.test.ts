@@ -32,10 +32,7 @@ beforeAll(async () => {
   await runMigrations(database.uri);
   client = new Client({ connectionString: database.uri });
   await client.connect();
-  service = new UploadService(
-    client,
-    new LocalDiskStorage('/tmp/onepic-m01-storage'),
-  );
+  service = new UploadService(client, new LocalDiskStorage('/tmp/onepic-m01-storage'));
 
   const a = await client.query<{ id: string }>(
     "INSERT INTO subject (issuer, subject_claim, role) VALUES ('https://id.test', 'm01-a', 'member') RETURNING id",
@@ -114,7 +111,7 @@ describe('upload sessions with quarantine (M01)', () => {
     await service.confirmUpload({
       uploadId: created.value.uploadId,
       ownerId: ownerA,
-      actualSha256: 'sha',
+      actualSha256: createHash('sha256').update(PNG_BYTES).digest('hex'),
     });
 
     const second = await service.confirmUpload({
@@ -217,8 +214,8 @@ describe('upload sessions with quarantine (M01)', () => {
     await expect(
       storage.put({ bucket: '../evil', key: 'x', body: Buffer.alloc(1) }),
     ).rejects.toThrow('FORGED_OBJECT_PATH');
-    await expect(
-      storage.get({ bucket: 'quarantine', key: 'a/../../etc/passwd' }),
-    ).rejects.toThrow('FORGED_OBJECT_PATH');
+    await expect(storage.get({ bucket: 'quarantine', key: 'a/../../etc/passwd' })).rejects.toThrow(
+      'FORGED_OBJECT_PATH',
+    );
   });
 });

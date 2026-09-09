@@ -36,10 +36,13 @@ export class CancelService {
     const tx = await this.pool.connect();
     try {
       await tx.query('BEGIN');
-      const found = await tx.query<{ owner_id: string; state: string; cancel_requested_at: string | null }>(
-        'SELECT owner_id, state, cancel_requested_at FROM generation WHERE id = $1 FOR UPDATE',
-        [input.generationId],
-      );
+      const found = await tx.query<{
+        owner_id: string;
+        state: string;
+        cancel_requested_at: string | null;
+      }>('SELECT owner_id, state, cancel_requested_at FROM generation WHERE id = $1 FOR UPDATE', [
+        input.generationId,
+      ]);
       const row = found.rows[0];
       if (row === undefined) {
         await tx.query('ROLLBACK');
@@ -80,7 +83,12 @@ export class CancelService {
           [input.generationId],
         );
         await tx.query('COMMIT');
-        return { ok: true, outcome: 'cancel_requested', state: 'running', code: 'CANCEL_NOT_GUARANTEED' };
+        return {
+          ok: true,
+          outcome: 'cancel_requested',
+          state: 'running',
+          code: 'CANCEL_NOT_GUARANTEED',
+        };
       }
 
       await tx.query('ROLLBACK');

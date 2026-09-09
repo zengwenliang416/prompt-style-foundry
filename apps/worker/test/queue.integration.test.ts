@@ -5,13 +5,7 @@ import { Client } from 'pg';
 import { startPgTestCluster, type PgTestCluster } from '@onepic/test-support';
 
 import { runMigrations } from '../../api/src/db/migrate.js';
-import {
-  claimJobs,
-  completeJob,
-  failJob,
-  heartbeat,
-  reclaimExpiredLeases,
-} from '../src/queue.js';
+import { claimJobs, completeJob, failJob, heartbeat, reclaimExpiredLeases } from '../src/queue.js';
 
 /**
  * J03 acceptance on real PG: double-worker exclusion, lease expiry reclaim,
@@ -53,7 +47,11 @@ async function seedJob(state = 'queued', kind = 'generate'): Promise<string> {
     `INSERT INTO template_version (catalog_release_id, template_key, version,
        compiled_prompt_sha256, blueprint_sha256, metadata)
      VALUES ($1, $2, 1, $3, 'b', '{}') RETURNING id`,
-    [release.rows[0]!.id, `case-j03-${Math.random().toString(36).slice(2)}`, `sha-${Math.random()}`],
+    [
+      release.rows[0]!.id,
+      `case-j03-${Math.random().toString(36).slice(2)}`,
+      `sha-${Math.random()}`,
+    ],
   );
   const media = await client.query<{ id: string }>(
     `INSERT INTO media_object (owner_id, kind, state, bucket, object_key, sha256, expires_at)
@@ -71,11 +69,21 @@ async function seedJob(state = 'queued', kind = 'generate'): Promise<string> {
        input_object_id, input_sha256, compiled_prompt_sha256, effective_prompt_sha256,
        provider_id, model, settings, idempotency_key, state)
      VALUES ($1, $2, $3, $4, $5, 'sha', 'p', 'p', 'provider', 'model', '{}', $6, $7) RETURNING id`,
-    [ownerId, version.rows[0]!.id, release.rows[0]!.id, precheck.rows[0]!.id, media.rows[0]!.id,
-     `idem-${Math.random().toString(36).slice(2)}`, state],
+    [
+      ownerId,
+      version.rows[0]!.id,
+      release.rows[0]!.id,
+      precheck.rows[0]!.id,
+      media.rows[0]!.id,
+      `idem-${Math.random().toString(36).slice(2)}`,
+      state,
+    ],
   );
   const generationId = generation.rows[0]!.id;
-  await client.query(`INSERT INTO job (generation_id, kind, state, run_after) VALUES ($1, $2, 'pending', now())`, [generationId, kind]);
+  await client.query(
+    `INSERT INTO job (generation_id, kind, state, run_after) VALUES ($1, $2, 'pending', now())`,
+    [generationId, kind],
+  );
   return generationId;
 }
 
@@ -124,7 +132,10 @@ describe('job queue machinery (J03)', () => {
     });
     expect(fresh.completed).toBe(true);
 
-    const generation = await client.query<{ state: string }>('SELECT state FROM generation WHERE id = $1', [generationId]);
+    const generation = await client.query<{ state: string }>(
+      'SELECT state FROM generation WHERE id = $1',
+      [generationId],
+    );
     expect(generation.rows[0]!.state).toBe('succeeded');
   });
 
@@ -155,20 +166,35 @@ describe('job queue machinery (J03)', () => {
     await seedJob();
     const [lease] = await claimJobs(client, { workerId: 'owner', leaseSeconds: 60 });
 
-    const wrongWorker = await heartbeat(client, { jobId: lease!.jobId, workerId: 'intruder', leaseSeconds: 60 });
+    const wrongWorker = await heartbeat(client, {
+      jobId: lease!.jobId,
+      workerId: 'intruder',
+      leaseSeconds: 60,
+    });
     expect(wrongWorker).toBe(false);
 
-    const owner = await heartbeat(client, { jobId: lease!.jobId, workerId: 'owner', leaseSeconds: 120 });
+    const owner = await heartbeat(client, {
+      jobId: lease!.jobId,
+      workerId: 'owner',
+      leaseSeconds: 120,
+    });
     expect(owner).toBe(true);
 
-    const row = await client.query<{ lease_expires_at: string }>('SELECT lease_expires_at FROM job WHERE id = $1', [lease!.jobId]);
+    const row = await client.query<{ lease_expires_at: string }>(
+      'SELECT lease_expires_at FROM job WHERE id = $1',
+      [lease!.jobId],
+    );
     expect(new Date(row.rows[0]!.lease_expires_at).getTime()).toBeGreaterThan(Date.now() + 60000);
   });
 
   it('dead-letters exhausted retries and fails the generation', async () => {
     const generationId = await seedJob('queued', 'dead-letter-test');
     await client.query(`UPDATE job SET max_attempts = 1 WHERE generation_id = $1`, [generationId]);
-    const [lease] = await claimJobs(client, { workerId: 'w', leaseSeconds: 60, kinds: ['dead-letter-test'] });
+    const [lease] = await claimJobs(client, {
+      workerId: 'w',
+      leaseSeconds: 60,
+      kinds: ['dead-letter-test'],
+    });
 
     const outcome = await failJob(client, {
       jobId: lease!.jobId,
@@ -179,10 +205,16 @@ describe('job queue machinery (J03)', () => {
     });
     expect(outcome).toEqual({ retried: false, dead: true });
 
-    const job = await client.query<{ state: string; dead_reason: string | null }>('SELECT state, dead_reason FROM job WHERE id = $1', [lease!.jobId]);
+    const job = await client.query<{ state: string; dead_reason: string | null }>(
+      'SELECT state, dead_reason FROM job WHERE id = $1',
+      [lease!.jobId],
+    );
     expect(job.rows[0]!.state).toBe('dead');
     expect(job.rows[0]!.dead_reason).toBe('PROVIDER_REJECTED');
-    const generation = await client.query<{ state: string; error_code: string | null }>('SELECT state, error_code FROM generation WHERE id = $1', [generationId]);
+    const generation = await client.query<{ state: string; error_code: string | null }>(
+      'SELECT state, error_code FROM generation WHERE id = $1',
+      [generationId],
+    );
     expect(generation.rows[0]!.state).toBe('failed');
     expect(generation.rows[0]!.error_code).toBe('PROVIDER_REJECTED');
   });
@@ -190,7 +222,11 @@ describe('job queue machinery (J03)', () => {
   it('returns retryable failures to pending within bounds', async () => {
     const generationId = await seedJob('queued', 'retry-test');
     await client.query(`UPDATE job SET max_attempts = 3 WHERE generation_id = $1`, [generationId]);
-    const [lease] = await claimJobs(client, { workerId: 'w', leaseSeconds: 60, kinds: ['retry-test'] });
+    const [lease] = await claimJobs(client, {
+      workerId: 'w',
+      leaseSeconds: 60,
+      kinds: ['retry-test'],
+    });
 
     const outcome = await failJob(client, {
       jobId: lease!.jobId,
@@ -202,7 +238,10 @@ describe('job queue machinery (J03)', () => {
     });
     expect(outcome).toEqual({ retried: true, dead: false });
 
-    const job = await client.query<{ state: string; attempts: number }>('SELECT state, attempts FROM job WHERE id = $1', [lease!.jobId]);
+    const job = await client.query<{ state: string; attempts: number }>(
+      'SELECT state, attempts FROM job WHERE id = $1',
+      [lease!.jobId],
+    );
     expect(job.rows[0]!.state).toBe('pending');
     expect(job.rows[0]!.attempts).toBe(1);
   });

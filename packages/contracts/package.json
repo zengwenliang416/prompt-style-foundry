@@ -11,7 +11,7 @@
     "./openapi/*": "./openapi/*"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "generate": "openapi-typescript openapi/api-v1.yaml -o src/generated/api-v1.d.ts && js-yaml openapi/api-v1.yaml > openapi/api-v1.json",
     "generate:check": "before=$(mktemp) && after=$(mktemp) && shasum -a 256 src/generated/api-v1.d.ts openapi/api-v1.json > \"$before\" && npm run generate > /dev/null && shasum -a 256 src/generated/api-v1.d.ts openapi/api-v1.json > \"$after\" && diff \"$before\" \"$after\" && rm -f \"$before\" \"$after\" && echo 'no drift'"

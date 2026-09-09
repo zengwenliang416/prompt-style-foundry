@@ -58,7 +58,10 @@ export function registerIdentityRoutes(app: FastifyInstance, deps: IdentityDeps)
    * allowed origin AND carry the custom header (cross-site form posts cannot
    * set custom headers). Applied to every non-GET /api/v1 route.
    */
-  const csrfGuard = async (request: { method: string; headers: Record<string, unknown> }, reply: { code(status: number): { send(payload: unknown): unknown } }): Promise<void> => {
+  const csrfGuard = async (
+    request: { method: string; headers: Record<string, unknown> },
+    reply: { code(status: number): { send(payload: unknown): unknown } },
+  ): Promise<void> => {
     if (['GET', 'HEAD', 'OPTIONS'].includes(request.method.toUpperCase())) {
       return;
     }

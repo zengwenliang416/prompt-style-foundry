@@ -4,16 +4,22 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typecheck:test": "tsc -p tsconfig.test.json --noEmit",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "replay:deletions": "node dist/replay-deletions-cli.js"
+  },
+  "dependencies": {
+    "@onepic/contracts": "0.0.0",
+    "@onepic/managed-runtime": "0.0.0",
+    "pg": "^8.23.0"
   },
   "devDependencies": {
     "@onepic/test-support": "0.0.0",
     "@types/node": "^22.0.0",
     "@types/pg": "^8.23.1",
-    "pg": "^8.23.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "sharp": "^0.35.4"
   }
 }

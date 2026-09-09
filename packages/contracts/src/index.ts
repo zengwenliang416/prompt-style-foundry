@@ -9,8 +9,10 @@
  * The compile-time sync guards at the bottom fail `tsc` if the hand-written
  * generic envelope drifts from the generated one.
  *
- * Generation lifecycle states (architecture §9) are TypeScript-only until
- * the generation endpoints join the OpenAPI document (B/J phases):
+ * Generation lifecycle states (architecture §9) are re-declared here as a
+ * const array for runtime iteration; the OpenAPI `GenerationStatus` schema
+ * (joined with the W01 endpoints) carries the same enum and the compile-time
+ * guard below fails `tsc` if the two drift apart.
  * created -> queued -> running -> succeeded
  *                              |-> failed / cancelled / expired / outcome_unknown
  * `expired` is terminal; media expiry never rewrites historical attempt facts.
@@ -43,7 +45,43 @@ export interface ApiErrorBody {
 export type HealthLive = components['schemas']['HealthLive'];
 export type HealthReady = components['schemas']['HealthReady'];
 
+export type Subject = components['schemas']['Subject'];
+export type AuthMe = components['schemas']['AuthMe'];
+export type AuthRefresh = components['schemas']['AuthRefresh'];
+export type AuthLogout = components['schemas']['AuthLogout'];
+// W01 workbench endpoints (upload → precheck → generation → poll/download).
+export type UploadCreateRequest = components['schemas']['UploadCreateRequest'];
+export type UploadSession = components['schemas']['UploadSession'];
+export type UploadConfirmRequest = components['schemas']['UploadConfirmRequest'];
+export type UploadConfirmed = components['schemas']['UploadConfirmed'];
+export type UploadBytes = components['schemas']['UploadBytes'];
+export type PrecheckCreateRequest = components['schemas']['PrecheckCreateRequest'];
+export type PrecheckCreated = components['schemas']['PrecheckCreated'];
+export type GenerationCreateRequest = components['schemas']['GenerationCreateRequest'];
+export type GenerationResult = components['schemas']['GenerationResult'];
+/** Status-poll `data` payload (generation-status-response.schema.json). */
+export type GenerationStatusData = components['schemas']['GenerationStatus'];
+export type GenerationStatusMeta = components['schemas']['GenerationStatusMeta'];
+export type GenerationCancelResult = components['schemas']['GenerationCancelResult'];
+export type GenerationDeleteResult = components['schemas']['GenerationDeleteResult'];
+export type GenerationSidecar = components['schemas']['GenerationSidecar'];
+
+// W03 workspace endpoints (history cursor pagination + collections/favorites).
+export type GenerationList = components['schemas']['GenerationList'];
+export type GenerationListMeta = components['schemas']['GenerationListMeta'];
+export type CollectionSummary = components['schemas']['CollectionSummary'];
+export type CollectionList = components['schemas']['CollectionList'];
+export type CollectionCreateRequest = components['schemas']['CollectionCreateRequest'];
+export type CollectionDeleted = components['schemas']['CollectionDeleted'];
+export type CollectionItemAddRequest = components['schemas']['CollectionItemAddRequest'];
+export type CollectionItem = components['schemas']['CollectionItem'];
+export type CollectionItemRemoval = components['schemas']['CollectionItemRemoval'];
+export type WorkspaceExport = components['schemas']['WorkspaceExport'];
+export type WorkspaceExportCollection = components['schemas']['WorkspaceExportCollection'];
+export type WorkspaceExportHistoryItem = components['schemas']['WorkspaceExportHistoryItem'];
+
 export { DIRECT_BYOK_CAPABILITIES, RUN_MODES, modelCapabilities } from './provider-capabilities.js';
+export { REDACTED, redactText, redactValue } from './redaction.js';
 export type {
   ProviderCapabilities,
   ProviderModelCapabilities,
@@ -91,3 +129,12 @@ const envelopeSyncGuards: [
 ] = [true, true, true, true] as const;
 
 void envelopeSyncGuards;
+
+// The hand-written GENERATION_STATUSES array and the generated
+// GenerationStatus.state enum must stay identical.
+type GeneratedGenerationState = NonNullable<GenerationStatusData['state']>;
+type StateSyncGuard = GeneratedGenerationState extends GenerationStatus ? true : false;
+type StateSyncGuardReverse = GenerationStatus extends GeneratedGenerationState ? true : false;
+const stateSyncGuards: [StateSyncGuard, StateSyncGuardReverse] = [true, true] as const;
+
+void stateSyncGuards;

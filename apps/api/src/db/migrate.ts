@@ -17,6 +17,7 @@ import type { Queryable } from './queryable.js';
  * - Failures abort that migration's transaction and surface the error.
  */
 
+const MIGRATION_ADVISORY_LOCK_KEY = '5630014476080789841';
 export interface MigrationRecord {
   version: number;
   name: string;
@@ -85,11 +86,17 @@ export async function runMigrations(
   );
 
   const pg = await import('pg');
-  const ownClient = client === undefined ? new pg.Client({ connectionString } as ClientConfig) : null;
+  const ownClient =
+    client === undefined ? new pg.Client({ connectionString } as ClientConfig) : null;
   const runner = (client ?? (ownClient as unknown as Queryable)) as Queryable;
+  let advisoryLocked = false;
   try {
     if (ownClient !== null) {
       await ownClient.connect();
+    }
+    if (ownClient !== null) {
+      await runner.query('SELECT pg_advisory_lock($1)', [MIGRATION_ADVISORY_LOCK_KEY]);
+      advisoryLocked = true;
     }
     await runner.query(`
       CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -126,7 +133,13 @@ export async function runMigrations(
     return newlyApplied;
   } finally {
     if (ownClient !== null) {
-      await ownClient.end();
+      try {
+        if (advisoryLocked) {
+          await runner.query('SELECT pg_advisory_unlock($1)', [MIGRATION_ADVISORY_LOCK_KEY]);
+        }
+      } finally {
+        await ownClient.end();
+      }
     }
   }
 }

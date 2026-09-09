@@ -81,6 +81,25 @@ describe('migrations (B01)', () => {
     }
   });
 
+  it('serializes concurrent cold-start migration runners', async () => {
+    const concurrentDb = await cluster.createDatabase('concurrent_migrations');
+    try {
+      const results = await Promise.all([
+        runMigrations(concurrentDb.uri),
+        runMigrations(concurrentDb.uri),
+      ]);
+      expect(
+        results
+          .flatMap((items) => items)
+          .map((item) => item.version)
+          .sort(),
+      ).toEqual([1, 2, 3, 4, 5]);
+      await expect(appliedVersions(concurrentDb.uri)).resolves.toEqual([1, 2, 3, 4, 5]);
+    } finally {
+      await concurrentDb.drop();
+    }
+  });
+
   it('upgrades an existing database incrementally (to-version gating)', async () => {
     const upgradeDb = await cluster.createDatabase('upgrade');
     try {

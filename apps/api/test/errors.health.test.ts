@@ -24,11 +24,9 @@ async function buildWithErrorRoutes(): Promise<ReturnType<typeof Fastify>> {
   const app = Fastify({ logger: false });
   apps.push(app);
   registerErrorHandling(app, config);
-  app.post(
-    '/probe/validation',
-    { schema: { body: openApiSchema('HealthReady') } },
-    async () => ({ ok: true }),
-  );
+  app.post('/probe/validation', { schema: { body: openApiSchema('HealthReady') } }, async () => ({
+    ok: true,
+  }));
   app.get('/probe/app-error', async () => {
     throw new AppError(429, 'RATE_LIMITED', 'slow down');
   });
@@ -104,7 +102,10 @@ describe('unified error envelope + correlation IDs (B06)', () => {
 describe('health endpoints (B06)', () => {
   it('live stays ok and ready reports degraded when PG is unreachable', async () => {
     const { Pool } = await import('pg');
-    const badConfig: ApiConfig = { ...config, databaseUrl: 'postgresql://postgres@127.0.0.1:1/none' };
+    const badConfig: ApiConfig = {
+      ...config,
+      databaseUrl: 'postgresql://postgres@127.0.0.1:1/none',
+    };
     const app = Fastify({ logger: false });
     apps.push(app);
     const { registerHealthRoutes } = await import('../src/bootstrap/health.js');
@@ -121,7 +122,7 @@ describe('health endpoints (B06)', () => {
     expect(live.json()).toEqual({ data: { status: 'ok' } });
 
     const ready = await app.inject({ method: 'GET', url: '/api/v1/health/ready' });
-    expect(ready.statusCode).toBe(200);
+    expect(ready.statusCode).toBe(503);
     expect(ready.json()).toEqual({ data: { status: 'degraded' } });
   });
 });

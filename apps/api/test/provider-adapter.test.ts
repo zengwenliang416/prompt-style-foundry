@@ -1,6 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { startMockProvider, type MockProviderHandle } from '@onepic/test-support';
+import {
+  readMultipartTextField,
+  startMockProvider,
+  type MockProviderHandle,
+} from '@onepic/test-support';
 
 import { ProviderAdapter } from '../src/modules/generation/provider-adapter.js';
 
@@ -54,9 +58,11 @@ describe('provider adapter (J04)', () => {
     expect(provider.requests).toHaveLength(1);
     const recorded = provider.requests[0]!;
     expect(recorded.path).toBe('/v1/images/edits');
-    const body = JSON.parse(recorded.body.toString());
-    expect(body.model).toBe('gpt-image-2');
-    expect(body.quality).toBe('high');
+    expect(recorded.headers['content-type']).toMatch(/^multipart\/form-data; boundary=/);
+    expect(readMultipartTextField(recorded, 'model')).toBe('gpt-image-2');
+    expect(readMultipartTextField(recorded, 'quality')).toBe('high');
+    expect(readMultipartTextField(recorded, 'prompt')).toBe('test prompt');
+    expect(readMultipartTextField(recorded, 'response_format')).toBe('b64_json');
   });
 
   it('normalizes provider rejection status codes', async () => {
@@ -103,7 +109,10 @@ describe('provider adapter (J04)', () => {
     // always answers JSON, so use a dedicated adapter with a redirecting
     // fetch stub instead.
     const redirectingFetch: typeof fetch = (async () =>
-      new Response(null, { status: 302, headers: { location: 'http://169.254.169.254/latest' } })) as unknown as typeof fetch;
+      new Response(null, {
+        status: 302,
+        headers: { location: 'http://169.254.169.254/latest' },
+      })) as unknown as typeof fetch;
     const redirectAdapter = new ProviderAdapter(
       {
         providerId: 'direct-byok',

@@ -1,16 +1,27 @@
 import path from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
+import { createHash } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Client, Pool } from 'pg';
 
-import { startMockProvider, startPgTestCluster, type MockProviderHandle, type PgTestCluster } from '@onepic/test-support';
+import {
+  startMockProvider,
+  startPgTestCluster,
+  type MockProviderHandle,
+  type PgTestCluster,
+} from '@onepic/test-support';
 
 import { runMigrations } from '../../api/src/db/migrate.js';
 import { ProviderAdapter } from '../../api/src/modules/generation/provider-adapter.js';
 import { CancelService } from '../../api/src/modules/generation/cancel.js';
 import { LocalDiskStorage } from '../../api/src/infra/storage/storage.js';
-import { importCatalogRelease, sha256Hex, stablePromptBody } from '../../api/src/modules/catalog/import.js';
+import { validateImage } from '../../api/src/modules/media/validate-image.js';
+import {
+  importCatalogRelease,
+  sha256Hex,
+  stablePromptBody,
+} from '../../api/src/modules/catalog/import.js';
 import { UploadService } from '../../api/src/modules/media/upload-service.js';
 import { PrecheckService } from '../../api/src/modules/media/precheck-service.js';
 import { GenerationService } from '../../api/src/modules/generation/create.js';
@@ -67,7 +78,8 @@ beforeAll(async () => {
   );
   otherSubjectId = other.rows[0]!.id;
 
-  const promptBody = '[System / Prompt]\nj08 body\nBEGIN VISUAL BLUEPRINT\nb\nEND VISUAL BLUEPRINT\n';
+  const promptBody =
+    '[System / Prompt]\nj08 body\nBEGIN VISUAL BLUEPRINT\nb\nEND VISUAL BLUEPRINT\n';
   const fixtureRoot = await mkdtemp(path.join(tmpdir(), 'j08-catalog-'));
   const catalog = {
     schemaVersion: '1.1.0',
@@ -95,7 +107,10 @@ beforeAll(async () => {
   const fs = await import('node:fs/promises');
   await fs.mkdir(path.join(fixtureRoot, 'data/library'), { recursive: true });
   await fs.mkdir(path.join(fixtureRoot, 'public/data/prompts'), { recursive: true });
-  await fs.writeFile(path.join(fixtureRoot, 'data/library/templates.json'), JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }));
+  await fs.writeFile(
+    path.join(fixtureRoot, 'data/library/templates.json'),
+    JSON.stringify({ schemaVersion: '1.1.0', templates: catalog.templates }),
+  );
   await fs.writeFile(path.join(fixtureRoot, 'public/data/catalog.json'), JSON.stringify(catalog));
   await fs.writeFile(path.join(fixtureRoot, 'public/data/prompts/case-88.txt'), promptBody);
   await importCatalogRelease({ client, rootDir: fixtureRoot });
@@ -103,10 +118,18 @@ beforeAll(async () => {
 
   const uploads = new UploadService(client, storage);
   const prechecks = new PrecheckService(client, storage);
-  const created = await uploads.createUpload({ ownerId: subjectId, declaredBytes: PNG.length, declaredMime: 'image/png' });
+  const created = await uploads.createUpload({
+    ownerId: subjectId,
+    declaredBytes: PNG.length,
+    declaredMime: 'image/png',
+  });
   if (!created.ok) throw new Error('fixture failed');
   await uploads.putQuarantineBytes(created.value.uploadId, subjectId, PNG);
-  const confirmed = await uploads.confirmUpload({ uploadId: created.value.uploadId, ownerId: subjectId, actualSha256: 'x' });
+  const confirmed = await uploads.confirmUpload({
+    uploadId: created.value.uploadId,
+    ownerId: subjectId,
+    actualSha256: createHash('sha256').update(PNG).digest('hex'),
+  });
   if (!confirmed.ok) throw new Error('fixture failed');
   const precheck = await prechecks.createPrecheck({
     subjectId,
@@ -156,11 +179,14 @@ function deps(fetchImpl: typeof fetch): ExecutionDeps {
       { fetchImpl },
     ),
     storage,
+    validateImage,
     providerId: 'direct-byok',
   };
 }
 
-async function generationRow(generationId: string): Promise<{ state: string; cancel_requested_at: string | null }> {
+async function generationRow(
+  generationId: string,
+): Promise<{ state: string; cancel_requested_at: string | null }> {
   const row = await client.query<{ state: string; cancel_requested_at: string | null }>(
     'SELECT state, cancel_requested_at FROM generation WHERE id = $1',
     [generationId],
@@ -208,7 +234,12 @@ describe('cancel + race handling (J08)', () => {
     await client.query(`UPDATE generation SET state = 'running' WHERE id = $1`, [generationId]);
 
     const cancel = await cancels.cancel({ generationId, subjectId });
-    expect(cancel).toEqual({ ok: true, outcome: 'cancel_requested', state: 'running', code: 'CANCEL_NOT_GUARANTEED' });
+    expect(cancel).toEqual({
+      ok: true,
+      outcome: 'cancel_requested',
+      state: 'running',
+      code: 'CANCEL_NOT_GUARANTEED',
+    });
     const during = await generationRow(generationId);
     expect(during.state).toBe('running');
     expect(during.cancel_requested_at).not.toBeNull();
@@ -218,7 +249,11 @@ describe('cancel + race handling (J08)', () => {
     // no provider call, quota released, job buried.
     const requestsBefore = provider.requests.length;
     const [lease] = await claimJobs(client, { workerId: 'j08', kinds: ['generate'] });
-    const outcome = await executeClaimedJob(deps(fetch), { jobId: lease!.jobId, workerId: 'j08', generationId });
+    const outcome = await executeClaimedJob(deps(fetch), {
+      jobId: lease!.jobId,
+      workerId: 'j08',
+      generationId,
+    });
     expect(outcome.ok).toBe(false);
     if (!outcome.ok) {
       expect(outcome.errorCode).toBe('CANCELLED');
@@ -249,27 +284,48 @@ describe('cancel + race handling (J08)', () => {
     // The request is dispatched to the provider immediately; the response is
     // held back until the cancel request has been recorded.
     const holdingFetch: typeof fetch = (async (input: unknown, init: unknown) => {
-      const pending = fetch(input as Parameters<typeof fetch>[0], init as Parameters<typeof fetch>[1]);
+      const pending = fetch(
+        input as Parameters<typeof fetch>[0],
+        init as Parameters<typeof fetch>[1],
+      );
       await gate;
       return pending;
     }) as unknown as typeof fetch;
 
     const [lease] = await claimJobs(client, { workerId: 'j08', kinds: ['generate'] });
-    const execution = executeClaimedJob(deps(holdingFetch), { jobId: lease!.jobId, workerId: 'j08', generationId });
+    const execution = executeClaimedJob(deps(holdingFetch), {
+      jobId: lease!.jobId,
+      workerId: 'j08',
+      generationId,
+    });
 
     // Wait until the provider demonstrably accepted the request.
-    for (let waited = 0; provider.requests.length === requestsBefore && waited < 5000; waited += 25) {
+    for (
+      let waited = 0;
+      provider.requests.length === requestsBefore && waited < 5000;
+      waited += 25
+    ) {
       await sleep(25);
     }
     expect(provider.requests.length).toBe(requestsBefore + 1);
 
     const cancel = await cancels.cancel({ generationId, subjectId });
-    expect(cancel).toEqual({ ok: true, outcome: 'cancel_requested', state: 'running', code: 'CANCEL_NOT_GUARANTEED' });
+    expect(cancel).toEqual({
+      ok: true,
+      outcome: 'cancel_requested',
+      state: 'running',
+      code: 'CANCEL_NOT_GUARANTEED',
+    });
     openGate();
 
     const outcome = await execution;
     expect(outcome.ok).toBe(true);
-    const completion = await completeJob(client, { jobId: lease!.jobId, workerId: 'j08', generationId, generationState: 'succeeded' });
+    const completion = await completeJob(client, {
+      jobId: lease!.jobId,
+      workerId: 'j08',
+      generationId,
+      generationState: 'succeeded',
+    });
     expect(completion.completed).toBe(true);
 
     const after = await generationRow(generationId);
@@ -278,7 +334,10 @@ describe('cancel + race handling (J08)', () => {
     // Billed → quota NOT released; result stored; every upstream call was the
     // edits endpoint (no cancel API exists or was invoked).
     expect(await releaseCount(generationId)).toBe(0);
-    const result = await client.query<{ n: string }>('SELECT count(*)::text AS n FROM result WHERE generation_id = $1', [generationId]);
+    const result = await client.query<{ n: string }>(
+      'SELECT count(*)::text AS n FROM result WHERE generation_id = $1',
+      [generationId],
+    );
     expect(result.rows[0]!.n).toBe('1');
     for (const req of provider.requests.slice(requestsBefore)) {
       expect(req.path).toBe('/v1/images/edits');
@@ -288,8 +347,17 @@ describe('cancel + race handling (J08)', () => {
   it('honest refusals: terminal, outcome_unknown, foreign, missing', async () => {
     const succeededId = await createGeneration();
     const [lease] = await claimJobs(client, { workerId: 'j08', kinds: ['generate'] });
-    await executeClaimedJob(deps(fetch), { jobId: lease!.jobId, workerId: 'j08', generationId: succeededId });
-    await completeJob(client, { jobId: lease!.jobId, workerId: 'j08', generationId: succeededId, generationState: 'succeeded' });
+    await executeClaimedJob(deps(fetch), {
+      jobId: lease!.jobId,
+      workerId: 'j08',
+      generationId: succeededId,
+    });
+    await completeJob(client, {
+      jobId: lease!.jobId,
+      workerId: 'j08',
+      generationId: succeededId,
+      generationState: 'succeeded',
+    });
 
     await expect(cancels.cancel({ generationId: succeededId, subjectId })).resolves.toEqual({
       ok: true,
@@ -298,14 +366,18 @@ describe('cancel + race handling (J08)', () => {
     });
 
     const unknownId = await createGeneration();
-    await client.query(`UPDATE generation SET state = 'outcome_unknown' WHERE id = $1`, [unknownId]);
+    await client.query(`UPDATE generation SET state = 'outcome_unknown' WHERE id = $1`, [
+      unknownId,
+    ]);
     await expect(cancels.cancel({ generationId: unknownId, subjectId })).resolves.toEqual({
       ok: false,
       code: 'GENERATION_STATE_ILLEGAL',
     });
 
     const foreignId = await createGeneration();
-    await expect(cancels.cancel({ generationId: foreignId, subjectId: otherSubjectId })).resolves.toEqual({
+    await expect(
+      cancels.cancel({ generationId: foreignId, subjectId: otherSubjectId }),
+    ).resolves.toEqual({
       ok: false,
       code: 'FORBIDDEN',
     });

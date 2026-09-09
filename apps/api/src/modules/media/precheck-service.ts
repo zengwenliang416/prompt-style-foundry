@@ -22,7 +22,13 @@ export interface PrecheckInput {
   templateKey: string;
   version: number;
   mediaObjectId: string;
-  settings: { model?: string; quality?: string; aspect?: string; prompt?: string; effectivePrompt?: string };
+  settings: {
+    model?: string;
+    quality?: string;
+    aspect?: string;
+    prompt?: string;
+    effectivePrompt?: string;
+  };
 }
 
 export type PrecheckProblem =
@@ -38,8 +44,7 @@ export type PrecheckProblem =
   | 'PROMPT_REWRITE_BLOCKED';
 
 export type PrecheckOutcome<T> =
-  | { ok: true; value: T }
-  | { ok: false; problem: PrecheckProblem; message: string };
+  { ok: true; value: T } | { ok: false; problem: PrecheckProblem; message: string };
 
 export class PrecheckService {
   constructor(
@@ -84,7 +89,10 @@ export class PrecheckService {
         [input.mediaObjectId],
       );
       const values = existing.rows[0]!;
-      return { ok: true, value: { mime: values.mime ?? '', width: values.width ?? 0, height: values.height ?? 0 } };
+      return {
+        ok: true,
+        value: { mime: values.mime ?? '', width: values.width ?? 0, height: values.height ?? 0 },
+      };
     }
 
     const bytes = await this.storage.get({ bucket: row.bucket, key: row.object_key });
@@ -97,17 +105,27 @@ export class PrecheckService {
     }
     await this.client.query(
       `UPDATE media_object SET state = 'ready', mime = $2, bytes = $3, width = $4, height = $5 WHERE id = $1`,
-      [input.mediaObjectId, validation.value.mime, validation.value.bytes, validation.value.width, validation.value.height],
+      [
+        input.mediaObjectId,
+        validation.value.mime,
+        validation.value.bytes,
+        validation.value.width,
+        validation.value.height,
+      ],
     );
     return {
       ok: true,
-      value: { mime: validation.value.mime, width: validation.value.width, height: validation.value.height },
+      value: {
+        mime: validation.value.mime,
+        width: validation.value.width,
+        height: validation.value.height,
+      },
     };
   }
 
-  async createPrecheck(input: PrecheckInput): Promise<
-    PrecheckOutcome<{ precheckId: string; expiresAt: Date }>
-  > {
+  async createPrecheck(
+    input: PrecheckInput,
+  ): Promise<PrecheckOutcome<{ precheckId: string; expiresAt: Date }>> {
     // 1. Protocol: no prompt rewriting through settings (M05 guard).
     if (input.settings.prompt !== undefined || input.settings.effectivePrompt !== undefined) {
       await this.recordFailed(input, 'PROMPT_REWRITE_BLOCKED', 'settings contain prompt text');
@@ -133,7 +151,10 @@ export class PrecheckService {
     const versionId = version.rows[0]!.id;
 
     // 3. Media: owner-scoped, confirmed, really decoded (M02) and ready.
-    const ready = await this.promoteToReady({ mediaObjectId: input.mediaObjectId, ownerId: input.subjectId });
+    const ready = await this.promoteToReady({
+      mediaObjectId: input.mediaObjectId,
+      ownerId: input.subjectId,
+    });
     if (!ready.ok) {
       await this.recordFailed(input, ready.problem, ready.message);
       return ready;
@@ -153,8 +174,16 @@ export class PrecheckService {
       return { ok: false, problem: 'VALIDATION_FAILED', message: 'quality not supported by model' };
     }
     if (input.settings.aspect !== undefined && input.settings.aspect !== 'inherit') {
-      await this.recordFailed(input, 'VALIDATION_FAILED', 'aspect must be inherit (single-image protocol)');
-      return { ok: false, problem: 'VALIDATION_FAILED', message: 'aspect must be inherit (single-image protocol)' };
+      await this.recordFailed(
+        input,
+        'VALIDATION_FAILED',
+        'aspect must be inherit (single-image protocol)',
+      );
+      return {
+        ok: false,
+        problem: 'VALIDATION_FAILED',
+        message: 'aspect must be inherit (single-image protocol)',
+      };
     }
 
     const settings = { model, quality, aspect: 'inherit' };
@@ -163,7 +192,14 @@ export class PrecheckService {
       `INSERT INTO precheck (id, subject_id, media_object_id, template_version_id, settings, result, expires_at)
        VALUES ($1, $2, $3, $4, $5, 'passed', now() + make_interval(secs => $6))
        RETURNING expires_at`,
-      [precheckId, input.subjectId, input.mediaObjectId, versionId, JSON.stringify(settings), PRECHECK_TTL_SECONDS],
+      [
+        precheckId,
+        input.subjectId,
+        input.mediaObjectId,
+        versionId,
+        JSON.stringify(settings),
+        PRECHECK_TTL_SECONDS,
+      ],
     );
     return { ok: true, value: { precheckId, expiresAt: inserted.rows[0]!.expires_at } };
   }
@@ -201,15 +237,27 @@ export class PrecheckService {
       return { ok: false, problem: 'VALIDATION_FAILED', message: 'precheck expired' };
     }
     if (row.template_version_id !== input.templateVersionId) {
-      return { ok: false, problem: 'TEMPLATE_VERSION_MISMATCH', message: 'template version differs from precheck' };
+      return {
+        ok: false,
+        problem: 'TEMPLATE_VERSION_MISMATCH',
+        message: 'template version differs from precheck',
+      };
     }
     if (row.media_object_id !== input.inputObjectId) {
-      return { ok: false, problem: 'VALIDATION_FAILED', message: 'input object differs from precheck' };
+      return {
+        ok: false,
+        problem: 'VALIDATION_FAILED',
+        message: 'input object differs from precheck',
+      };
     }
     return { ok: true, value: { settings: row.settings } };
   }
 
-  private async recordFailed(input: PrecheckInput, errorCode: string, detail: string): Promise<void> {
+  private async recordFailed(
+    input: PrecheckInput,
+    errorCode: string,
+    detail: string,
+  ): Promise<void> {
     // Failed prechecks are recorded for auditability when the referenced
     // objects themselves exist; otherwise the failure stays client-side.
     try {

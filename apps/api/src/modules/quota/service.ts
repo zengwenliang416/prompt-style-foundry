@@ -55,24 +55,22 @@ export class QuotaService {
     tx: Queryable,
     input: { subjectId: string; generationId: string },
   ): Promise<QuotaResult> {
-      // Serialize on the subject so concurrent reserves cannot oversubscribe.
-      await tx.query(`SELECT pg_advisory_xact_lock(hashtextextended($1, 0))`, [
-        input.subjectId,
-      ]);
-      const used = await this.usedIn(tx, input.subjectId);
-      if (used >= this.options.limit) {
-        return { ok: false as const, code: 'QUOTA_EXCEEDED' as const };
-      }
-      const insert = await tx.query(
-        `INSERT INTO quota_ledger (subject_id, generation_id, delta, reason)
+    // Serialize on the subject so concurrent reserves cannot oversubscribe.
+    await tx.query(`SELECT pg_advisory_xact_lock(hashtextextended($1, 0))`, [input.subjectId]);
+    const used = await this.usedIn(tx, input.subjectId);
+    if (used >= this.options.limit) {
+      return { ok: false as const, code: 'QUOTA_EXCEEDED' as const };
+    }
+    const insert = await tx.query(
+      `INSERT INTO quota_ledger (subject_id, generation_id, delta, reason)
          VALUES ($1, $2, -1, 'reserve') ON CONFLICT (generation_id, reason) DO NOTHING`,
-        [input.subjectId, input.generationId],
-      );
-      if ((insert.rowCount ?? 0) === 0) {
-        // Same generation already reserved: idempotent no-charge (J01 replay).
-        return { ok: false as const, code: 'ALREADY_RESERVED' as const };
-      }
-      return { ok: true as const, used: used + 1 };
+      [input.subjectId, input.generationId],
+    );
+    if ((insert.rowCount ?? 0) === 0) {
+      // Same generation already reserved: idempotent no-charge (J01 replay).
+      return { ok: false as const, code: 'ALREADY_RESERVED' as const };
+    }
+    return { ok: true as const, used: used + 1 };
   }
 
   async release(input: { subjectId: string; generationId: string }): Promise<QuotaResult> {
@@ -93,7 +91,13 @@ export class QuotaService {
       if (row === undefined) {
         return { ok: false as const, code: 'ILLEGAL_RELEASE' as const };
       }
-      if (row.state === 'outcome_unknown' || row.state === 'succeeded' || row.state === 'running' || row.state === 'queued' || row.state === 'created') {
+      if (
+        row.state === 'outcome_unknown' ||
+        row.state === 'succeeded' ||
+        row.state === 'running' ||
+        row.state === 'queued' ||
+        row.state === 'created'
+      ) {
         // Unknown paid results must not auto-release; succeeded consumed it;
         // in-flight tasks have not reached a terminal billing state.
         return { ok: false as const, code: 'ILLEGAL_RELEASE' as const };

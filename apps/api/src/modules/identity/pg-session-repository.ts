@@ -1,11 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto';
 
 import type { Queryable } from '../../db/queryable.js';
-import type {
-  SessionRecord,
-  SessionRepositoryPort,
-  Subject,
-} from './port.js';
+import type { SessionRecord, SessionRepositoryPort, Subject } from './port.js';
 
 /**
  * PG-backed opaque session repository (B03, data dictionary §1.1–1.2).

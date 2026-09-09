@@ -42,9 +42,7 @@ export class RateLimiter {
 
 /** Error sanitizer: no provider keys or secrets ever surface in messages. */
 export function safeQuotaError(message: string): string {
-  return message.includes('sk-') || /bearer\s/i.test(message)
-    ? 'internal quota error'
-    : message;
+  return message.includes('sk-') || /bearer\s/i.test(message) ? 'internal quota error' : message;
 }
 
 /** Test helper mirroring the storage-side hash for quota bookkeeping keys. */

@@ -23,8 +23,7 @@ export interface SignedAccessInput {
 }
 
 export type SignedAccessResult =
-  | { ok: true }
-  | { ok: false; code: 'FORBIDDEN' | 'MEDIA_EXPIRED'; foreign: boolean };
+  { ok: true } | { ok: false; code: 'FORBIDDEN' | 'MEDIA_EXPIRED'; foreign: boolean };
 
 export function signMediaPath(
   input: Omit<SignedAccessInput, 'now'> & { now?: number },
@@ -63,7 +62,10 @@ export function verifySignedMedia(
   const expected = createHmac('sha256', signingKey).update(payload).digest('base64url');
   const expectedBuffer = Buffer.from(expected);
   const receivedBuffer = Buffer.from(signature);
-  if (expectedBuffer.length !== receivedBuffer.length || !timingSafeEqual(expectedBuffer, receivedBuffer)) {
+  if (
+    expectedBuffer.length !== receivedBuffer.length ||
+    !timingSafeEqual(expectedBuffer, receivedBuffer)
+  ) {
     return { ok: false, code: 'FORBIDDEN', foreign: false };
   }
   return { ok: true };

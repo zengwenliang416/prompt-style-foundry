@@ -91,9 +91,13 @@ export async function startPgTestCluster(options?: { binDir?: string }): Promise
   try {
     // Pin lc_messages=C so server error text is locale-independent and tests
     // can match it regardless of the developer machine's LANG/LC_ALL.
-    await exec(path.join(binDir, 'initdb'), ['-D', dataDir, '-A', 'trust', '-U', 'postgres', '--lc-messages=C'], {
-      timeout: 120_000,
-    });
+    await exec(
+      path.join(binDir, 'initdb'),
+      ['-D', dataDir, '-A', 'trust', '-U', 'postgres', '--lc-messages=C'],
+      {
+        timeout: 120_000,
+      },
+    );
     await exec(
       path.join(binDir, 'pg_ctl'),
       [

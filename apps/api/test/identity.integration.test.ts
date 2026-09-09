@@ -194,7 +194,7 @@ function makeConfig(issuer: string, databaseUrl: string): ApiConfig {
     oidcClientId: 'onepic-api',
     oidcClientSecret: 'b03-test-secret',
     oidcRedirectUri: `${REDIRECT_ORIGIN}/api/v1/auth/callback`,
-    sessionSecret: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+    sessionSecret: 'test-only-session-secret-'.repeat(2),
   };
 }
 
@@ -207,7 +207,10 @@ function csrfHeaders(origin = REDIRECT_ORIGIN): Record<string, string> {
   return { origin, 'x-onepic-requested-with': 'onepic-fetch' };
 }
 
-function cookieOf(response: { headers: Record<string, unknown> }, name: string): string | undefined {
+function cookieOf(
+  response: { headers: Record<string, unknown> },
+  name: string,
+): string | undefined {
   const raw = response.headers['set-cookie'];
   const list = Array.isArray(raw) ? raw : raw === undefined ? [] : [String(raw)];
   for (const entry of list) {
@@ -273,13 +276,18 @@ describe('identity: OIDC + sessions (B03)', () => {
     });
     expect(me.statusCode).toBe(200);
     // API JSON is camelCase (data dictionary naming rule).
-    expect(me.json()).toMatchObject({ data: { subject: { subjectClaim: 'user-b03', role: 'member' } } });
+    expect(me.json()).toMatchObject({
+      data: { subject: { subjectClaim: 'user-b03', role: 'member' } },
+    });
   });
 
   it('rejects a callback whose state does not match the pending challenge', async () => {
     const login = await app.inject({ method: 'GET', url: '/api/v1/auth/login' });
     const pending = cookieOf(login, 'onepic_login') ?? '';
-    const code = await issuer.authorize({ nonce: 'n', codeChallenge: createHash('sha256').update('v').digest('base64url') });
+    const code = await issuer.authorize({
+      nonce: 'n',
+      codeChallenge: createHash('sha256').update('v').digest('base64url'),
+    });
 
     const callback = await app.inject({
       method: 'GET',

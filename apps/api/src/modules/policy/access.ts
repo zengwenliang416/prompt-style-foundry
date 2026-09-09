@@ -17,8 +17,7 @@ import type { Subject } from '../identity/port.js';
 export type AccessAction = 'read-metadata' | 'read-media' | 'write';
 
 export type AccessDecision =
-  | { allowed: true }
-  | { allowed: false; code: 'UNAUTHENTICATED' | 'FORBIDDEN'; foreign: boolean };
+  { allowed: true } | { allowed: false; code: 'UNAUTHENTICATED' | 'FORBIDDEN'; foreign: boolean };
 
 export function decideObjectAccess(
   actor: Subject | null,
